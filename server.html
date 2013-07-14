@@ -1,0 +1,821 @@
+---
+layout: v3_slideshow
+title: Web Application Programming
+prev: v3/client.html
+uplink: v3/index.html
+next: v3/empirical.html
+---
+<div class="topic">
+  <h2>1) Introduction</h2>
+  <ul>
+  <li>Most of the web's power comes from the fact that browsers can interact with programs
+    <ul>
+    <li>More accurately, browsers can ask web servers to run programs on their behalf</li>
+    </ul>
+  </li>
+  <li>This lecture looks at what to do if you <em>receive</em> an HTTP request
+    <ul>
+    <li>Very important that you go through the security lecture before putting your programs on the web</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>2) You Can Skip This Lecture If...</h2>
+  <ul>
+  <li>You know what CGI stands for</li>
+  <li>You know how web servers communicate with CGI programs</li>
+  <li>You know what MIME types are</li>
+  <li>You know how to create an HTML form</li>
+  <li>You know how to get HTML form data from an HTTP request</li>
+  <li>You know when and how to create cookies</li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>3) The Pluggable Web</h2>
+  <ul>
+  <li>Users want to make the web do different things
+    <ul>
+    <li>How to let them write programs that handle HTTP requests?</li>
+    </ul>
+  </li>
+  <li>Option #1: Require them to write socket-level code
+    <ul>
+    <li>Complicated and error-prone</li>
+    <li>Can only have one program listening to a socket at a time</li>
+    </ul>
+  </li>
+  <li>Option #2: have the web server accept the HTTP request, and then run the user's code
+    <ul>
+    <li>Recompiling the web server every time someone wants to add functionality would be a pain</li>
+    <li>So define a protocol that lets web servers run other programs</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>4) The CGI Protocol</h2>
+  <ul>
+  <li>The <a href="{{page.root}}/book/glossary.html#cgi" target="glo:cgi">Common Gateway Interface (CGI)</a> protocol specifies:
+    <ul>
+    <li>How a web server passes information to a program</li>
+    <li>How that program passes information back to the web server</li>
+    </ul>
+  </li>
+  <li>CGI does <em>not</em> specify:
+    <ul>
+    <li>A particular language
+      <ul>
+      <li>You can use Fortran, the shell, C, Java, Perl, Python...</li>
+      </ul>
+    </li>
+    <li>How the web server figures out what program to run
+      <ul>
+      <li>Each web server has its own rules</li>
+      <li>We'll (briefly) talk about Apache's</li>
+      </ul>
+    </li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>5) From Server To CGI</h2>
+  <ul>
+  <li>Web server runs the CGI by creating a new process</li>
+    <figure id="fig:server-cgi-round-trip">
+      <img alt="CGI Data Processing Cycle" src="server/cgi-round-trip.png"/>
+      <p>Figure 25.1: CGI Data Processing Cycle</p>
+    </figure>
+  <li>Web server passes some information to the CGI process through environment variables</li>
+    <div id="tbl:server-envvar">
+      <table>
+        <tr>
+          <th>Name</th>
+          <th>Purpose</th>
+          <th>Example</th>
+        </tr>
+        <tr>
+          <td><code>REQUEST_METHOD</code></td>
+          <td>What kind of HTTP request is being handled</td>
+          <td><code>GET</code> or <code>POST</code></td>
+        </tr>
+        <tr>
+          <td><code>SCRIPT_NAME</code></td>
+          <td>The path to the script that's executing</td>
+          <td><code>/cgi-bin/post_photo.py</code></td>
+        </tr>
+        <tr>
+          <td><code>QUERY_STRING</code></td>
+          <td>The query parameters following <code>&quot;?&quot;</code> in the URL</td>
+          <td><code>name=mydog.jpg&amp;expires=never</code></td>
+        </tr>
+        <tr>
+          <td><code>CONTENT_TYPE</code></td>
+          <td>The type of any extra data being sent with the request</td>
+          <td><code>img/jpeg</code></td>
+        </tr>
+        <tr>
+          <td><code>CONTENT_LENGTH</code></td>
+          <td>How much extra data is being sent with the request (in bytes)</td>
+          <td><code>17290</code></td>
+        </tr>
+      </table>
+      <p>Table 25.1: Important CGI Environment Variables</p>
+    </div>
+  <li>The web server may also send <code>CONTENT_LENGTH</code> bytes to the CGI on standard input
+    <ul>
+    <li>E.g., when a file is being uploaded</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>6) From CGI To Server</h2>
+  <ul>
+  <li>The CGI program sends data back to the web server by printing it to standard output</li>
+  <li>The web server then forwards this directly to the client
+    <ul>
+    <li>Which means that the CGI program is responsible for creating headers</li>
+    </ul>
+  </li>
+  <li>Note: none of this works unless the web server has been configured to run the CGI
+    <ul>
+    <li>By default, modern servers won't do this unless they're told they can</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>7) MIME Types</h2>
+  <ul>
+  <li>Clients and servers need a way to specify data types to each other
+    <ul>
+    <li>Remember, bytes are just bytes: the browser doesn't magically know how to interpret them</li>
+    </ul>
+  </li>
+  <li><a href="{{page.root}}/book/glossary.html#mime" target="glo:mime">Multipurpose Internet Mail Extensions</a> standard specifies how to do this
+    <ul>
+    <li>Organizes data types into families, and provides a two-part name for each type</li>
+    <li>Use the <code>&quot;Content-Type&quot;</code> header to specify the MIME type of the data being sent</li>
+    </ul>
+  </li>
+    <div id="tbl:server-content-type">
+      <table>
+        <tr>
+          <th>Family</th>
+          <th>Specific Type</th>
+          <th>Describes</th>
+        </tr>
+        <tr>
+          <td>Text</td>
+          <td><code>text/html</code></td>
+          <td>Web pages</td>
+        </tr>
+        <tr>
+          <td>Image</td>
+          <td><code>image/jpeg</code></td>
+          <td>JPEG-format image</td>
+        </tr>
+        <tr>
+          <td>Audio</td>
+          <td><code>audio/x-mp3</code></td>
+          <td>MP3 audio file</td>
+        </tr>
+        <tr>
+          <td>Video</td>
+          <td><code>video/quicktime</code></td>
+          <td>Apple Quicktime video format</td>
+        </tr>
+        <tr>
+          <td>Application-specific data</td>
+          <td><code>application/pdf</code></td>
+          <td>Adobe PDF document</td>
+        </tr>
+      </table>
+      <p>Table 25.2: Example Mime Types</p>
+    </div>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>8) Hello, CGI</h2>
+  <ul>
+  <li>Simplest possible CGI pays no attention to query parameters or extra data
+    <ul>
+    <li>Just prints HTML to standard output, to be relayed to the client</li>
+    <li>Along with a <code>Content-Type</code> header to tell the client to expect HTML...</li>
+    <li>...and a blank line to separate the headers from the data</li>
+    </ul>
+  </li>
+  </ul>
+  <pre file="server/hello-cgi.py">#!/usr/bin/env python
+
+# Headers and an extra blank line
+print 'Content-type: text/html'
+print
+
+# Body
+print '&lt;html&gt;&lt;body&gt;&lt;p&gt;Hello, CGI!&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;'
+</pre>
+</div>
+
+<div class="topic">
+  <h2>9) Invoking a CGI</h2>
+  <ul>
+  <li>Invoke it by going to <code>http://www.yourserver.com/cgi-bin/hello_cgi.py</code>
+    <ul>
+    <li>By convention, CGI programs are put in a <code>cgi-bin</code> directory</li>
+    </ul>
+  </li>
+  <li>Browser displays the simple HTML page generated by the program</li>
+    <figure id="fig:server-hello-cgi">
+      <img alt="Basic CGI Output" src="server/hello-cgi.png"/>
+      <p>Figure 25.2: Basic CGI Output</p>
+    </figure>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>10) Generating Dynamic Content</h2>
+  <ul>
+  <li>But the whole point of CGI is to generate content dynamically
+    <ul>
+    <li>E.g., show a list of environment variables and their values</li>
+    </ul>
+  </li>
+  </ul>
+  <pre file="server/show-env.py">#!/usr/bin/env python
+
+import os, cgi
+
+# Headers and an extra blank line
+print 'Content-type: text/html'
+print
+
+# Body
+print '&lt;html&gt;&lt;body&gt;'
+keys = os.environ.keys()
+keys.sort()
+for k in keys:
+    print '&lt;p&gt;%s: %s&lt;/p&gt;' % (cgi.escape(k), cgi.escape(os.environ[k]))
+print '&lt;/body&gt;&lt;/html&gt;'
+</pre>
+  <ul>
+  <li>You'll use this frequently when debugging...</li>
+  </ul>
+  <figure id="fig:server-show-env">
+    <img alt="Environment Variable Output" src="server/show-env.png"/>
+    <p>Figure 25.3: Environment Variable Output</p>
+  </figure>
+</div>
+
+<div class="topic">
+  <h2>11) Forms</h2>
+  <ul>
+  <li>Next step is to allow users to enter data
+    <ul>
+    <li><em>Without</em> manually editing URLs to append parameters</li>
+    </ul>
+  </li>
+  <li>HTML <a href="{{page.root}}/book/glossary.html#form" target="glo:form">forms</a> allow users to enter text, choose items from lists, etc.
+    <ul>
+    <li>Not nearly as sophisticated as desktop interfaces</li>
+    <li>Although programmers are doing more every day (particularly using Javascript)</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>12) Creating Forms</h2>
+  <ul>
+  <li>Create a form using a <code>form</code>... element
+    <ul>
+    <li><code>action</code> attribute specifies the URL to send data to</li>
+    <li><code>method</code> attribute specifies the type of HTTP request to send
+      <ul>
+      <li>Usually <code>&quot;POST&quot;</code> for HTML forms</li>
+      </ul>
+    </li>
+    </ul>
+  </li>
+  <li>Inside the form, can have:
+    <ul>
+    <li><code>select</code> elements to let users choose values from a list
+      <ul>
+      <li>List items specified using <code>option</code> elements</li>
+      </ul>
+    </li>
+    <li><code>input</code> elements for other kind of data
+      <ul>
+      <li>If <code>type</code> is <code>&quot;text&quot;</code>, get a one-line text entry box</li>
+      <li>If <code>type</code> is <code>&quot;checkbox&quot;</code>, get an on/off checkbox</li>
+      <li><code>&quot;submit&quot;</code> and <code>&quot;reset&quot;</code> create buttons to submit the form, or re-set the data to initial values</li>
+      </ul>
+    </li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>13) A Simple Form</h2>
+  <pre file="server/simple-form.html">&lt;html&gt;
+&lt;body&gt;
+&lt;form action=&quot;http://www.third-bit.com/cgi-bin/simple_form.py&quot; method=&quot;POST&quot;&gt;
+  &lt;p&gt;Sequence: &lt;input name=&quot;sequence&quot; type=&quot;text&quot; value=&quot;GATTACA&quot;/&gt;
+     Search type:
+     &lt;select name=&quot;search_type&quot;&gt;
+       &lt;option&gt;Exact match&lt;/option&gt;
+       &lt;option selected=&quot;selected&quot;&gt;Similarity match&lt;/option&gt;
+       &lt;option&gt;Sub-match&lt;/option&gt;
+     &lt;/select&gt;
+  &lt;/p&gt;
+  &lt;p&gt;Programs:
+    &lt;input checked=&quot;checked&quot; name=&quot;program&quot; type=&quot;checkbox&quot; value=&quot;FROG-11&quot;&gt;
+      FROG (version 1.1)
+    &lt;/input&gt;
+    &lt;input name=&quot;program&quot; type=&quot;checkbox&quot; value=&quot;FROG-beta&quot;&gt;
+      FROG (2.0 beta)
+    &lt;/input&gt;
+    &lt;input checked=&quot;checked&quot; name=&quot;program&quot; type=&quot;checkbox&quot; value=&quot;Bayes-Hart&quot;&gt;
+      Bayes-Hart
+    &lt;/input&gt;
+  &lt;/p&gt;
+  &lt;p&gt;
+    &lt;input type=&quot;submit&quot;/&gt;
+    &lt;input type=&quot;reset&quot;/&gt;
+  &lt;/p&gt;
+&lt;/form&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+  <figure id="fig:server-simple-form">
+    <img alt="A Simple Form" src="server/simple-form.png"/>
+    <p>Figure 25.4: A Simple Form</p>
+  </figure>
+</div>
+
+<div class="topic">
+  <h2>14) Parameter Names</h2>
+  <ul>
+  <li>Each <code>input</code> element has a <code>name</code> attribute
+    <ul>
+    <li>These become the names of the parameters that the client sends to the server</li>
+    <li>The input elements' values are the parameters' values</li>
+    </ul>
+  </li>
+  <li>Submitting the form shown above with default values produces:
+    <ul>
+    <li><code>os.environ['REQUEST_METHOD']</code>: <code>&quot;POST&quot;</code></li>
+    <li><code>os.environ['SCRIPT_NAME']</code>: <code>&quot;/cgi-bin/simple_form.py&quot;</code></li>
+    <li><code>os.environ['CONTENT_TYPE']</code>: <code>&quot;application/x-www-form-urlencoded&quot;</code></li>
+    <li><code>os.environ['REQUEST_LENGTH']</code>: <code>&quot;80&quot;</code></li>
+    <li>Standard input: <code>sequence=GATTACA&amp;search_type=Similarity+match&amp;program=FROG-11&amp;program=Bayes-Hart</code></li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>15) Handling Forms</h2>
+  <ul>
+  <li><em>Could</em> handle form data directly
+    <ul>
+    <li>Read and parse environment variables</li>
+    <li>Read extra data from standard input</li>
+    </ul>
+  </li>
+  <li>But the mechanics are the same each time, so use Python's <code>cgi</code> module instead
+    <ul>
+    <li>Defines a dictionary-like object called <code>FieldStorage</code>
+      <ul>
+      <li>Keys are parameter names</li>
+      <li>Values are either strings (if there's a single value associated with the parameter) or lists (if there are many)</li>
+      </ul>
+    </li>
+    </ul>
+  </li>
+  <li>When a <code>FieldStorage</code> object is created, it reads and stores information contained in the URL and environment
+    <ul>
+    <li>Which means that a CGI program should only ever create one</li>
+    </ul>
+  </li>
+  <li>Program can read extra data from <code>sys.stdin</code></li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>16) Form Handling Example</h2>
+  <ul>
+  <li>Example: show the parameters send to a script</li>
+  </ul>
+  <pre file="server/show-params.py">#!/usr/bin/env python
+import cgi
+
+print 'Content-type: text/html'
+print
+print '&lt;html&gt;&lt;body&gt;'
+form = cgi.FieldStorage()
+for key in form.keys():
+    value = form.getvalue(key)
+    if isinstance(value, list):
+        value = '[' + ', '.join(value) + ']'
+    print '&lt;p&gt;%s: %s&lt;/p&gt;' % (cgi.escape(key), cgi.escape(value))
+print '&lt;/body&gt;&lt;/html&gt;'
+</pre>
+  <div id="tbl:server-form-example">
+    <table>
+      <tr>
+        <th>URL</th>
+        <th>Value of <code>a</code></th>
+        <th>Value of <code>b</code></th>
+      </tr>
+      <tr>
+        <td><code>http://www.third-bit.com/swc/show_params.py?a=0</code></td>
+        <td><code>&quot;0&quot;</code></td>
+        <td>None</td>
+      </tr>
+      <tr>
+        <td><code>http://www.third-bit.com/swc/show_params.py?a=0&amp;b=hello</code></td>
+        <td><code>&quot;0&quot;</code></td>
+        <td><code>&quot;hello&quot;</code></td>
+      </tr>
+      <tr>
+        <td><code>http://www.third-bit.com/swc/show_params.py?a=0&amp;b=hello&amp;a=22</code></td>
+        <td><code>[0, 22]</code></td>
+        <td><code>&quot;hello&quot;</code></td>
+      </tr>
+    </table>
+    <p>Table 25.3: Example Parameter Values</p>
+  </div>
+</div>
+
+<div class="topic">
+  <h2>17) Development Tips</h2>
+  <ul>
+  <li>During development, add <code>import cgitb; cgitb.enable()</code> to the top of the program
+    <ul>
+    <li><code>cgitb</code> is the CGI traceback module</li>
+    <li>When enabled, it will create a web page showing a stack trace when something goes wrong in your script</li>
+    </ul>
+  </li>
+  <li>Testing whether a <code>FieldStorage</code> value is a string or a list is tedious
+    <ul>
+    <li>In almost all cases, you'll know whether to expect one value or many</li>
+    <li>Use <code>FieldStorage.getfirst(name)</code> to get the unique value
+      <ul>
+      <li>Returns the first, if there are many</li>
+      </ul>
+    </li>
+    <li><code>FieldStorage.getlist(name)</code> always returns a list of values
+      <ul>
+      <li>Empty list if there's no data associated with <code>name</code></li>
+      <li>If there's only one value, get a single-item list</li>
+      </ul>
+    </li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>18) Maintaining State</h2>
+  <ul>
+  <li>Often want to change the data a server is managing, as well as read it
+    <ul>
+    <li>Update a description of an experiment, change your preferred email address, etc.</li>
+    </ul>
+  </li>
+  <li>The industrial-strength solution is to use a <a href="{{page.root}}/book/glossary.html#three-tier-architecture" target="glo:three-tier-architecture">three-tier architecture</a></li>
+    <figure id="fig:server-three-tier-architecture">
+      <img alt="Three Tier Architecture" src="server/three-tier-architecture.png"/>
+      <p>Figure 25.5: Three Tier Architecture</p>
+    </figure>
+    <ul>
+    <li>CGI program stuffs parameters from HTTP requests into SQL queries</li>
+    <li>Runs the queries</li>
+    <li>Translates results into HTML to send back to the client</li>
+    </ul>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>19) Maintaining State in Files</h2>
+  <ul>
+  <li>Simple programs can often get away with using files
+    <ul>
+    <li>The CGI program re-reads the file each time it processes a request</li>
+    <li>And re-writes it if there have been any updates</li>
+    </ul>
+  </li>
+  <li>Example: append messages to a web page
+    <ul>
+    <li>Old messages are saved in a file, one per line</li>
+    </ul>
+  </li>
+  </ul>
+  <pre file="server/messages.txt">Hi, is anyone reading this site?
+I was wondering the same thing.
+I wasn't sure if we were supposed to post here.
+Good point.  Is there way to delete messages?
+</pre>
+  <ul>
+  <li>Script checks the incoming parameters to decide what to do
+    <ul>
+    <li>If <code>newmessage</code> is there, append it, and display results</li>
+    <li>If <code>newmessage</code> <em>isn't</em> there, someone's visiting the page, rather than submitting the form</li>
+    </ul>
+  </li>
+  </ul>
+  <pre file="server/message-form.py" section="body"># Get existing messages.
+infile = open('messages.txt', 'r')
+lines = [x.rstrip() for x in infile.readlines()]
+infile.close()
+
+# Add more data?
+form = cgi.FieldStorage()
+if form.has_key('newmessage'):
+    lines.append(form.getfirst('newmessage'))
+    outfile = open('messages.txt', 'w')
+    for line in lines:
+        print &gt;&gt; outfile, line
+    outfile.close()
+</pre>
+</div>
+
+<div class="topic">
+  <h2>20) HTML Generation</h2>
+  <ul>
+  <li>There is no static HTML page in this example</li>
+  <li>What the user sees is always generated by a program</li>
+  </ul>
+  <pre file="server/message-form.py" section="display"># Display.
+print 'Content-Type: text/html'
+print
+print '&lt;html&gt;&lt;body&gt;'
+for line in lines:
+    print '&lt;p&gt;' + line + '&lt;/p&gt;'
+print '''
+&lt;form action=&quot;http://www.third-bit.com/swc/message_form.py&quot; method=&quot;post&quot;&gt;
+  &lt;p&gt;Your message:
+     &lt;input name=&quot;newmessage&quot; type=&quot;text&quot;/&gt;
+  &lt;/p&gt;
+  &lt;p&gt;
+    &lt;input type=&quot;submit&quot;/&gt;
+    &lt;input type=&quot;reset&quot;/&gt;
+  &lt;/p&gt;
+&lt;/form&gt;
+'''
+print '&lt;/body&gt;&lt;/html&gt;'
+</pre>
+</div>
+
+<div class="topic">
+  <h2>21) HTML Templating</h2>
+  <ul>
+  <li>A lot of this program is devoted to copying values into an HTML <a href="{{page.root}}/book/glossary.html#template" target="glo:template">template</a>
+    <ul>
+    <li>There are lots of good systems out there, in many languages, for doing this</li>
+    <li><a href="bib.html#bib:kid" target="bib:kid">[Kid]</a> in Python</li>
+    <li><a href="{{page.root}}/book/glossary.html#jsp" target="glo:jsp">Java Server Pages</a> (JSPs) in Java</li>
+    <li>Please do <em>not</em> write one of your own</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>22) What About Concurrency?</h2>
+  <ul>
+  <li>What happens if two users try to save messages at the same time?
+    <ul>
+    <li>I/O is typically slower than processing</li>
+    <li>So most web servers try to overlap operations</li>
+    </ul>
+  </li>
+  <li>Race condition:
+    <ul>
+    <li>First instance of <code>message_form.py</code> opens <code>messages.txt</code>, reads lines, closes file</li>
+    <li>Second instance opens <code>messages.txt</code>, reads <em>the same lines</em>, closes file</li>
+    <li>First instance re-opens file, writes out original data plus one new line</li>
+    <li>Second instance re-opens file, writes out original plus a <em>different</em> new line</li>
+    <li>First instance's message has been lost!</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>23) File Locking</h2>
+  <ul>
+  <li>Solution is to <a href="{{page.root}}/book/glossary.html#lock" target="glo:lock">lock</a> the file
+    <ul>
+    <li>As the name implies, gives one process exclusive rights to the file</li>
+    <li>After the first process <a href="{{page.root}}/book/glossary.html#acquire-lock" target="glo:acquire-lock">acquires</a> the lock, any other process that tries to read or write the file is <a href="{{page.root}}/book/glossary.html#suspended-process" target="glo:suspended-process">suspended</a> until the first <a href="{{page.root}}/book/glossary.html#release-lock" target="glo:release-lock">releases</a> it</li>
+    </ul>
+  </li>
+  <li>Mechanics are different on different operating systems
+    <ul>
+    <li>But the <a href="bib.html#bib:python-cookbook" target="bib:python-cookbook">[Python Cookbook]</a> includes a generic file locking function that works on both Unix and Windows</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>24) Implementing Locking</h2>
+  <ul>
+  <li>Open file</li>
+  <li>Acquire lock: if someone else is using the file, blocks until file is available</li>
+  <li>Read existing messages</li>
+  <li>If there is a new message:
+    <ul>
+    <li><a href="{{page.root}}/book/glossary.html#seek" target="glo:seek">Seek</a> to the beginning of the file</li>
+    <li>Overwrite data</li>
+    </ul>
+  </li>
+  <li>Release the lock
+    <ul>
+    <li>Otherwise, everyone else will wait forever</li>
+    </ul>
+  </li>
+  </ul>
+  <pre file="server/locking-form.py" section="body"># Get existing messages.
+msgfile = open('messages.txt', 'r+')
+fcntl.flock(msgfile.fileno(), fcntl.LOCK_EX)
+lines = [x.rstrip() for x in msgfile.readlines()]
+
+# Add more data?
+form = cgi.FieldStorage()
+if form.has_key('newmessage'):
+    lines.append(form.getfirst('newmessage'))
+    msgfile.seek(0)
+    for line in lines:
+        print &gt;&gt; msgfile, line
+
+# Unlock and close.
+fcntl.flock(msgfile.fileno(), fcntl.LOCK_UN)
+msgfile.close()
+</pre>
+</div>
+
+<div class="topic">
+  <h2>25) Who Are You?</h2>
+  <ul>
+  <li>How to maintain state on the client?
+    <ul>
+    <li>Need to know which shopping cart to display for a particular user</li>
+    </ul>
+  </li>
+  <li>HTTP is a stateless protocol
+    <ul>
+    <li>If a client makes a second (or third, or fourth...) request, server has no reliable way of connecting it to the first one</li>
+    </ul>
+  </li>
+  <li>Can guess based on client address, elapsed time, etc.
+    <ul>
+    <li>But it's just a guess</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>26) Cookies</h2>
+  <ul>
+  <li>Solution is for the server to create a <a href="{{page.root}}/book/glossary.html#cookie" target="glo:cookie">cookie</a>
+    <ul>
+    <li>A string that is sent to the client in an HTTP response header</li>
+    </ul>
+  </li>
+  <li>Client saves it (either in memory or on disk)</li>
+    <figure id="fig:server-cookies">
+      <img alt="Cookies" src="server/cookies.png"/>
+      <p>Figure 25.6: Cookies</p>
+    </figure>
+  <li>The next time the client sends a request to the site, it sends the cookie back to the server
+    <ul>
+    <li>Like giving someone a claim check for their luggage</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>27) Creating Cookies</h2>
+  <ul>
+  <li>Represent cookies in Python using <code>Cookie.SimpleCookie</code>
+    <ul>
+    <li>Do not use <code>SmartCookie</code>: it is potentially insecure</li>
+    </ul>
+  </li>
+  <li>When creating, add values to a cookie as if it were a dictionary
+    <ul>
+    <li>Convert it to a string (e.g., by printing it) to create the required HTTP header</li>
+    </ul>
+  </li>
+  <li>When the cookie comes back:
+    <ul>
+    <li>Get the value associated of the environment variable <code>&quot;HTTP_COOKIE&quot;</code></li>
+    <li>Create a <code>SimpleCookie</code></li>
+    <li>Pass the <code>&quot;HTTP_COOKIE&quot;</code> value to the cookie's <code>load</code> method</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>28) Cookie Example</h2>
+  <ul>
+  <li>Example: count the number of times a user has visited a web site
+    <ul>
+    <li>If there's no cookie, create one with a count of 1</li>
+    <li>Otherwise, increment the count</li>
+    <li>Create a new cookie to send back to the user</li>
+    <li>Display the count</li>
+    </ul>
+  </li>
+  </ul>
+  <pre file="server/cookie-counter.py" section="body"># Get old count.
+count = 0
+if os.environ.has_key('HTTP_COOKIE'):
+    cookie = Cookie.SimpleCookie()
+    cookie.load(os.environ['HTTP_COOKIE'])
+    if cookie.has_key('count'):
+        count = int(cookie['count'].value)
+
+# Create new count.
+count += 1
+cookie = Cookie.SimpleCookie()
+cookie['count'] = count
+
+# Display.
+print 'Content-Type: text/html'
+print cookie
+print
+print '&lt;html&gt;&lt;body&gt;'
+print '&lt;p&gt;Visits: %d&lt;/p&gt;' % count
+print '&lt;/body&gt;&lt;/html&gt;'
+</pre>
+</div>
+
+<div class="topic">
+  <h2>29) Cookie Tips</h2>
+  <ul>
+  <li>Can control how long a cookie is valid by setting an expiry value
+    <ul>
+    <li>Either the number of milliseconds</li>
+    <li>Or the time it should expire (in <a href="{{page.root}}/book/glossary.html#utc" target="glo:utc">UTC</a>)
+      <ul>
+      <li>Use <code>time.asctime(time.gmtime())</code> to create the value</li>
+      </ul>
+    </li>
+    </ul>
+  </li>
+  <li>Do <em>not</em> put sensitive information in cookies
+    <ul>
+    <li>Browsers store them in files on disk</li>
+    <li>Villains can watch network traffic, and steal data</li>
+    </ul>
+  </li>
+  <li>Cookies should instead be random values that act as keys into server-side information
+    <ul>
+    <li>Talk about this more in the security lecture</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>30) Summmary</h2>
+  <ul>
+  <li>CGI is example of <a href="{{page.root}}/book/glossary.html#event-driven-programming" target="glo:event-driven-programming">event-driven programming</a>
+    <ul>
+    <li>The framework invokes your code at specific times, and passes it specific information</li>
+    <li>What happens the rest of the time isn't your concern
+      <ul>
+      <li>At least, until something goes wrong, and you have to debug it</li>
+      </ul>
+    </li>
+    </ul>
+  </li>
+  <li>Simple CGI programs can accomplish a lot
+    <ul>
+    <li>The entire first generation of web applications were built this way</li>
+    </ul>
+  </li>
+  <li>But they can easily become very complicated
+    <ul>
+    <li>Discuss alternatives in the <a href="summary.html" target="lec:summary">Summary</a></li>
+    </ul>
+  </li>
+  </ul>
+</div>

@@ -1,0 +1,8 @@
+dividing by value 0
+divide by zero: float division
+dividing by value 1
+result is 1.0
+dividing by value 2
+some other error: float division
+dividing by value 3
+index error: list index out of range

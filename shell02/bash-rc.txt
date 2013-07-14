@@ -1,0 +1,9 @@
+# Add personal tools directory to PATH.
+PATH=$HOME/bin:$PATH
+
+# Personal settings.
+export EDITOR=/local/bin/emacs
+export PRINTER=gryffindor-laserwriter
+
+# Change default behavior of commands.
+alias ls="ls -F"

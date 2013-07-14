@@ -1,0 +1,1078 @@
+---
+layout: v3_slideshow
+title: Python Strings, Lists, and Files
+prev: v3/py01.html
+uplink: v3/index.html
+next: v3/py03.html
+---
+<div class="topic">
+  <h2>1) Introduction</h2>
+  <ul>
+  <li>To recap:
+    <ul>
+    <li>Python is a nimble language</li>
+    <li>Ideal for building tools and crunching data</li>
+    <li>Has the usual data types and control flow constructs</li>
+    </ul>
+  </li>
+  <li>This lecture describes:
+    <ul>
+    <li>Strings</li>
+    <li>Lists</li>
+    <li>File I/O</li>
+    </ul>
+  </li>
+  <li>After this lecture, you will be able to use Python to crunch simple data formats</li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>2) You Can Skip This Lecture If...</h2>
+  <ul>
+  <li>You know that you can't modify a string in place</li>
+  <li>You know what <code>str[1:-1]</code> means</li>
+  <li>You know what a method is</li>
+  <li>You know how to read data from a file line by line</li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>3) Strings</h2>
+  <ul>
+  <li>A string is an <em>immutable sequence of characters</em></li>
+  <li><a href="{{page.root}}/book/glossary.html#sequence" target="glo:sequence">Sequence</a> means that it can be indexed
+    <ul>
+    <li>Indices start at 0 (as in C, Java, and C#)</li>
+    <li>So <code>text[0]</code> is the first character of <code>text</code></li>
+    </ul>
+  </li>
+  <li>The built-in function <code>len</code> returns the length of a string
+    <ul>
+    <li>So the last character of <code>text</code> has index <code>len(text)-1</code></li>
+    </ul>
+  </li>
+  </ul>
+  <pre file="py02/string-index.py">element = &quot;boron&quot;
+i = 0
+while i &lt; len(element):
+    print element[i]
+    i += 1
+</pre>
+  <pre class="out" file="py02/string-index.out">b
+o
+r
+o
+n
+</pre>
+  <ul>
+  <li>Note: there is no separate data type for characters
+    <ul>
+    <li>A character is simply a string of length 1</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>4) Immutability</h2>
+  <ul>
+  <li><a href="{{page.root}}/book/glossary.html#immutable" target="glo:immutable">Immutable</a> means that it cannot be modified once it has been created
+    <ul>
+    <li>I.e., you cannot change individual characters in place</li>
+    </ul>
+  </li>
+  </ul>
+  <pre class="in" file="py02/immutable-err-1.cmd">$ python
+&gt;&gt;&gt; element = 'gold'
+&gt;&gt;&gt; print 'element is', element
+</pre>
+  <pre class="out" file="py02/immutable-err-2.out">element is gold
+</pre>
+  <pre class="in" file="py02/immutable-err-3.cmd">&gt;&gt;&gt; element[0] = 's'
+</pre>
+  <pre class="err" file="py02/immutable-err-4.err">TypeError: object does not support item assignment
+</pre>
+  <ul>
+  <li>Why?
+    <ul>
+    <li>Safety (which we'll discuss <a href="py04.html" target="lec:py04">Python Sets and Dictionaries</a>)</li>
+    <li>Doesn't actually cost that much, since most changes to strings change their length</li>
+    </ul>
+  </li>
+  <li>Of course, you <em>can</em> assign a new string value to a variable</li>
+  </ul>
+  <pre file="py02/immutable-assign.py">element = 'gold'
+print 'element is', element
+element = 'lead'
+print 'element is now', element
+</pre>
+  <pre class="out" file="py02/immutable-assign.out">element is gold
+element is now lead
+</pre>
+</div>
+
+<div class="topic">
+  <h2>5) Slicing</h2>
+  <ul>
+  <li><code>text[start:end]</code> takes a <a href="{{page.root}}/book/glossary.html#slice" target="glo:slice">slice</a> out of <code>text</code>
+    <ul>
+    <li>Creates a new string containing the characters of <code>text</code> from <code>start</code> up to (but not including) <code>end</code></li>
+    </ul>
+  </li>
+  </ul>
+  <pre file="py02/string-slice.py">element = &quot;helium&quot;
+print element[1:3], element[:2], element[4:]
+</pre>
+  <pre class="out" file="py02/string-slice.out">el he um
+</pre>
+  <ul>
+  <li>Sometimes helps to think of indices as being <em>between</em> elements</li>
+  </ul>
+  <figure id="fig:py02-indices">
+    <img alt="Visualizing Indices" src="py02/indices.png"/>
+    <p>Figure 3.1: Visualizing Indices</p>
+  </figure>
+</div>
+
+<div class="topic">
+  <h2>6) Bounds Checking</h2>
+  <ul>
+  <li>Python always does an out-of-bounds check when you index a single item</li>
+  <li>But it truncates out-of-range indices when you take a slice</li>
+  </ul>
+  <pre class="in" file="py02/bounds-1.cmd">$ python
+&gt;&gt;&gt; element = 'helium'
+&gt;&gt;&gt; print element[1:22]
+</pre>
+  <pre class="out" file="py02/bounds-2.out">elium
+</pre>
+  <pre class="in" file="py02/bounds-3.cmd">&gt;&gt;&gt; x = element[22]
+</pre>
+  <pre class="err" file="py02/bounds-4.err">IndexError: string index out of range
+</pre>
+  <ul>
+  <li>&quot;A foolish consistency is the hobgoblin of little minds.&quot; (Ralph Waldo Emerson)</li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>7) Negative Indices</h2>
+  <ul>
+  <li>Negative indices count backward from the end of the string
+    <ul>
+    <li><code>x[-1]</code> is the last character</li>
+    <li><code>x[-2]</code> is the second-to-last character</li>
+    </ul>
+  </li>
+  </ul>
+  <pre file="py02/negative-index.py">element = &quot;carbon&quot;
+print element[-2], element[-4], element[-6]
+</pre>
+  <pre class="out" file="py02/negative-index.out">o r c
+</pre>
+  <ul>
+  <li>A lot easier to read than <code>x[len(x)-1]</code>
+    <ul>
+    <li>Again, it helps to visualize the indices as lying <em>between</em> the characters</li>
+    </ul>
+  </li>
+  </ul>
+  <figure id="fig:py02-negative-indices">
+    <img alt="Visualizing Negative Indices" src="py02/negative-indices.png"/>
+    <p>Figure 3.2: Visualizing Negative Indices</p>
+  </figure>
+</div>
+
+<div class="topic">
+  <h2>8) Consequences</h2>
+  <ul>
+  <li><code>text[1:2]</code> is either:
+    <ul>
+    <li>The second character in <code>text</code>...</li>
+    <li>...or the empty string (if <code>text</code> doesn't have a second character)</li>
+    </ul>
+  </li>
+  <li>So <code>text[2:1]</code> is always the empty string</li>
+  <li>So is <code>text[1:1]</code>
+    <ul>
+    <li>From index 1, up to but not including index 1</li>
+    </ul>
+  </li>
+  <li><code>text[1:-1]</code> is everything except the first and last characters
+    <ul>
+    <li>Which may again be the empty string</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>9) Methods</h2>
+  <ul>
+  <li>A <a href="{{page.root}}/book/glossary.html#method" target="glo:method">method</a> is a function that is tied to a particular <a href="{{page.root}}/book/glossary.html#object" target="glo:object">object</a>
+    <ul>
+    <li>Invented to help programmers organize their code</li>
+    <li>We'll see how to create objects and methods of our own <a href="oop01.html" target="lec:oop01">Python Basic Object-Oriented Programming</a></li>
+    </ul>
+  </li>
+  <li>Almost everything in Python has methods
+    <ul>
+    <li>Numbers are the only important exception</li>
+    </ul>
+  </li>
+  <li>To call a method <code>meth</code> of object <code>obj</code>, type <code>obj.meth()</code></li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>10) String Methods</h2>
+  <div id="tbl:py02-stringops">
+    <table>
+      <tr>
+        <th>Method</th>
+        <th>Purpose</th>
+        <th>Example</th>
+        <th>Result</th>
+      </tr>
+      <tr>
+        <td><code>capitalize</code></td>
+        <td>Capitalize first letter of string</td>
+        <td><code>&quot;text&quot;.capitalize()</code></td>
+        <td><code>&quot;Text&quot;</code></td>
+      </tr>
+      <tr>
+        <td><code>lower</code></td>
+        <td>Convert all letters to lowercase.</td>
+        <td><code>&quot;aBcD&quot;.lower()</code></td>
+        <td><code>&quot;abcd&quot;</code></td>
+      </tr>
+      <tr>
+        <td><code>upper</code></td>
+        <td>Convert all letters to uppercase.</td>
+        <td><code>&quot;aBcD&quot;.upper()</code></td>
+        <td><code>&quot;ABCD&quot;</code></td>
+      </tr>
+      <tr>
+        <td><code>strip</code></td>
+        <td>Remove leading and trailing whitespace (blanks, tabs, newlines, etc.)</td>
+        <td><code>&quot; a b &quot;.strip()</code></td>
+        <td><code>&quot;a b&quot;</code></td>
+      </tr>
+      <tr>
+        <td><code>lstrip</code></td>
+        <td>Remove whitespace at left (leading) edge of string.</td>
+        <td><code>&quot; a b &quot;.lstrip()</code></td>
+        <td><code>&quot;a b &quot;</code></td>
+      </tr>
+      <tr>
+        <td><code>rstrip</code></td>
+        <td>Remove whitespace at right (trailing) edge of string.</td>
+        <td><code>&quot; a b &quot;.rstrip()</code></td>
+        <td><code>&quot; a b&quot;</code></td>
+      </tr>
+      <tr>
+        <td><code>count</code></td>
+        <td>Count how many times one string appears in another.</td>
+        <td><code>&quot;abracadabra&quot;.count(&quot;ra&quot;)</code></td>
+        <td><code>2</code></td>
+      </tr>
+      <tr>
+        <td><code>find</code></td>
+        <td>Return the index of the first occurrence of one string in another, or -1.</td>
+        <td><code>&quot;abracadabra&quot;.find(&quot;ra&quot;)</code></td>
+        <td><code>2</code></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td></td>
+        <td><code>&quot;abracadabra&quot;.find(&quot;xyz&quot;)</code></td>
+        <td><code>-1</code></td>
+      </tr>
+      <tr>
+        <td><code>index</code></td>
+        <td>Just like <code>find</code>, except when the string can't be found, it raises a <code>ValueError</code>.</td>
+        <td><code>&quot;abracadabra&quot;.find(&quot;hello&quot;)</code></td>
+        <td><code>ValueError: substring not found</code></td>
+      </tr>
+      <tr>
+        <td><code>replace</code></td>
+        <td>Replace occurrences of one string with another.</td>
+        <td><code>&quot;abracadabra&quot;.replace(&quot;ra&quot;, &quot;-&quot;)</code></td>
+        <td><code>&quot;ab-cadab-&quot;</code></td>
+      </tr>
+    </table>
+    <p>Table 3.1: String Methods</p>
+  </div>
+</div>
+
+<div class="topic">
+  <h2>11) Notes on String Methods</h2>
+  <ul>
+  <li>These methods don't have to be called on constant strings
+    <ul>
+    <li>In fact, they usually aren't</li>
+    </ul>
+  </li>
+  </ul>
+  <pre file="py02/string-var-methods.py">element = 'helium'
+print element.upper()
+print element.replace('el', 'afn')
+print 'element after calls:', element
+</pre>
+  <pre class="out" file="py02/string-var-methods.out">HELIUM
+hafnium
+element after calls: helium
+</pre>
+  <ul>
+  <li>These methods create new strings
+    <ul>
+    <li>They cannot change the strings they're called on because strings are immutable</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>12) Chaining Method Calls</h2>
+  <ul>
+  <li>Method calls can be <a href="{{page.root}}/book/glossary.html#chain-call" target="glo:chain-call">chained</a> together
+    <ul>
+    <li>If the result of one method call is an object, you can immediately call a method on it</li>
+    </ul>
+  </li>
+  </ul>
+  <pre file="py02/string-methods-chain.py">element = &quot;cesium&quot;
+print ':' + element.upper()[4:7].center(10) + ':'
+</pre>
+  <pre class="out" file="py02/string-methods-chain.out">:    UM    :
+</pre>
+  <ul>
+  <li>Use this in moderation
+    <ul>
+    <li>Long chains of method calls are hard to read and debug</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>13) Testing for Membership</h2>
+  <ul>
+  <li>Use <code>in</code> to check whether one string appears in another
+    <ul>
+    <li>Simpler than the <code>find</code> method</li>
+    <li>But it doesn't tell you <em>where</em> the substring occurs</li>
+    </ul>
+  </li>
+  </ul>
+  <pre file="py02/string-in-string.py">print &quot;ant&quot; in &quot;tantalum&quot;
+print &quot;mat&quot; in &quot;tantalum&quot;
+</pre>
+  <pre class="out" file="py02/string-in-string.out">True
+False
+</pre>
+</div>
+
+<div class="topic">
+  <h2>14) Lists</h2>
+  <ul>
+  <li>A list is a <em>mutable sequence of objects</em>
+    <ul>
+    <li><a href="{{page.root}}/book/glossary.html#mutable" target="glo:mutable">Mutable</a> means that, unlike a string, it can be changed in place</li>
+    <li><em>Of objects</em> means that lists can hold anything and everything</li>
+    <li>Think of it as a one-dimensional array, or vector, that automatically resizes itself as needed</li>
+    </ul>
+  </li>
+  <li>Write lists by putting values in square brackets
+    <ul>
+    <li>The empty list is written <code>[]</code></li>
+    </ul>
+  </li>
+  <li>Index and slice as you would a string
+    <ul>
+    <li>As with strings, Python checks bounds when indexing, but truncates when slicing</li>
+    </ul>
+  </li>
+  </ul>
+  <pre file="py02/simple-lists.py">gases = ['He', 'Ne', 'Ar', 'Kr']
+print gases
+print gases[0], gases[-1]
+</pre>
+  <pre class="out" file="py02/simple-lists.out">['He', 'Ne', 'Ar', 'Kr']
+He Kr
+</pre>
+</div>
+
+<div class="topic">
+  <h2>15) Modifying Lists</h2>
+  <ul>
+  <li>Assign a new value to a list element using <code>x[i] = v</code></li>
+  </ul>
+  <pre file="py02/list-assign.py">gases = ['He', 'Ne', 'Ar', 'Kr']
+print 'before:', gases
+gases[0] = 'H'
+gases[-1] = 'Xe'
+print 'after:', gases
+</pre>
+  <pre class="out" file="py02/list-assign.out">before: ['He', 'Ne', 'Ar', 'Kr']
+after: ['H', 'Ne', 'Ar', 'Xe']
+</pre>
+  <ul>
+  <li>The slot must already exist</li>
+  </ul>
+  <pre class="in" file="py02/list-assign-bounds-1.cmd">$ python
+&gt;&gt;&gt; gases = ['He', 'Ne', 'Ar', 'Kr']
+&gt;&gt;&gt; print 'before:', gases
+</pre>
+  <pre class="out" file="py02/list-assign-bounds-2.out">before: ['He', 'Ne', 'Ar', 'Kr']
+</pre>
+  <pre class="in" file="py02/list-assign-bounds-3.cmd">&gt;&gt;&gt; gases[10] = 'Ra'
+</pre>
+  <pre class="err" file="py02/list-assign-bounds-4.err">IndexError: list assignment index out of range
+</pre>
+  <ul>
+  <li>Use <code>append</code> to add an element to the end of a list
+    <ul>
+    <li>Grows the list as needed</li>
+    </ul>
+  </li>
+  </ul>
+  <pre file="py02/append.py">characters = []
+print characters
+for c in 'aeiou':
+    characters.append(c)
+    print characters
+</pre>
+  <pre class="out" file="py02/append.out">[]
+['a']
+['a', 'e']
+['a', 'e', 'i']
+['a', 'e', 'i', 'o']
+['a', 'e', 'i', 'o', 'u']
+</pre>
+</div>
+
+<div class="topic">
+  <h2>16) Concatenation</h2>
+  <ul>
+  <li>Adding strings (or lists) creates a new string (or list) with all the content of the originals</li>
+  </ul>
+  <pre file="py02/concat.py">element = 'carbon'
+mass = '14'
+print element + '-' + mass
+
+lanthanides = ['Ce', 'Pr', 'Nd']
+actinides = ['Th', 'Pa', 'U']
+all = lanthanides + actinides
+print all
+</pre>
+  <pre class="out" file="py02/concat.out">carbon-14
+['Ce', 'Pr', 'Nd', 'Th', 'Pa', 'U']
+</pre>
+  <ul>
+  <li>Can't concatenate a string and a list
+    <ul>
+    <li>But <code>list(text)</code> creates a list whose elements are the characters of the string <code>text</code></li>
+    </ul>
+  </li>
+  </ul>
+  <pre file="py02/string-list-convert.py">water = 'H2O'
+print 'before conversion:', water
+water = list(water)
+print 'after conversion:', water
+</pre>
+  <pre class="out" file="py02/string-list-convert.out">before conversion: H2O
+after conversion: ['H', '2', 'O']
+</pre>
+</div>
+
+<div class="topic">
+  <h2>17) Deleting List Elements</h2>
+  <ul>
+  <li><code>del</code> deletes a list element
+    <ul>
+    <li>Shortens the list (which can cause problems if you're looping over it at the time)</li>
+    </ul>
+  </li>
+  </ul>
+  <pre file="py02/del-list.py">organics = ['H', 'C', 'O', 'N']
+print 'original:', organics
+del organics[2]
+print 'after deleting item 2:', organics
+del organics[-2:]
+print 'after deleting the last two remaining items:', organics
+</pre>
+  <pre class="out" file="py02/del-list.out">original: ['H', 'C', 'O', 'N']
+after deleting item 2: ['H', 'C', 'N']
+after deleting the last two remaining items: ['H']
+</pre>
+  <ul>
+  <li>Can delete slices, too</li>
+  </ul>
+  <pre file="py02/del-slice.py">organics = ['H', 'C', 'O', 'N']
+print 'original:', organics
+del organics[1:-1]
+print 'after deleting the middle:', organics
+</pre>
+  <pre class="out" file="py02/del-slice.out">original: ['H', 'C', 'O', 'N']
+after deleting the middle: ['H', 'N']
+</pre>
+  <ul>
+  <li><code>del</code> is a statement, not an operator
+    <ul>
+    <li>Doesn't &quot;return&quot; the modified list</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>18) List Methods</h2>
+  <ul>
+  <li>Like strings, lists are objects, and have methods</li>
+  <li>In the examples below, <code>metals</code> is initially <code>['gold', 'iron', 'lead', 'gold']</code></li>
+    <div id="tbl:py02-listops">
+      <table>
+        <tr>
+          <th>Method</th>
+          <th>Purpose</th>
+          <th>Example</th>
+          <th>Result</th>
+        </tr>
+        <tr>
+          <td><code>append</code></td>
+          <td>Add to the end of the list.</td>
+          <td><code>metals.append('tin')</code></td>
+          <td><code>['gold', 'iron', 'lead', 'gold', 'tin']</code></td>
+        </tr>
+        <tr>
+          <td><code>count</code></td>
+          <td>Count how many times something appears in the list.</td>
+          <td><code>metals.count('gold')</code></td>
+          <td><code>2</code></td>
+        </tr>
+        <tr>
+          <td><code>index</code></td>
+          <td>Find the position of first occurrence of something in the list, but raise a <code>ValueError</code> if it is not found.</td>
+          <td><code>metals.index('iron')</code></td>
+          <td><code>1</code></td>
+        </tr>
+        <tr>
+          <td></td>
+          <td></td>
+          <td><code>metals.index('sulfur')</code></td>
+          <td><code>ValueError: list.index(x): x is not in list</code></td>
+        </tr>
+        <tr>
+          <td><code>insert</code></td>
+          <td>Insert something into the list.</td>
+          <td><code>metals.insert(2, 'silver')</code></td>
+          <td><code>['gold', 'iron', 'silver', 'lead', 'gold']</code></td>
+        </tr>
+        <tr>
+          <td><code>remove</code></td>
+          <td>Remove the first occurrence of something from the list.</td>
+          <td><code>metals.remove('gold')</code></td>
+          <td><code>['iron', 'lead', 'gold']</code></td>
+        </tr>
+        <tr>
+          <td><code>reverse</code></td>
+          <td>Reverse the list in place.</td>
+          <td><code>metals.reverse()</code></td>
+          <td><code>['gold', 'lead', 'iron', 'gold']</code></td>
+        </tr>
+        <tr>
+          <td><code>sort</code></td>
+          <td>Sort the list in place.</td>
+          <td><code>metals.sort()</code></td>
+          <td><code>['gold', 'gold', 'iron', 'lead']</code></td>
+        </tr>
+      </table>
+      <p>Table 3.2: List Methods</p>
+    </div>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>19) Notes on List Methods</h2>
+  <ul>
+  <li>Unlike with strings there is no <code>find</code> method, only <code>index</code></li>
+  <li><code>reverse</code> and <code>sort</code> change the list, and return <code>None</code>
+    <ul>
+    <li>The object equivalent of zero</li>
+    <li>Like 0 and the empty string, it is equivalent to <code>False</code></li>
+    </ul>
+  </li>
+  <li><code>x = x.reverse()</code> is a common error
+    <ul>
+    <li>It reverses <code>x</code>, but then sets <code>x</code> to <code>None</code>, so all data is lost</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>20) For Loops</h2>
+  <ul>
+  <li>Python's <code>for</code> loops over the <em>content</em> of a collection (such as a string or list)
+    <ul>
+    <li><code>for c in some_string</code> assigns <code>c</code> each character of <code>some_string</code></li>
+    <li><code>for v in some_list</code> assigns <code>v</code> each value of <code>some_list</code></li>
+    <li>Of course, you can use any name you like for the loop index variable</li>
+    </ul>
+  </li>
+  </ul>
+  <pre file="py02/for-loop.py">for c in 'lead':
+    print '/' + c + '/',
+print
+
+for v in ['he', 'ar', 'ne', 'kr']:
+    print v.capitalize()
+</pre>
+  <pre class="out" file="py02/for-loop.out">/l/ /e/ /a/ /d/
+He
+Ar
+Ne
+Kr
+</pre>
+  <ul>
+  <li>Why? Because it's usually what you want to do</li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>21) Ranges</h2>
+  <ul>
+  <li>The built-in function <code>range</code> creates the list <code>[start, start+1, ..., end-1]</code>
+    <ul>
+    <li><code>end-1</code> to be consistent with <code>x[start:end]</code></li>
+    </ul>
+  </li>
+  </ul>
+  <pre file="py02/range.py">print 'up to 5:', range(5)
+print '2 to 5:', range(2, 5)
+print '2 to 10 by 2:', range(2, 10, 2)
+print '10 to 2:', range(10, 2)
+print '10 to 2 by -2:', range(10, 2, -2)
+</pre>
+  <pre class="out" file="py02/range.out">up to 5: [0, 1, 2, 3, 4]
+2 to 5: [2, 3, 4]
+2 to 10 by 2: [2, 4, 6, 8]
+10 to 2: []
+10 to 2 by -2: [10, 8, 6, 4]
+</pre>
+  <ul>
+  <li>Note the special cases <code>range(end)</code> and <code>range(start, end, step)</code></li>
+  <li>Note also that <code>range</code> may generate an empty list</li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>22) Ranged Loops</h2>
+  <ul>
+  <li>To loop from 0 to N-1, use <code>for i in range(N)</code></li>
+  <li>To loop over the indices of a list or string, use <code>for i in range(len(sequence))</code></li>
+  </ul>
+  <pre file="py02/range-list-loop.py">element = 'sulfur'
+for i in range(len(element)):
+    print i, element[i]
+</pre>
+  <pre class="out" file="py02/range-list-loop.out">0 s
+1 u
+2 l
+3 f
+4 u
+5 r
+</pre>
+</div>
+
+<div class="topic">
+  <h2>23) Membership</h2>
+  <ul>
+  <li><code>x in c</code> works element-by-element on lists
+    <ul>
+    <li>So <code>3 in [1, 2, 3, 4]</code> is <code>True</code></li>
+    <li>But <code>[2, 3] in [1, 2, 3, 4]</code> is <code>False</code></li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>24) Nesting Lists</h2>
+  <ul>
+  <li>Lists can contain other lists
+    <ul>
+    <li>E.g., use a list containing two lists to represent a line</li>
+      <figure id="fig:py02-line-segment">
+        <img alt="Line Segment" src="py02/line-segment.png"/>
+        <p>Figure 3.3: Line Segment</p>
+      </figure>
+    </ul>
+  </li>
+  <li>Indexing from left to right selects elements from the outside in</li>
+  </ul>
+  <pre file="py02/nested-list.py">elements = [['H', 'Li', 'Na'], ['F', 'Cl']]
+print 'first item in outer list:', elements[0]
+print 'second item of second sublist:', elements[1][1]
+
+</pre>
+  <pre class="out" file="py02/nested-list.out">first item in outer list: ['H', 'Li', 'Na']
+second item of second sublist: Cl
+</pre>
+</div>
+
+<div class="topic">
+  <h2>25) Aliasing</h2>
+  <ul>
+  <li>Nested lists are objects in their own right
+    <ul>
+    <li>The outer list stores a reference to the inner list</li>
+    <li>But the inner list does <em>not</em> know that it's being referred to</li>
+    </ul>
+  </li>
+  <li>Subscripting the outer list creates an <a href="{{page.root}}/book/glossary.html#alias" target="glo:alias">alias</a> for the inner list
+    <ul>
+    <li>Another name for the same data</li>
+    </ul>
+  </li>
+  <li>Changes made through either reference update the same data</li>
+  </ul>
+  <pre file="py02/aliasing.py">elements = [['H', 'Li'], ['F', 'Cl']]
+gases = elements[1]
+print 'before'
+print 'elements:', elements
+print 'gases:', gases
+
+gases[1] = 'Br'
+
+print 'after'
+print 'elements:', elements
+</pre>
+  <pre class="out" file="py02/aliasing.out">before
+elements: [['H', 'Li'], ['F', 'Cl']]
+gases: ['F', 'Cl']
+after
+elements: [['H', 'Li'], ['F', 'Br']]
+</pre>
+  <figure id="fig:py02-aliasing">
+    <img alt="Aliasing In Action" src="py02/aliasing.png"/>
+    <p>Figure 3.4: Aliasing In Action</p>
+  </figure>
+</div>
+
+<div class="topic">
+  <h2>26) Indexing vs. Slicing</h2>
+  <ul>
+  <li>Indexing and slicing return different types of things for lists
+    <ul>
+    <li>Indexing a list returns a reference to the list element</li>
+    <li>Slicing returns a new list containing the selected elements of the original list</li>
+    </ul>
+  </li>
+  <li>Changes to a slice do <em>not</em> affect the original list</li>
+  </ul>
+  <pre file="py02/slice-copy.py">metals = ['Cr', 'Mn', 'Fe', 'Co', 'Ni', 'Cu', 'Zn']
+middle = metals[2:-2]
+print 'before'
+print 'metals:', metals
+print 'middle:', middle
+
+middle[0] = 'Al'
+del middle[1]
+
+print 'after'
+print 'metals:', metals
+print 'middle:', middle
+</pre>
+  <pre class="out" file="py02/slice-copy.out">before
+metals: ['Cr', 'Mn', 'Fe', 'Co', 'Ni', 'Cu', 'Zn']
+middle: ['Fe', 'Co', 'Ni']
+after
+metals: ['Cr', 'Mn', 'Fe', 'Co', 'Ni', 'Cu', 'Zn']
+middle: ['Al', 'Ni']
+</pre>
+  <figure id="fig:py02-slice-copy">
+    <img alt="Slicing Lists" src="py02/slice-copy.png"/>
+    <p>Figure 3.5: Slicing Lists</p>
+  </figure>
+  <ul>
+  <li>Note that copying only goes one level deep</li>
+  <li>Don't have to worry about this with strings, since they're immutable</li>
+  <li>Draw pictures when you have to
+    <ul>
+    <li>And if your pictures are complicated, simplify your code</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>27) Tuples</h2>
+  <ul>
+  <li>Python has a second type of list, called a <a href="{{page.root}}/book/glossary.html#tuple" target="glo:tuple">tuple</a>
+    <ul>
+    <li>Just like a normal list, but immutable (i.e., can't be changed after creation)</li>
+    <li>Written using parentheses instead of square brackets: <code>(1, 2, 3)</code> instead of <code>[1, 2, 3]</code></li>
+    <li>Empty tuple is <code>()</code></li>
+    <li>Tuple with one element must be written with a comma, as in <code>(55,)</code>
+      <ul>
+      <li>Because <code>(55)</code> has to be just the integer 55, or the mathematicians will get upset</li>
+      </ul>
+    </li>
+    </ul>
+  </li>
+  <li>Why? Because there are times when Python needs to know that a sequences values aren't going to change
+    <ul>
+    <li>We'll meet them <a href="py04.html" target="lec:py04">Python Sets and Dictionaries</a></li>
+    </ul>
+  </li>
+  <li>One of Python's few warts...</li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>28) Multi-Valued Assignment</h2>
+  <ul>
+  <li>Don't actually need the parentheses around a tuple
+    <ul>
+    <li><code>1, 2, 3</code> is the same as <code>(1, 2, 3)</code></li>
+    </ul>
+  </li>
+  <li>Allows <a href="{{page.root}}/book/glossary.html#multi-valued-assignment" target="glo:multi-valued-assignment">multi-valued assignment</a>
+    <ul>
+    <li><code>left, right = &quot;gold&quot;, &quot;lead&quot;</code> assigns <code>&quot;gold&quot;</code> to <code>left</code>, and <code>&quot;lead&quot;</code> to <code>right</code></li>
+    </ul>
+  </li>
+  <li>Python converts lists to tuples when necessary
+    <ul>
+    <li><code>left, middle, right = [&quot;gold&quot;, &quot;iron&quot;, &quot;lead&quot;]</code> works</li>
+    <li><code>left, right = [&quot;gold&quot;, &quot;iron&quot;, &quot;lead&quot;]</code> doesn't
+      <ul>
+      <li>Number of targets on the left must match the number of values on the right</li>
+      </ul>
+    </li>
+    </ul>
+  </li>
+  <li>Often used to exchange values
+    <ul>
+    <li><code>left, right = right, left</code> does a safe swap</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>29) Unpacking Structures in Loops</h2>
+  <ul>
+  <li>Use multi-valued assignment in <code>for</code> loops to unpack structures on the fly</li>
+  </ul>
+  <pre file="py02/unpack-loop.py">elements = [
+    ['H', 'hydrogen', 1.008],
+    ['He', 'helium', 4.003],
+    ['Li', 'lithium', 6.941],
+    ['Be', 'beryllium', 9.012]
+]
+
+for (symbol, name, weight) in elements:
+    print name + ' (' + symbol + '): ' + str(weight)
+</pre>
+  <pre class="out" file="py02/unpack-loop.out">hydrogen (H): 1.008
+helium (He): 4.003
+lithium (Li): 6.941
+beryllium (Be): 9.012
+</pre>
+  <ul>
+  <li>Two of the reasons nimble languages are productive are that they:
+    <ul>
+    <li>Let you write complex data structures directly</li>
+    <li>Let you take them apart easily</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>30) Files</h2>
+  <ul>
+  <li>Use the built-in function <code>open</code> to open a file
+    <ul>
+    <li>First argument is path</li>
+    <li>Second is <code>&quot;r&quot;</code> (for read) or <code>&quot;w&quot;</code> for write</li>
+    </ul>
+  </li>
+  </ul>
+  <pre file="py02/count-bytes.py">input_file = open('count_bytes.py', 'r')
+content = input_file.read()
+input_file.close()
+print len(content), 'bytes in file'
+</pre>
+  <pre class="out" file="py02/count-bytes.out">121 bytes in file
+</pre>
+  <ul>
+  <li>Result is a file object with methods for input and output</li>
+  </ul>
+  <div id="tbl:py02-fileops">
+    <table>
+      <tr>
+        <th>Method</th>
+        <th>Purpose</th>
+        <th>Example</th>
+      </tr>
+      <tr>
+        <td><code>close</code></td>
+        <td>Close the file; no more reading or writing is allowed</td>
+        <td>input_file.close()</td>
+      </tr>
+      <tr>
+        <td><code>read</code></td>
+        <td>Read <code>N</code> bytes from the file, returning the empty string if the file is empty.</td>
+        <td><code>next_block = input_file.read(1024)</code></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td>If <code>N</code> is not given, read the rest of the file.</td>
+        <td><code>rest = input_file.read()</code></td>
+      </tr>
+      <tr>
+        <td><code>readline</code></td>
+        <td>Read the next line of text from the file, returning the empty string if the file is empty.</td>
+        <td><code>line = input_file.readline()</code></td>
+      </tr>
+      <tr>
+        <td><code>readlines</code></td>
+        <td>Return the remaining lines in the file as a list, or an empty list at the end of the file.</td>
+        <td><code>rest = input_file.readlines()</code></td>
+      </tr>
+      <tr>
+        <td><code>write</code></td>
+        <td>Write a string to a file.</td>
+        <td><code>output_file.write(&quot;Element 8: Oxygen&quot;)</code></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td></td>
+        <td><code>write</code> does <em>not</em> automatically append a newline.</td>
+      </tr>
+      <tr>
+        <td><code>writelines</code></td>
+        <td>Write each string in a list to a file (without appending newlines).</td>
+        <td><code>output_file.writelines([&quot;H&quot;, &quot;He&quot;, &quot;Li&quot;])</code></td>
+      </tr>
+    </table>
+    <p>Table 3.3: File Methods</p>
+  </div>
+</div>
+
+<div class="topic">
+  <h2>31) Copying a File</h2>
+<pre file="py02/copy-file.py">input_file = open('file.txt', 'r')
+output_file = open('copy.txt', 'w')
+line = input_file.readline()
+while line:
+    output_file.write(line)
+    line = input_file.readline()
+input_file.close()
+output_file.close()
+</pre>
+  <ul>
+  <li>First statement opens <code>file.txt</code> for reading, and assigns the file object to <code>input_file</code></li>
+  <li>Second statement opens <code>copy.txt</code> for writing, and assigns the file object to <code>output_file</code></li>
+  <li>Program then tries to read a line from <code>input_file</code>
+    <ul>
+    <li>If the file is empty, <code>line</code> is assigned the empty string</li>
+    </ul>
+  </li>
+  <li>As long as there are lines in the input, the program:
+    <ul>
+    <li>Writes the most recent line to <code>output_file</code></li>
+    <li>Reads the next line</li>
+    </ul>
+  </li>
+  <li>After the input file is exhausted, the program closes the files
+    <ul>
+    <li>Python will close the files automatically when the program exits...</li>
+    <li>...but it's good practice to tidy up your toys when you're done playing with them</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>32) Looping Over Files</h2>
+  <ul>
+  <li>Looping over an input file returns lines of text
+    <ul>
+    <li>Including the terminating newline (or carriage return + newline on Windows)</li>
+    </ul>
+  </li>
+  </ul>
+  <pre file="py02/count-lines.py">input_file = open('count_lines.py', 'r')
+count = 0
+for line in input_file:
+    count += 1
+input_file.close()
+print count, 'lines in file'
+</pre>
+  <pre class="out" file="py02/count-lines.out">6 lines in file
+</pre>
+  <ul>
+  <li>Meaningless to loop over an output file</li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>33) Other Ways To Copy Files</h2>
+  <ul>
+  <li>Could also use this:</li>
+  </ul>
+  <pre file="py02/readlines-writelines.py">input_file = open('file.txt', 'r')
+lines = input_file.readlines()
+input_file.close()
+
+output_file = open('copy.txt', 'w')
+output_file.writelines(lines)
+output_file.close()
+</pre>
+  <ul>
+  <li>Read all the lines from the input file into a list</li>
+  <li>Write the lines in that list to the output file</li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>34) Still More Ways</h2>
+  <pre file="py02/print-to-file.py">input_file = open('file.txt', 'r')
+output_file = open('copy.txt', 'w')
+for line in input_file:
+    line = line.rstrip()
+    print &gt;&gt; output_file, line
+input_file.close()
+output_file.close()
+</pre>
+  <ul>
+  <li><code>print &gt;&gt; file</code> sends <code>print</code>'s output to a file</li>
+  <li>Remember that it automatically appends an end-of-line marker
+    <ul>
+    <li>Which is why the program above strips whitespace off the end of the string before printing it</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>35) Summary</h2>
+  <ul>
+  <li>The basic features of most modern programming languages are the same
+    <ul>
+    <li>Strings, lists, file I/O, ...</li>
+    </ul>
+  </li>
+  <li>Only issue is how they're presented
+    <ul>
+    <li>Python's syntax is clean and consistent</li>
+    </ul>
+  </li>
+  <li>You'll soon start to wonder why other languages still rely on curly braces...</li>
+  </ul>
+</div>

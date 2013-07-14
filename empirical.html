@@ -1,0 +1,500 @@
+---
+layout: v3_slideshow
+title: Empirical Software Engineering
+prev: v3/lifecycle.html
+uplink: v3/index.html
+next: v3/summary.html
+---
+<div class="topic">
+  <h2>1) Is Computer &quot;Science&quot;?</h2>
+  <ul>
+  <li>What kind of science is &quot;computer science&quot;?
+    <ul>
+    <li>Theory of algorithms is a branch of mathematics</li>
+    <li>But what about operating systems?</li>
+    <li>Or software engineering?</li>
+    </ul>
+  </li>
+  <li>Often seems more like:
+    <ul>
+    <li>Computer strong opinion</li>
+    <li>Computer well it ought to be that way</li>
+    <li>Computer I heard about this guy once...</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>2) New Rules</h2>
+  <ul>
+  <li>Growing emphasis since the early 1990s on <em>empirical software engineering</em> <a href="bib.html#bib:shaw-discipline" target="bib:shaw-discipline">[Shaw 1990]</a>
+    <ul>
+    <li>Controlled laboratory experiments (for small things)</li>
+    <li>Case studies and data mining (for large ones)</li>
+    </ul>
+  </li>
+  <li>Much of this lecture comes from <a href="bib.html#bib:glass-facts-fallacies" target="bib:glass-facts-fallacies">[Glass 2002]</a> and <a href="bib.html#bib:endres-rombach-handbook" target="bib:endres-rombach-handbook">[Endres &amp; Rombach 2003]</a>
+    <ul>
+    <li>The first may be the most useful little book a software engineer could buy</li>
+    </ul>
+  </li>
+  <li>Remember: what is true of small systems may not be true of large ones
+    <ul>
+    <li>There's a difference between molecules bouncing off each other and fluid turbulence</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>3) Productivity</h2>
+  <ul>
+  <li><em>The best programmers are up to 28 times more productive than the worst.</em>
+    <ul>
+    <li>Or 5, or 40, or some other number: every quotation seems to use a different value</li>
+    </ul>
+  </li>
+  <li>Original study was <a href="bib.html#bib:sackman-performance" target="bib:sackman-performance">[Sackman et al 1968]</a>
+    <ul>
+    <li>Look at the year: most programmers were self-taught, so it wouldn't be surprising if there was wide variation</li>
+    <li>And there were only 12 subjects</li>
+    <li>And &quot;up to&quot; can hide a lot of sins</li>
+    </ul>
+  </li>
+  <li><a href="bib.html#bib:boehm-high-cost" target="bib:boehm-high-cost">[Boehm 1975]</a> claims up to a factor of five
+    <ul>
+    <li>Consistent with what's seen in other creative disciplines</li>
+    </ul>
+  </li>
+  <li><em>It takes 5000 hours to turn a novice into an expert.</em>
+    <ul>
+    <li>Stated in <a href="bib.html#bib:norman-smart" target="bib:norman-smart">[Norman 1993]</a>, but found to be true in many fields</li>
+    <li>FIXME cite the survey paper</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>4) Complexity</h2>
+  <ul>
+  <li><em>For every 25% increase in problem complexity, there is a 100% increase in solution complexity.</em>
+    <ul>
+    <li>The downside of network effects</li>
+    <li>See <a href="bib.html#bib:woodfield-complexity" target="bib:woodfield-complexity">[Woodfield 1979]</a> for the original</li>
+    </ul>
+  </li>
+  <li>Technologists' response is to try to simplify the problem
+    <ul>
+    <li>I.e., fit the business to the software</li>
+    </ul>
+  </li>
+  <li>But some people only <em>have</em> one name
+    <ul>
+    <li>And others don't have &quot;first&quot; and &quot;last&quot; names in the Western European sense</li>
+    <li>And every special case in the tax code was vitally important to someone</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>5) The Mythical Man-Month</h2>
+  <ul>
+  <li><em>Adding people to a late project makes it later.</em>
+    <ul>
+    <li>Because the people already in the project are now spending time getting new staff up to speed</li>
+    </ul>
+  </li>
+  <li>Originally from <a href="bib.html#bib:brooks-mythical-man-month" target="bib:brooks-mythical-man-month">[Brooks 1995]</a>
+    <ul>
+    <li>First edition appeared in the early 1970s</li>
+    </ul>
+  </li>
+  <li>If the project is behind:
+    <ul>
+    <li>Re-prioritize (triage)</li>
+    <li>Get other people to deal with distractions
+      <ul>
+      <li>Counter-productive to have team setting up new servers two weeks before shipping deadline</li>
+      </ul>
+    </li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>6) Working Environment</h2>
+  <ul>
+  <li><em>Environment is a major determinant of productivity.</em></li>
+  <li>Undergraduate labs seem to have been designed to reduce productivity
+    <ul>
+    <li>Crowded, noisy, uncomfortable...</li>
+    <li>Infested with IM sessions</li>
+    </ul>
+  </li>
+  <li>Most cube farms are only a little better</li>
+  <li><a href="bib.html#bib:eley-marmot-offices" target="bib:eley-marmot-offices">[Eley &amp; Marmot 1999]</a> summarizes the evidence</li>
+  <li>Realistically, there's little you can do</li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>7) Glass's Law</h2>
+  <ul>
+  <li><em>Any new tool or technique initially makes the adopter slower.</em>
+    <ul>
+    <li>It's faster to do today's assignment in Notepad than it is to learn Emacs</li>
+    </ul>
+  </li>
+  <li>So it's only worth adopting new tools and techniques if you're willing to be patient
+    <ul>
+    <li>And have realistic expectations: 5-35% productivity improvement is the best you'll see <a href="bib.html#bib:glass-realities" target="bib:glass-realities">[Glass 1999]</a></li>
+    <li>Despite &quot;order of magnitude&quot; claims from vendors or inventors</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>8) Runaway Projects</h2>
+  <ul>
+  <li>FIXME: the mythology of the &quot;software crisis&quot;</li>
+  <li>Data from <a href="bib.html#bib:van-genuchten-late" target="bib:van-genuchten-late">[Van Genuchten 1991]</a>, <a href="bib.html#bib:cole-runaway" target="bib:cole-runaway">[Cole 1995]</a>, <a href="bib.html#bib:hofmann-re-success" target="bib:hofmann-re-success">[Hofmann &amp; Lehner 2001]</a> and many other sources</li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>9) Runaway Cause #1: Poor Estimation</h2>
+  <ul>
+  <li>Despite all previous experience, most people plan as if things were going to go perfectly</li>
+  <li>Most teams don't have reliable data from previous projects on which to base estimates</li>
+  <li>And/or do estimates once, at the beginning of the project, and never update them
+    <ul>
+    <li>And estimates often done &quot;on high&quot; and handed down to developers</li>
+    </ul>
+  </li>
+  <li>Estimates are subject to an <a href="{{page.root}}/book/glossary.html#anchoring-effect" target="glo:anchoring-effect">anchoring effect</a> <a href="bib.html#bib:aranda-requirements" target="bib:aranda-requirements">[Aranda et al 2007]</a>
+    <ul>
+    <li>I.e., estimators are subconsciously biased toward giving customers the answers they want</li>
+    <li>This overshadows experience, technique used, or other factors</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>10) Runaway Cause #2: Unstable Requirements</h2>
+  <ul>
+  <li>Software seems more malleable than concrete, so it's hard to say &quot;no&quot; to requests for changes</li>
+  <li>More up-front analysis usually doesn't solve the problem, because the world won't stand still
+    <ul>
+    <li>Software is a victim of its own success</li>
+    </ul>
+  </li>
+  <li>Agile methodologies are a response
+    <ul>
+    <li>Don't plan, adapt</li>
+    </ul>
+  </li>
+  <li>So is prototyping
+    <ul>
+    <li>Catch requirements/design errors before writing lots of code</li>
+    <li>The problem, of course, is convincing management not to ship the prototype...</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>11) Boehm's Curve</h2>
+  <ul>
+  <li>Worth repeating</li>
+  <li><a href="bib.html#bib:boehm-top10" target="bib:boehm-top10">[Boehm &amp; Basili 2001]</a> claim it is 100 times more expensive to fix requirements error in production than in early stages of development</li>
+  <li><em>Missing requirements are the hardest kind of requirement errors to correct.</em>
+    <ul>
+    <li>Just as missing code is the hardest to test</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>12) Reuse</h2>
+  <ul>
+  <li><em>Software reuse increases productivity and quality.</em>
+    <ul>
+    <li>Validated by many experiments and case studies over 30 years</li>
+    </ul>
+  </li>
+  <li><em>Small-scale reuse (libraries) is a solved problem</em>
+    <ul>
+    <li>Though we're still not very good at version management</li>
+    </ul>
+  </li>
+  <li><em>Medium-scale reuse (frameworks) is solved too</em>
+    <ul>
+    <li>GUIs, servlets, etc.</li>
+    </ul>
+  </li>
+  <li><em>Large-scale reuse (component and system assembly) is still unsolved</em>
+    <ul>
+    <li>Web services: someone you've never met, ten time zones away, can break your application without notice</li>
+    </ul>
+  </li>
+  <li><em>It takes three times more effort to build a reusable component than it does to build something that's going to be used once</em>
+    <ul>
+    <li>Need to use the component in several applications to flesh out its design</li>
+    <li>Have to generalize testing</li>
+    <li>And write real documentation</li>
+    </ul>
+  </li>
+  <li><em>If more than 20-25% of a component has to be revised, it's better to rewrite it from scratch</em>
+    <ul>
+    <li>Data comes from studies like <a href="bib.html#bib:thomas-reuse" target="bib:thomas-reuse">[Thomas et al 1997]</a></li>
+    <li>Problem is figuring out ahead of time how much is going to have to be revised...</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>13) Design vs. Coding</h2>
+  <ul>
+  <li>FIXME: need citations for the multigrid nature of design</li>
+  <li>Every design aims for the primitives it's most comfortable/familiar with
+    <ul>
+    <li>Problems arise if these aren't the same as those of the person doing the coding</li>
+    <li>Which is why &quot;there's more than one way to do it&quot; is a bad philosophy for a development team</li>
+    <li>And part of why design patterns are so useful</li>
+    </ul>
+  </li>
+  <li><em>Good designs require deep application domain knowledge.</em>
+    <ul>
+    <li><a href="bib.html#bib:curtis-design" target="bib:curtis-design">[Curtis et al 1988]</a></li>
+    <li>In practice, &quot;requirements elicitation&quot; often means &quot;learning how to think like the customer&quot;</li>
+    </ul>
+  </li>
+  <li><em>Strong cohesion and low coupling reduce error rates.</em> <a href="bib.html#bib:basili-productivity" target="bib:basili-productivity">[Basili et al 1996]</a>
+    <ul>
+    <li>Cohesion: intra-module communication and dependencies</li>
+    <li>Coupling: inter-module communication and dependencies</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>14) Conway's Law</h2>
+  <ul>
+  <li><em>A system reflects the organizational structure that built it.</em>
+    <ul>
+    <li>Or, if you have four teams, you'll get a four-pass compiler.</li>
+    </ul>
+  </li>
+  <li><a href="bib.html#bib:herbsleb-conways-law" target="bib:herbsleb-conways-law">[Herbsleb &amp; Grinter 1999]</a> is just one study</li>
+  <li>Reflects the fact that human bandwidth is limited
+    <ul>
+    <li>Coupling of code has to reflect people's ability to share information</li>
+    <li>Have to abstract what's at a distance</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>15) Languages</h2>
+  <ul>
+  <li><em>Productivity and reliability depend on the length of the program's text, independent of language level.</em>
+    <ul>
+    <li>See <a href="bib.html#bib:prechelt-language-comparison" target="bib:prechelt-language-comparison">[Prechelt 2000]</a> for an experiment</li>
+    <li>A direct reflection of human (in)ability to manage detail</li>
+    </ul>
+  </li>
+  <li>The problem, of course, is that high-level languages run slower</li>
+  <li>So build the first version using high-level tools, then profile, then rewrite what you need to</li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>16) Where The Time Goes</h2>
+  <ul>
+  <li><em>Error removal is the single biggest consumer of time in any software project.</em>
+    <ul>
+    <li>Typically 20% on requirements</li>
+    <li>20% on design</li>
+    <li>20% on coding</li>
+    <li>40% on fixing (either immediately or later)</li>
+    </ul>
+  </li>
+  <li>All that sturdy and agile processes do is change the sizes of the chunks, not their proportions
+    <ul>
+    <li>Easy to waste time arguing over whether refactoring counts as &quot;fixing&quot; or not</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>17) Testing</h2>
+  <ul>
+  <li><em>Code that developers believe is fully tested typically has only 55-60% path coverage.</em>
+    <ul>
+    <li>I.e., less than two thirds of the paths through the code are exercised by tests.</li>
+    </ul>
+  </li>
+  <li>This is largely because coverage analyzers are still regarded as &quot;advanced&quot; or &quot;exotic&quot;
+    <ul>
+    <li>As are test generators that rely on fuzzing or program analysis</li>
+    </ul>
+  </li>
+  <li>Roughly 35% of errors arise from missing logic paths <a href="bib.html#bib:glass-building-quality" target="bib:glass-building-quality">[Glass 1992]</a></li>
+  <li><em>Developers test their own code less well than other people.</em>
+    <ul>
+    <li>Explaining the problem to a toy hippo can sometimes be enough...</li>
+    </ul>
+  </li>
+  <li><em>Suspicion-based testing is more effective than most other approaches.</em>
+    <ul>
+    <li><a href="bib.html#bib:hamlet-partition" target="bib:hamlet-partition">[Hamlet &amp; Taylor 1990]</a> suggests focusing testing on code that:
+      <ul>
+      <li>Is written by inexperienced programmers</li>
+      <li>Has a history of failures</li>
+      <li>Failed code inspections</li>
+      <li>Was changed late in the development cycle</li>
+      <li>Developers feel uneasy about</li>
+      </ul>
+    </li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>18) Code Inspections</h2>
+  <ul>
+  <li><em>Rigorous inspections can remove 60-90% of errors before the first test is run.</em>
+    <ul>
+    <li>There's that phrase &quot;up to&quot; again...</li>
+    </ul>
+  </li>
+  <li>But is this more economical than writing tests?
+    <ul>
+    <li>Especially since most code is modified several times before being shipped?</li>
+    </ul>
+  </li>
+  <li>Yes: several independent studies have shown that code inspections are the single most cost-effective error removal technique
+    <ul>
+    <li>Pair programming is &quot;continuous code review&quot; (maybe)</li>
+    <li>The &quot;culture of review&quot; in many open source projects is one of the reasons their code is so good</li>
+    <li>But there is no evidence to support the claim that &quot;Given enough eyeballs, all bugs are shallow.&quot;</li>
+    </ul>
+  </li>
+  <li><em>Effectiveness of inspections is fairly independent of its organizational form.</em>
+    <ul>
+    <li><a href="bib.html#bib:porter-inspections" target="bib:porter-inspections">[Porter 1997]</a></li>
+    </ul>
+  </li>
+  <li><a href="bib.html#bib:cohen-code-review" target="bib:cohen-code-review">[Cohen 2006]</a> reports a long study at Cisco</li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>19) There's More Than One Way To Do It</h2>
+  <ul>
+  <li><em>A combination of different verification and validation methods outperform any single method alone.</em></li>
+  <li>I.e., different techniques catch different (kinds of) bugs <a href="bib.html#bib:myers-walkthroughs" target="bib:myers-walkthroughs">[Myers 1978]</a></li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>20) Maintenance</h2>
+  <ul>
+  <li><em>Maintenance makes up 40-80% of the cost of a software project.</em>
+    <ul>
+    <li>[BOE75] is an early reference, but the finding has been validated many times since</li>
+    <li>The single largest cost in most projects, but almost always underestimated</li>
+    </ul>
+  </li>
+  <li><em>Enhancement is roughly 60% of &quot;maintenance&quot;.</em>
+    <ul>
+    <li>Enhancement usually a result of changing requirements
+      <ul>
+      <li>Yes, they keep changing after software is in production</li>
+      </ul>
+    </li>
+    <li>How much effort goes into other kinds of maintenance?
+      <ul>
+      <li>18%: adaptive maintenance (i.e., keeping up with a changing environment)</li>
+      <li>17%: error correction</li>
+      <li>5%: miscellaneous</li>
+      </ul>
+    </li>
+    </ul>
+  </li>
+  <li>30% of maintenance time is spent figuring out how the software actually works
+    <ul>
+    <li>This figure rises as the software ages</li>
+    </ul>
+  </li>
+  <li><em>Better software engineering leads to more maintenance, not less.</em>
+    <ul>
+    <li><a href="bib.html#bib:dekleva-maintenance" target="bib:dekleva-maintenance">[Dekleva 1992]</a>: the better the system, the longer it will live, and the more changes are possible</li>
+    </ul>
+  </li>
+  <li><em>Small changes have a higher error density than large ones.</em>
+    <ul>
+    <li><a href="bib.html#bib:basili-errors" target="bib:basili-errors">[Basili et al 1984]</a></li>
+    <li>Small changes require the same level of program understanding as large ones
+      <ul>
+      <li>So mistakes are just as likely</li>
+      <li>So density is higher</li>
+      </ul>
+    </li>
+    <li>This does <em>not</em> mean you should batch changes into bigger lumps!
+      <ul>
+      <li>But it definitely makes sense to batch the <em>work</em></li>
+      </ul>
+    </li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>21) Bugs</h2>
+  <ul>
+  <li><em>There are errors that most programmers tend to make.</em>
+    <ul>
+    <li>Off-by-one, not handling null, etc.</li>
+    <li>Modern program analysis tools are getting better at catching these</li>
+    <li>No evidence that we're learning not to make them</li>
+    </ul>
+  </li>
+  <li><em>Errors tend to cluster.</em>
+    <ul>
+    <li>E.g., 80% of defects come from 20% of modules <a href="bib.html#bib:boehm-top10" target="bib:boehm-top10">[Boehm &amp; Basili 2001]</a>
+      <ul>
+      <li>Which means that if you find a bug, the odds are good that there are other bugs nearby</li>
+      </ul>
+    </li>
+    <li>But half of modules are defect-free</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>22) Summary</h2>
+  <ul>
+  <li>We actually know a lot about software development in the real world</li>
+  <li>The problem is, most developers (and managers) don't know what is known</li>
+  <li>The next time someone makes a claim, ask them for their evidence
+    <ul>
+    <li>And remind them (if necessary) that &quot;evidence&quot; is <em>not</em> the plural of &quot;anecdote&quot;</li>
+    </ul>
+  </li>
+  </ul>
+</div>

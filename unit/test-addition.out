@@ -1,0 +1,13 @@
+.F.
+======================================================================
+FAIL: test_positive (__main__.TestAddition)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "test_addition.py", line 12, in test_positive
+    self.assertEqual(1.2e20 + 3.4e20, 3.5e20)
+AssertionError: 4.6e+20 != 3.5e+20
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.000s
+
+FAILED (failures=1)

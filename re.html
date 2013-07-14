@@ -1,0 +1,761 @@
+---
+layout: v3_slideshow
+title: Regular Expressions
+prev: v3/db.html
+uplink: v3/index.html
+next: v3/binary.html
+---
+<div class="topic">
+  <h2>1) Introduction</h2>
+  <ul>
+  <li>How to count the blank lines in a file?
+    <ul>
+    <li>Most people consider a line with just spaces and tabs to be blank</li>
+    <li>But examining characters one by one is tedious</li>
+    <li>More complex patterns (like telephone numbers or email addresses) are hard to describe in code</li>
+    </ul>
+  </li>
+  <li>Use <a href="{{page.root}}/book/glossary.html#regular-expression" target="glo:regular-expression">regular expressions</a> (REs) instead
+    <ul>
+    <li>Represent patterns as strings</li>
+    <li>Just like the <code>&quot;*&quot;</code> in the shell's <code>*.txt</code></li>
+    </ul>
+  </li>
+  <li>Warning: the notation is ugly
+    <ul>
+    <li>Have to use what's on the keyboard, instead of inventing new symbols the way mathematicians do</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>2) You Can Skip This Lecture If...</h2>
+  <ul>
+  <li>You know what a regular expression is</li>
+  <li>You understand the difference between <code>*</code> and <code>+</code></li>
+  <li>You know how and why to compile an RE</li>
+  <li>You know how to find out which part of a string matched which part of an RE</li>
+  <li>You know how to get <em>all</em> of an RE's matches with one method call</li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>3) A Simple Example</h2>
+  <ul>
+  <li>The simplest kind of RE matches a fixed string of characters
+    <ul>
+    <li>Similar to the <code>in</code> operator</li>
+    </ul>
+  </li>
+  </ul>
+  <pre file="re/fixed-match.py">import re
+
+dragons = [
+    ['CTAGGTGTACTGATG',    'Antipodean Opaleye'],
+    ['AAGATGCGTCCGTAT',    'Common Welsh Green'],
+    ['AGTCGTGCTCGTTATATC', 'Hebridean Black'],
+    ['ATGCGTCGTCGATTATCT', 'Hungarian Horntail'],
+    ['CCGTTAGGGCTAAATGCT', 'Norwegian Ridgeback']
+]
+
+for (dna, name) in dragons:
+    if re.search('ATGCGT', dna):
+        print name
+</pre>
+  <pre class="out" file="re/fixed-match.out">Common Welsh Green
+Hungarian Horntail
+</pre>
+</div>
+
+<div class="topic">
+  <h2>4) This or That</h2>
+  <ul>
+  <li>Modify the regular expression a little</li>
+  </ul>
+  <pre file="re/or-match.py">import re
+
+dragons = [
+    ['CTAGGTGTACTGATG',    'Antipodean Opaleye'],
+    ['AAGATGCGTCCGTAT',    'Common Welsh Green'],
+    ['AGTCGTGCTCGTTATATC', 'Hebridean Black'],
+    ['ATGCGTCGTCGATTATCT', 'Hungarian Horntail'],
+    ['CCGTTAGGGCTAAATGCT', 'Norwegian Ridgeback']
+]
+
+for (dna, name) in dragons:
+    if re.search('ATGCGT|GCT', dna):
+        print name
+</pre>
+  <pre class="out" file="re/or-match.out">Common Welsh Green
+Hebridean Black
+Hungarian Horntail
+Norwegian Ridgeback
+</pre>
+  <ul>
+  <li>The vertical bar <code>|</code> means &quot;or&quot;
+    <ul>
+    <li>So this RE matches any string containing either <code>&quot;ATGCGT&quot;</code> or <code>&quot;GCT&quot;</code></li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>5) Precedence</h2>
+  <ul>
+  <li>What about matching either <code>&quot;ATA&quot;</code> or <code>&quot;ATC&quot;</code> (both of which code for isoleucine)?
+    <ul>
+    <li><code>ATA|C</code> will <em>not</em> work: it matches either <code>&quot;ATA&quot;</code> or <code>&quot;C&quot;</code></li>
+    <li><code>ATA|ATC</code> will work, but it's a bit redundant</li>
+    </ul>
+  </li>
+  <li>Solution: use parentheses, just as in math</li>
+  </ul>
+  <pre file="re/precedence.py">import re
+
+tests = [
+    ['ATA',   True],
+    ['xATCx', True],
+    ['ATG',   False],
+    ['AT',    False],
+    ['ATAC',  True]
+]
+
+for (dna, expected) in tests:
+    actual = re.search('AT(A|C)', dna) is not None
+    assert actual == expected
+</pre>
+  <ul>
+  <li>Note that there's no output: the <code>assert</code>s will crash the program if any of the tests fail</li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>6) Escaping Special Characters</h2>
+  <ul>
+  <li>How to match an actual <code>&quot;|&quot;</code>, <code>&quot;(&quot;</code>, or <code>&quot;)&quot;</code>?</li>
+  <li>Solution is to use <code>\|</code>, <code>\(</code> or <code>\)</code> in the RE
+    <ul>
+    <li>And of course <code>\\</code> to match a backslash</li>
+    </ul>
+  </li>
+  <li>But in order to put a backslash in a Python string, you have to escape it
+    <ul>
+    <li>So the written form of the RE is <code>&quot;\\|&quot;</code>, <code>&quot;\\(&quot;</code>, <code>&quot;\\)&quot;</code>, or <code>&quot;\\\\&quot;</code></li>
+    </ul>
+  </li>
+  <li>What you type in is being compiled <em>twice</em>:
+    <ul>
+    <li>Once by Python to create a string</li>
+    <li>Once by the regular expression library to create the RE</li>
+      <figure id="fig:re-double-compilation">
+        <img alt="Double Compilation of Regular Expressions" src="re/double-compilation.png"/>
+        <p>Figure 18.1: Double Compilation of Regular Expressions</p>
+      </figure>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>7) Raw Strings</h2>
+  <ul>
+  <li>To help keep things readable, Python supports <a href="{{page.root}}/book/glossary.html#raw-string" target="glo:raw-string">raw strings</a>
+    <ul>
+    <li>Written as <code>r'abc'</code> or <code>r&quot;this\nand\nthat&quot;</code></li>
+    <li>Inside a raw string, a backslash is just a backslash</li>
+    <li>So <code>r'\n'</code> is a string containing the two characters <code>&quot;\&quot;</code> and <code>&quot;n&quot;</code>, not a newline</li>
+    </ul>
+  </li>
+  <li>Raw strings are <em>not</em> automatically converted into REs
+    <ul>
+    <li>But that is their most common use</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>8) Sequences</h2>
+  <ul>
+  <li>In the shell, <code>&quot;*&quot;</code> matches zero or more characters</li>
+  <li>In an RE, <code>*</code> is an operator that means, &quot;match zero or more occurrences of a pattern&quot;
+    <ul>
+    <li>Comes after the pattern, not before</li>
+    </ul>
+  </li>
+  <li>Example: match any strand of DNA in which <code>&quot;TTA&quot;</code> and <code>&quot;CTA&quot;</code> are separated by any number of <code>&quot;G&quot;</code></li>
+  </ul>
+  <pre file="re/star.py" section="main">tests = [
+    ['TTACTA',    True],  # separated by zero G's
+    ['TTAGCTA',   True],  # separated by one G
+    ['TTAGGGCTA', True],  # separated by three G's
+    ['TTAXCTA',   False], # an X in the way
+    ['TTAGCGCTA', False], # an embedded X in the way
+]
+
+for (dna, expected) in tests:
+    actual = re.search('TTAG*CTA', dna) is not None
+    assert actual == expected
+</pre>
+  <ul>
+  <li>Note that the RE matches <code>&quot;TTACTA&quot;</code> because <code>G*</code> can match zero occurrences of <code>&quot;G&quot;</code></li>
+  </ul>
+  <figure id="fig:re-star-match">
+    <img alt="Zero or More" src="re/star-match.png"/>
+    <p>Figure 46.1: Zero or More</p>
+  </figure>
+  <ul>
+  <li><code>+</code> matches one or more (i.e., won't match the empty string)</li>
+  </ul>
+  <pre file="re/plus.py" section="main">assert re.search('TTAG*CTA', 'TTACTA')
+assert not re.search('TTAG+CTA', 'TTACTA')
+</pre>
+  <figure id="fig:re-plus-match">
+    <img alt="One or More" src="re/plus-match.png"/>
+    <p>Figure 46.2: One or More</p>
+  </figure>
+</div>
+
+<div class="topic">
+  <h2>9) Making Something Optional</h2>
+  <ul>
+  <li>The <code>?</code> operator means &quot;optional&quot;
+    <ul>
+    <li>I.e., zero or one occurrences, but no more</li>
+    </ul>
+  </li>
+  </ul>
+  <pre file="re/optional.py" section="main">assert re.search('AC?T', 'AT')
+assert re.search('AC?T', 'ACT')
+assert not re.search('AC?T', 'ACCT')
+</pre>
+  <figure id="fig:re-options-match">
+    <img alt="Zero or One" src="re/option-match.png"/>
+    <p>Figure 46.3: Zero or One</p>
+  </figure>
+</div>
+
+<div class="topic">
+  <h2>10) Character Sets</h2>
+  <ul>
+  <li>Use <code>[]</code> to match sets of characters
+    <ul>
+    <li>The expression <code>[abcd]</code> matches exactly one <code>&quot;a&quot;</code>, <code>&quot;b&quot;</code>, <code>&quot;c&quot;</code>, or <code>&quot;d&quot;</code></li>
+    <li>Can be abbreviated as <code>[a-d]</code></li>
+    </ul>
+  </li>
+  <li>Often combined with <code>*</code>, <code>+</code>, or <code>?</code>
+    <ul>
+    <li><code>[aeiou]+</code> matches any non-empty sequence of vowels</li>
+    </ul>
+  </li>
+  <li>Example: find lines containing numbers</li>
+  </ul>
+  <pre file="re/find-numbers.py">import re
+
+lines = [
+    &quot;Charles Darwin (1809-82)&quot;,
+    &quot;Darwin's principal works, The Origin of Species (1859)&quot;,
+    &quot;and The Descent of Man (1871) marked a new epoch in our&quot;,
+    &quot;understanding of our world and ourselves.  His ideas&quot;,
+    &quot;were shaped by the Beagle's voyage around the world in&quot;,
+    &quot;1831-36.&quot;
+]
+
+for line in lines:
+    if re.search('[0-9]+', line):
+        print line
+</pre>
+  <pre class="out" file="re/find-numbers.out">Charles Darwin (1809-82)
+Darwin's principal works, The Origin of Species (1859)
+and The Descent of Man (1871) marked a new epoch in our
+1831-36.
+</pre>
+  <ul>
+  <li>Try writing this without using regular expressions...</li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>11) Abbreviations</h2>
+  <ul>
+  <li>Some character sets occur so often that they have abbreviations</li>
+    <div id="tbl:re-shortcut">
+      <table>
+        <tr>
+          <th>Sequence</th>
+          <th>Equivalent</th>
+          <th>Explanation</th>
+        </tr>
+        <tr>
+          <td><code>\d</code></td>
+          <td><code>[0-9]</code></td>
+          <td>Digits</td>
+        </tr>
+        <tr>
+          <td><code>\s</code></td>
+          <td><code>[ \t\r\n]</code></td>
+          <td>Whitespace</td>
+        </tr>
+        <tr>
+          <td><code>\w</code></td>
+          <td><code>[a-zA-Z0-9_]</code></td>
+          <td>Word characters (i.e., those allowed in variable names)</td>
+        </tr>
+      </table>
+      <p>Table 46.1: Regular Expression Escapes in Python</p>
+    </div>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>12) Special Cases</h2>
+  <ul>
+  <li><code>[^abc]</code> means &quot;anything <em>except</em> the characters in this set&quot;</li>
+  <li><code>.</code> means &quot;any character except the end of line&quot;
+    <ul>
+    <li>Equivalent to <code>[^\n]</code></li>
+    </ul>
+  </li>
+  <li><code>\b</code> matches the break between word and non-word characters
+    <ul>
+    <li>Doesn't consume any actual characters</li>
+      <figure id="fig:re-word-nonword-break">
+        <img alt="Word/Non-Word Breaks" src="re/word-nonword-break.png"/>
+        <p>Figure 18.5: Word/Non-Word Breaks</p>
+      </figure>
+    </ul>
+  </li>
+  <li>Example: find words that end in a vowel
+    <ul>
+    <li>Use <code>string.split</code> to break on spaces and newlines before applying RE</li>
+    </ul>
+  </li>
+  </ul>
+  <pre file="re/end-in-vowel.py">import re
+
+words = '''Born in New York City in 1918, Richard Feynman earned a
+bachelor's degree at MIT in 1939, and a doctorate from Princeton in
+1942. After working on the Manhattan Project in Los Alamos during
+World War II, he became a professor at CalTech in 1951.  Feynman won
+the 1965 Nobel Prize in Physics for his work on quantum
+electrodynamics, and served on the commission investigating the
+Challenger disaster in 1986.'''.split()
+
+end_in_vowel = set()
+for w in words:
+    if re.search(r'[aeiou]\b', w):
+        end_in_vowel.add(w)
+for w in end_in_vowel:
+    print w
+</pre>
+  <pre class="out" file="re/end-in-vowel.out">a
+Prize
+degree
+became
+doctorate
+the
+he
+</pre>
+</div>
+
+<div class="topic">
+  <h2>13) Anchoring</h2>
+  <ul>
+  <li>How to find blank lines?
+    <ul>
+    <li><code>re.search(r'\s*', line)</code> will match <code>&quot;startend&quot;</code></li>
+    </ul>
+  </li>
+  <li>Use <a href="{{page.root}}/book/glossary.html#anchor" target="glo:anchor">anchors</a>
+    <ul>
+    <li><code>^</code> matches the beginning of the string</li>
+    <li><code>$</code> matches the end</li>
+    <li>Neither consumes any characters</li>
+      <figure id="fig:re-match-anchor">
+        <img alt="Anchoring Matches" src="re/match-anchor.png"/>
+        <p>Figure 46.4: Anchoring Matches</p>
+      </figure>
+    </ul>
+  </li>
+  <li>Examples:</li>
+    <div id="tbl:re-patterns">
+      <table>
+        <tr>
+          <th>Pattern</th>
+          <th>Text</th>
+          <th>Result</th>
+        </tr>
+        <tr>
+          <td><code>b+</code></td>
+          <td><code>&quot;abbc&quot;</code></td>
+          <td>Matches</td>
+        </tr>
+        <tr>
+          <td><code>^b+</code></td>
+          <td><code>&quot;abbc&quot;</code></td>
+          <td>Fails (string doesn't start with <code>b</code>)</td>
+        </tr>
+        <tr>
+          <td><code>c$</code></td>
+          <td><code>&quot;abbc&quot;</code></td>
+          <td>Matches (string ends with <code>c</code>)</td>
+        </tr>
+        <tr>
+          <td><code>^a*$</code></td>
+          <td><code>aabaa</code></td>
+          <td>Fails (something other than <code>&quot;a&quot;</code> between start and end of string)</td>
+        </tr>
+      </table>
+      <p>Table 46.2: Regular Expression Anchors in Python</p>
+    </div>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>14) Extracting Matches</h2>
+  <ul>
+  <li>Problem: want to find comments in a data file
+    <ul>
+    <li>A comment starts with a <code>&quot;#&quot;</code>, and extends to the end of the line</li>
+    </ul>
+  </li>
+  <li>First try: If the RE matches, split on the <code>&quot;#&quot;</code></li>
+  </ul>
+  <pre file="re/comment-err.py">import sys, re
+
+lines = '''Date: 2006-03-07
+On duty: HP # 01:30 - 03:00
+Observed: Common Welsh Green
+On duty: RW #03:00-04:30
+Observed: none
+On duty: HG # 04:30-06:00
+Observed: Hebridean Black
+'''.split('\n')
+
+for line in lines:
+    if re.search('#', line):
+        comment = line.split('#')[1]
+        print comment
+</pre>
+  <pre class="out" file="re/comment-err.out"> 01:30 - 03:00
+03:00-04:30
+ 04:30-06:00
+</pre>
+  <ul>
+  <li>Output is inconsistent</li>
+  <li><code>split</code> followed by <code>strip</code> seems clumsy</li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>15) Match Objects</h2>
+  <ul>
+  <li>Result of <code>re.search</code> is actually a <a href="{{page.root}}/book/glossary.html#match-object" target="glo:match-object">match object</a> that records what what matched, and where
+    <ul>
+    <li><code>mo.group()</code> returns the whole string that matched the RE</li>
+    <li><code>mo.start()</code> and <code>mo.end()</code> are the indices of the match's location</li>
+    </ul>
+  </li>
+  </ul>
+  <pre file="re/match-object.py">import re
+
+text = 'abbcb'
+for pattern in ['b+', 'bc*', 'b+c+']:
+    match = re.search(pattern, text)
+    print '%s / %s =&gt; &quot;%s&quot; (%d, %d)' % \
+          (pattern, text, match.group(), match.start(), match.end())
+</pre>
+  <pre class="out" file="re/match-object.out">b+ / abbcb =&gt; &quot;bb&quot; (1, 3)
+bc* / abbcb =&gt; &quot;b&quot; (1, 2)
+b+c+ / abbcb =&gt; &quot;bbc&quot; (1, 4)
+</pre>
+</div>
+
+<div class="topic">
+  <h2>16) Match Groups</h2>
+  <ul>
+  <li>Every parenthesized subexpression in the RE is a <a href="{{page.root}}/book/glossary.html#group" target="glo:group">group</a>
+    <ul>
+    <li>Group 0 is the entire match</li>
+    <li>Text that matched $N^{th}$ parentheses (counting from left) is group $N$</li>
+    <li><code>mo.group(3)</code> is the text that matched the third subexpression, <code>m.start(3)</code> is where it started</li>
+    </ul>
+  </li>
+  <li>Extracting comments is now easy:</li>
+  </ul>
+  <pre file="re/comment.py">import sys, re
+
+lines = '''Date: 2006-03-07
+On duty: HP # 01:30 - 03:00
+Observed: Common Welsh Green
+On duty: RW #03:00-04:30
+Observed: none
+On duty: HG # 04:30-06:00
+Observed: Hebridean Black
+'''.split('\n')
+
+for line in lines:
+    match = re.search(r'#\s*(.+)', line)
+    if match:
+        comment = match.group(1)
+        print comment
+</pre>
+  <pre class="out" file="re/comment.out">01:30 - 03:00
+03:00-04:30
+04:30-06:00
+</pre>
+</div>
+
+<div class="topic">
+  <h2>17) Reversing Columns</h2>
+  <ul>
+  <li>REs are the power tools of text processing
+    <ul>
+    <li>Can do things in one line that would otherwise take many lines of code</li>
+    </ul>
+  </li>
+  <li>Example: reverse two-column data</li>
+  </ul>
+  <pre file="re/reverse-cols.py">import re
+
+def reverse_columns(line):
+    match = re.search(r'^\s*(\d+)\s+(\d+)\s*$', line)
+    if not match:
+        return line
+    return match.group(2) + ' ' + match.group(1)
+
+tests = [
+    ['10 20',    'easy case'],
+    [' 30  40 ', 'padding'],
+    ['60 70 80', 'too many columns'],
+    ['90 end',   'non-numeric']
+]
+
+for (fixture, title) in tests:
+    actual = reverse_columns(fixture)
+    print '%s: &quot;%s&quot; =&gt; &quot;%s&quot;' % (title, fixture, actual)
+</pre>
+  <pre class="out" file="re/reverse-cols.out">easy case: &quot;10 20&quot; =&gt; &quot;20 10&quot;
+padding: &quot; 30  40 &quot; =&gt; &quot;40 30&quot;
+too many columns: &quot;60 70 80&quot; =&gt; &quot;60 70 80&quot;
+non-numeric: &quot;90 end&quot; =&gt; &quot;90 end&quot;
+</pre>
+</div>
+
+<div class="topic">
+  <h2>18) Compiling</h2>
+  <ul>
+  <li>The RE library compiles patterns into a more concise form for matching
+    <ul>
+    <li>Each regular expression becomes a <a href="{{page.root}}/book/glossary.html#finite-state-machine" target="glo:finite-state-machine">finite state machine</a></li>
+    <li>Library follows the arcs in the FSM as it reads characters</li>
+    <li>Drawing FSMs is a good way to debug REs</li>
+      <figure id="fig:re-re-fsm">
+        <img alt="Regular Expressions as Finite State Machines" src="re/re-fsm.png"/>
+        <p>Figure 44.5: Regular Expressions as Finite State Machines</p>
+      </figure>
+    </ul>
+  </li>
+  <li>You can improve a program's performance by compiling the RE once, and re-using the compiled form
+    <ul>
+    <li>Use <code>re.compile(pattern)</code> to get the compiled RE</li>
+    <li>Its methods have the same names and behavior as the functions in the <code>re</code> module</li>
+    <li>E.g., <code>matcher.search(text)</code> searches <code>text</code> for matches to the RE that was compiled to create <code>matcher</code></li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>19) Finding Title Case Words</h2>
+  <ul>
+  <li>Example: find all Title Case words in a document</li>
+  </ul>
+  <pre file="re/title-case.py">import re
+
+# Put pattern outside 'find_all' so that it's only compiled once.
+pattern = re.compile(r'\b([A-Z][a-z]*)\b(.*)')
+
+def find_all(line):
+    result = []
+    match = pattern.search(line)
+    while match:
+        result.append(match.group(1))
+        match = pattern.search(match.group(2))
+    return result
+
+lines = [
+    'This has several Title Case words',
+    'on Each Line (Some in parentheses).'
+]
+for line in lines:
+    print line
+    for word in find_all(line):
+        print '\t', word
+</pre>
+  <pre class="out" file="re/title-case.out">This has several Title Case words
+        This
+        Title
+        Case
+on Each Line (Some in parentheses).
+        Each
+        Line
+        Some
+</pre>
+</div>
+
+<div class="topic">
+  <h2>20) Finding All Matches</h2>
+  <ul>
+  <li>Notice how the function gets all matches:
+    <ul>
+    <li>Pattern captures what we want in group 1, and everything else on the line in group 2</li>
+    <li>Each time there's a match, continue the search in the remainder captured in group 2</li>
+    </ul>
+  </li>
+  <li>Much easier to use the <code>findall</code> method</li>
+  </ul>
+  <pre file="re/findall.py">import re
+
+lines = [
+    'This has several Title Case words',
+    'on Each Line (Some in parentheses).'
+]
+pattern = re.compile(r'\b([A-Z][a-z]*)\b')
+for line in lines:
+    print line
+    for word in pattern.findall(line):
+        print '\t', word
+</pre>
+  <pre class="out" file="re/findall.out">This has several Title Case words
+        This
+        Title
+        Case
+on Each Line (Some in parentheses).
+        Each
+        Line
+        Some
+</pre>
+</div>
+
+<div class="topic">
+  <h2>21) Reference Material</h2>
+  <div id="tbl:re-ref">
+    <table>
+      <tr>
+        <th>Pattern</th>
+        <th>Matches</th>
+        <th>Doesn't Match</th>
+        <th>Explanation</th>
+      </tr>
+      <tr>
+        <td><code>a*</code></td>
+        <td><code>&quot;&quot;</code>, <code>&quot;a&quot;</code>, <code>&quot;aa&quot;</code>, ...</td>
+        <td><code>&quot;A&quot;</code>, <code>&quot;b&quot;</code></td>
+        <td><code>*</code> means &quot;zero or more&quot; matching is case sensitive</td>
+      </tr>
+      <tr>
+        <td><code>b+</code></td>
+        <td><code>&quot;b&quot;</code>, <code>&quot;bb&quot;</code>, ...</td>
+        <td><code>&quot;&quot;</code></td>
+        <td><code>+</code> means &quot;one or more&quot;</td>
+      </tr>
+      <tr>
+        <td><code>ab?c</code></td>
+        <td><code>&quot;ac&quot;</code>, <code>&quot;abc&quot;</code></td>
+        <td><code>&quot;a&quot;</code>, <code>&quot;abbc&quot;</code></td>
+        <td><code>?</code> means &quot;optional&quot; (zero or one)</td>
+      </tr>
+      <tr>
+        <td><code>[abc]</code></td>
+        <td><code>&quot;a&quot;</code>, <code>&quot;b&quot;</code>, or <code>&quot;c&quot;</code></td>
+        <td><code>&quot;ab&quot;</code>, <code>&quot;d&quot;</code></td>
+        <td><code>[...]</code> means &quot;one character from a set&quot;</td>
+      </tr>
+      <tr>
+        <td><code>[a-c]</code></td>
+        <td><code>&quot;a&quot;</code>, <code>&quot;b&quot;</code>, or <code>&quot;c&quot;</code></td>
+        <td>Character ranges can be abbreviated</td>
+      </tr>
+      <tr>
+        <td><code>[abc]*</code></td>
+        <td><code>&quot;&quot;</code>, <code>&quot;ac&quot;</code>, <code>&quot;baabcab&quot;</code>, ...</td>
+        <td>Operators can be combined: zero or more choices from <code>&quot;a&quot;</code>, <code>&quot;b&quot;</code>, or <code>&quot;c&quot;</code></td>
+      </tr>
+    </table>
+    <p>Table 46.3: Regular Expression Operators</p>
+  </div>
+  <div id="tbl:re-examples">
+    <table>
+      <tr>
+        <th>Method</th>
+        <th>Purpose</th>
+        <th>Example</th>
+        <th>Result</th>
+      </tr>
+      <tr>
+        <td><code>split</code></td>
+        <td>Split a string on a pattern.</td>
+        <td><code>re.split('\\s*,\\s*', 'a, b ,c , d')</code></td>
+        <td><code>['a', 'b', 'c', 'd']</code></td>
+      </tr>
+      <tr>
+        <td><code>findall</code></td>
+        <td>Find all matches for a pattern.</td>
+        <td><code>re.findall('\\b[A-Z][a-z]*', 'Some words in Title Case.')</code></td>
+        <td><code>['Some', 'Title', 'Case']</code></td>
+      </tr>
+      <tr>
+        <td><code>sub</code></td>
+        <td>Replace matches with new text.</td>
+        <td><code>re.sub('\\d+', 'NUM', 'If 123 is 456')</code></td>
+        <td><code>&quot;If NUM is NUM&quot;</code></td>
+      </tr>
+    </table>
+    <p>Table 46.4: Regular Expression Object Methods</p>
+  </div>
+</div>
+
+<div class="topic">
+  <h2>22) But Wait, There's More</h2>
+  <ul>
+  <li>We've only scratched the surface
+    <ul>
+    <li>Regular expressions have proved to be too useful to remain clean and elegant</li>
+    </ul>
+  </li>
+  <li>For example, use <code>pat{N</code>} to match exactly $N$ occurrences of a pattern
+    <ul>
+    <li>More generally, <code>pat{M,N</code>} matches between $M$ and $N$ occurrences</li>
+    </ul>
+  </li>
+  <li>Most important thing is to build up complex REs one step at a time
+    <ul>
+    <li>Write something that matches part of what you're looking for</li>
+    <li><em>Test it</em></li>
+    <li>Add to it</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>23) Summary</h2>
+  <ul>
+  <li>Regular expressions are available in almost every language
+    <ul>
+    <li>As a library: C/C++, Java, ...</li>
+    <li>Built into the language: Perl, Ruby, ...</li>
+    <li>Syntax varies slightly, but the ideas are the same</li>
+    </ul>
+  </li>
+  <li>For a broader tutorial, see <a href="bib.html#bib:wilson-data-crunching" target="bib:wilson-data-crunching">[Wilson 2005]</a>
+    <ul>
+    <li>And if you're going to be doing serious work, check out <a href="bib.html#bib:good-regexp-recipes" target="bib:good-regexp-recipes">[Good 2005]</a> or <a href="bib.html#bib:friedl-mastering-regexp" target="bib:friedl-mastering-regexp">[Friedl 2002]</a></li>
+    </ul>
+  </li>
+  </ul>
+</div>

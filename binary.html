@@ -1,0 +1,885 @@
+---
+layout: v3_slideshow
+title: Binary Data
+prev: v3/re.html
+uplink: v3/index.html
+next: v3/xml.html
+---
+<div class="topic">
+  <h2>1) Introduction</h2>
+  <ul>
+  <li>All data is stored as 1's and 0's</li>
+  <li>But those 1's and 0's may represent:
+    <ul>
+    <li>Characters that can be displayed as text</li>
+    <li>Something else</li>
+    </ul>
+  </li>
+  <li>That &quot;something else&quot; is (misleadingly) called <a href="{{page.root}}/book/glossary.html#binary-data" target="glo:binary-data">binary data</a>
+    <ul>
+    <li>Usually means &quot;anything you can't manipulate with a standard text editor&quot;</li>
+    </ul>
+  </li>
+  <li>This lecture describes how binary values are stored and manipulated
+    <ul>
+    <li>Please, don't write code to manipulate binary formats unless you absolutely have to</li>
+    <li>Good libraries exist for working with every image, sound, and video format out there</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>2) You Can Skip This Lecture If...</h2>
+  <ul>
+  <li>You know what two's complement is</li>
+  <li>You know what bit shifting is</li>
+  <li>You know that roundoff errors are not random</li>
+  <li>You know how to pack and unpack binary values</li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>3) Why Binary?</h2>
+  <ul>
+  <li>Size: <code>&quot;10239472&quot;</code> is 8 bytes long, but the 32-bit integer it represents is 4 bytes</li>
+  <li>Speed: takes dozens of operations to add the integer represented by <code>&quot;34&quot;</code> to the one represented by <code>&quot;57&quot;</code></li>
+  <li>Hardware interfaces: someone has to convert the electrical signal from the gas chromatograph to a readable number</li>
+  <li>Lack of anything better
+    <ul>
+    <li>It's possible to represent images as text (ASCII art, PostScript)</li>
+    <li>But sound? Or movies?</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>4) How Numbers Are Stored</h2>
+  <ul>
+  <li>Positive numbers stored in base-2 format
+    <ul>
+    <li>1001<sup>2</sup> is (1x2<sup>3</sup>)+(0x2<sup>2</sup>)+(0x2<sup>1</sup>)+(1x2<sup>0</sup>) = 9</li>
+    </ul>
+  </li>
+  <li>Could use sign-and-value for negative numbers
+    <ul>
+    <li>First bit is 0 for positive, 1 for negative</li>
+    <li>So 0011<sub>2</sub> is 3<sub>10</sub>, and 1011<sub>2</sub> is -3<sub>10</sub></li>
+    </ul>
+  </li>
+  <li>Problem: there are two zeroes (0000 and 1000)</li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>5) Two's Complement</h2>
+  <ul>
+  <li>Almost all computers use <a href="{{page.root}}/book/glossary.html#twos-complement" target="glo:twos-complement">two's complement</a> instead
+    <ul>
+    <li>&quot;Roll over&quot; when going below zero, like a car's odometer</li>
+    <li>1111<sub>2</sub> is -1<sub>10</sub>, 1110<sub>2</sub> is -2<sub>10</sub>, etc.</li>
+    <li>1000<sub>2</sub> is the most negative 4-bit integer, 0111<sub>2</sub> the most positive</li>
+    </ul>
+  </li>
+  </ul>
+  <figure id="fig:binary-twos-complement">
+    <img alt="Two's Complement" src="binary/twos-complement.png"/>
+    <p>Figure 20.1: Two's Complement</p>
+  </figure>
+  <ul>
+  <li>Asymmetric: there is one more negative number than positive
+    <ul>
+    <li>Since there has to be room for 0 in the middle</li>
+    </ul>
+  </li>
+  <li>Can still tell whether a number is positive or negative by looking at the first bit</li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>6) Bitwise Operators</h2>
+    <div id="tbl:binary-formats">
+      <table>
+        <tr>
+          <th>Name</th>
+          <th>Symbol</th>
+          <th>Purpose</th>
+          <th>Example</th>
+        </tr>
+        <tr>
+          <td>And</td>
+          <td><code>&amp;</code></td>
+          <td>1 if both bits are 1, 0 otherwise</td>
+          <td><code>0110 &amp; 1010 = 0010</code></td>
+        </tr>
+        <tr>
+          <td>Or</td>
+          <td><code>|</code></td>
+          <td>1 if either bit is 1</td>
+          <td><code>0110 | 1010 = 1110</code></td>
+        </tr>
+        <tr>
+          <td>Xor</td>
+          <td><code>^</code></td>
+          <td>1 if the bits are different, 0 if they're the same</td>
+          <td><code>0110 ^ 1010 = 1100</code></td>
+        </tr>
+        <tr>
+          <td>Not</td>
+          <td><code>~</code></td>
+          <td>Flip each bit</td>
+          <td><code>~0110 = 1001</code></td>
+        </tr>
+      </table>
+      <p>Table 20.1: Bitwise Operators in Python</p>
+    </div>
+</div>
+
+<div class="topic">
+  <h2>7) Bit Operator Examples</h2>
+<pre file="binary/format-bits.py">def format_bits(val, width=1):
+    '''Create a base-2 representation of an integer.'''
+    result = ''
+    while val:
+        if val &amp; 0x01:
+            result = '1' + result
+        else:
+            result = '0' + result
+        val = val &gt;&gt; 1
+    if len(result) &lt; width:
+        result = '0' * (width - len(result)) + result
+    return result
+
+tests = [
+    [ 0, None, '0'],
+    [ 0, 4,    '0000'],
+    [ 5, None, '101'],
+    [19, 8,    '00010011']
+]
+
+for (num, width, expected) in tests:
+    if width is None:
+        actual = format_bits(num)
+    else:
+        actual = format_bits(num, width)
+    print '%4d %8s %10s %10s' % (num, width, expected, actual)
+</pre>
+  <pre class="out" file="binary/format-bits.out">   0     None          0          0
+   0        4       0000       0000
+   5     None        101        101
+  19        8   00010011   00010011
+</pre>
+</div>
+
+<div class="topic">
+  <h2>8) Shifting</h2>
+  <ul>
+  <li>Shifting an integer's bits left N places written as <code>x &lt;&lt; N</code>
+    <ul>
+    <li>Each leftward shift corresponds to multiplying by 2</li>
+    <li>Just as shifting a decimal number left corresponds to multiplying by 10</li>
+    <li>Example: 3&lt;&lt;2 is 0011<sub>2</sub>&lt;&lt;2, or 1100<sub>2</sub>, which is 12</li>
+    </ul>
+  </li>
+  <li>Shifting a number right corresponds to division by 2 (throwing away the remainder)
+    <ul>
+    <li>7<sub>10</sub>&gt;&gt;1 is 0111<sub>2</sub>&gt;&gt;1, or 0011<sub>2</sub>, which is 3<sub>10</sub></li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>9) Cautions</h2>
+  <ul>
+  <li>Shifting is <em>not</em> more efficient than multiplication and division on modern computers</li>
+  <li>What happens if the top bit changes value as a result of a shift?
+    <ul>
+    <li>6<sub>10</sub>&lt;&lt;1 = 0110<sub>2</sub>&lt;&lt;1 = 1100<sub>2</sub></li>
+    <li>On a 4-bit machine, this is -4<sub>10</sub>, not 12<sub>10</sub></li>
+    </ul>
+  </li>
+  <li>Some machines preserve the sign bit when shifting down
+    <ul>
+    <li>So 1100<sub>2</sub>&gt;&gt;1 = 1110<sub>2</sub>, instead of 0110<sub>2</sub></li>
+    <li>Depends on the hardware being used</li>
+    <li>Java provides a separate operator for this</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>10) Setting and Clearing Bits</h2>
+  <ul>
+  <li>Can use <a href="{{page.root}}/book/glossary.html#bitwise-operations" target="glo:bitwise-operations">bitwise</a> <code>and</code>, <code>or</code>, and <code>not</code> to set specific bits to 1 or 0
+    <ul>
+    <li>Do the same things to bit that logical operations do to Booleans</li>
+    </ul>
+  </li>
+  <li>To set the i<sup>th</sup> bit of <code>x</code> to 1:
+    <ul>
+    <li>Create a value <code>mask</code> in which bit <em>i</em> is 1 and all others are 0</li>
+    <li>Use <code>x = x | mask</code></li>
+    </ul>
+  </li>
+  <li>To set the i<sup>th</sup> bit of <code>x</code> to 0:
+    <ul>
+    <li>Create a value <code>mask</code> in which bit <em>i</em> is 1 and all others are 0</li>
+    <li>Negate it using <code>~</code>, so that the i<sup>th</sup> bit is 0, and all the others are 1</li>
+    <li>Use <code>x = x &amp; mask</code></li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <figure id="fig:binary-setting-clearing-bits">
+    <img alt="Setting and Clearing Bits" src="binary/setting-clearing-bits.png"/>
+    <p>Figure 20.2: Setting and Clearing Bits</p>
+  </figure>
+</div>
+
+<div class="topic">
+  <h2>11) Bit Flags</h2>
+  <ul>
+  <li>Can use bitwise operators to store several Boolean flags in a single integer
+    <ul>
+    <li>Slower than storing each in a separate variable</li>
+    <li>But uses much less space</li>
+    </ul>
+  </li>
+  <li>Example: need to record whether a sample contains any mercury, phosphorus, or chlorine
+    <ul>
+    <li>Define constants to test for particular elements
+      <ul>
+      <li>Use bit 1 for mercury, bit 2 for phosphorus, bit 3 for chlorine</li>
+      </ul>
+    </li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <figure id="fig:binary-bit-flags">
+    <img alt="Using Bits to Record Sets of Flags" src="binary/bit-flags.png"/>
+    <p>Figure 20.3: Using Bits to Record Sets of Flags</p>
+  </figure>
+</div>
+
+<div class="topic">
+  <pre file="binary/bit-flags.py">#            hex     binary
+MERCURY    = 0x01  # 0001
+PHOSPHORUS = 0x02  # 0010
+CHLORINE   = 0x04  # 0100
+
+# Sample contains mercury and chlorine
+sample = MERCURY | CHLORINE
+print 'sample: %04x' % sample
+
+# Check for various elements
+for (flag, name) in [[MERCURY,    &quot;mercury&quot;],
+                     [PHOSPHORUS, &quot;phosphorus&quot;],
+                     [CHLORINE,   &quot;chlorine&quot;]]:
+    if sample &amp; flag:
+        print 'sample contains', name
+    else:
+        print 'sample does not contain', name
+</pre>
+  <pre class="out" file="binary/bit-flags.out">sample: 0005
+sample contains mercury
+sample does not contain phosphorus
+sample contains chlorine
+</pre>
+</div>
+
+<div class="topic">
+  <h2>12) Floating Point</h2>
+  <ul>
+  <li>Floating point numbers are (much) more complicated</li>
+  <li>A 32-bit float has:
+    <ul>
+    <li>One bit for the sign</li>
+    <li>23 bits for the <a href="{{page.root}}/book/glossary.html#mantissa" target="glo:mantissa">mantissa</a> (or value)</li>
+    <li>8 bits for the <a href="{{page.root}}/book/glossary.html#exponent" target="glo:exponent">exponent</a></li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <figure id="fig:binary-float-rep">
+    <img alt="Floating Point Representation" src="binary/float-rep.png"/>
+    <p>Figure 20.4: Floating Point Representation</p>
+  </figure>
+  <ul>
+  <li>Floating point numbers are <em>not</em> real numbers
+    <ul>
+    <li>Fixed number of bits per value means that only a limited set of values can be represented</li>
+    <li>If the actual value isn't in that set, you must settle for the closest available approximation</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>13) Floating Point Spacing</h2>
+  <ul>
+  <li>Consequence #1: values are unevenly spaced
+    <ul>
+    <li>Less absolute precision for numbers with larger magnitudes</li>
+    </ul>
+  </li>
+  <li>Example: 1 sign, 3 mantissa, 2 exponent bits for each number</li>
+  </ul>
+  <figure id="fig:binary-uneven-spacing">
+    <img alt="Uneven Spacing of Floating-Point Numbers" src="binary/uneven-spacing.png"/>
+    <p>Figure 20.5: Uneven Spacing of Floating-Point Numbers</p>
+  </figure>
+</div>
+
+<div class="topic">
+  <h2>14) Floating Point Roundoff</h2>
+  <ul>
+  <li>Consequence #2: roundoff errors
+    <ul>
+    <li>6-bit system can represent 6, and 1/4, but not 5-3/4</li>
+    <li>So 6-0.25 is 6, not 5.75
+      <ul>
+      <li>And if 6-0.25-0.25-0.25-0.25 is evaluated left to right, the answer is still 6</li>
+      </ul>
+    </li>
+    <li>This is <em>not</em> random
+      <ul>
+      <li>Happens exactly the same way every time</li>
+      </ul>
+    </li>
+    <li>But it <em>is</em> very hard to reason about
+      <ul>
+      <li>Which is why people get Ph.D.'s in numerical analysis</li>
+      </ul>
+    </li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>15) Binary I/O</h2>
+  <ul>
+  <li>I/O routines seen so far are line-based</li>
+  <li>Can also use byte-oriented routines
+    <ul>
+    <li><code>f.read(N)</code> reads (up to) next N bytes
+      <ul>
+      <li>Result is returned as a string, but there's no guarantee its contents are characters</li>
+      <li>If the file <code>f</code> is empty, returns <code>None</code></li>
+      </ul>
+    </li>
+    <li><code>f.write(str)</code> writes the bytes in the string <code>str</code></li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>16) Binary I/O Mode</h2>
+  <ul>
+  <li>Caution: must open files in <a href="{{page.root}}/book/glossary.html#binary-mode" target="glo:binary-mode">binary mode</a> on Windows
+    <ul>
+    <li><code>input = open(filename, 'rb')</code> (and similarly for output)</li>
+    </ul>
+  </li>
+  <li>Otherwise, Python converts Windows line endings <code>\r\n</code> to Unix-style <code>\n</code>...
+    <ul>
+    <li>...which is an unkind thing to do to an image</li>
+    </ul>
+  </li>
+  <li>Example: open a file using <code>&quot;r&quot;</code>, then in <code>&quot;rb&quot;</code>
+    <ul>
+    <li>Identical on Unix, but different on Windows</li>
+    </ul>
+  </li>
+  </ul>
+  <pre file="binary/open-binary.py">import sys
+print sys.platform
+for mode in ('r', 'rb'):
+    f = open('open_binary.py', mode)
+    s = f.read(40)
+    f.close()
+    print repr(s)
+</pre>
+  <pre class="out" file="binary/open-binary.windows.out">cygwin
+'import sys\r\nprint sys.platform\r\nfor mode'
+</pre>
+  <pre class="out" file="binary/open-binary.unix.out">linux
+'import sys\nprint sys.platform\nfor mode in '
+</pre>
+</div>
+
+<div class="topic">
+  <h2>17) Packing and Unpacking</h2>
+  <ul>
+  <li>In C and Fortran, an integer is a raw 32-bit value
+    <ul>
+    <li><code>fwrite(&amp;array, sizeof(int), 3, file)</code> will write 3 4-byte integers to a file</li>
+    </ul>
+  </li>
+  <li>Python, Java, and other languages usually don't use raw values
+    <ul>
+    <li>There's no guarantee that things like lists are stored contiguously in memory...</li>
+    <li>...so programs need to <a href="{{page.root}}/book/glossary.html#pack" target="glo:pack">pack</a> data into contiguous bytes for writing...</li>
+    <li>...and <a href="{{page.root}}/book/glossary.html#unpack" target="glo:unpack">unpack</a> those bytes to recreate the structures when reading</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <figure id="fig:binary-c-vs-python-storage">
+    <img alt="C Storage vs. Python Storage" src="binary/c-vs-python-storage.png"/>
+    <p>Figure 20.6: C Storage vs. Python Storage</p>
+  </figure>
+</div>
+
+<div class="topic">
+  <h2>18) Packing Data</h2>
+  <ul>
+  <li>Packing looks a lot like formatting a string
+    <ul>
+    <li>A format specifies the data types being packed (including sizes, where appropriate)</li>
+    <li>This format exactly determines how much memory is required by the packed representation</li>
+    </ul>
+  </li>
+  <li>The result of packing is a chunk of bytes
+    <ul>
+    <li>Stored as a string in Python</li>
+    <li>But as mentioned above, it's not a string of characters</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <figure id="fig:binary-pack-data">
+    <img alt="Packing Data" src="binary/pack-data.png"/>
+    <p>Figure 20.7: Packing Data</p>
+  </figure>
+</div>
+
+<div class="topic">
+  <h2>19) Unpacking Data</h2>
+  <ul>
+  <li>Unpacking reverses this process
+    <ul>
+    <li>Read bytes from a &quot;string&quot; according to a format</li>
+    <li>Use the data in these bytes to create Python data structures</li>
+    </ul>
+  </li>
+  <li>Return the result as a tuple of values</li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>20) The struct Module</h2>
+  <ul>
+  <li>Use Python's <code>struct</code> module to pack and unpack
+    <ul>
+    <li><code>pack(fmt, v1, v2, ...)</code> packs the values <code>v1</code>, <code>v2</code>, etc. according to <code>fmt</code>, returning a string</li>
+    <li><code>unpack(fmt, str)</code> unpacks the values in <code>str</code> according to <code>fmt</code>, returning a tuple</li>
+    </ul>
+  </li>
+  </ul>
+  <pre file="binary/simple-pack-unpack.py">import struct
+
+fmt = 'hh' # two 16-bit integers
+x = 31
+y = 65
+binary = struct.pack(fmt, x, y)
+print 'binary representation:', repr(binary)
+normal = struct.unpack(fmt, binary)
+print 'back to normal:', normal
+</pre>
+  <pre class="out" file="binary/simple-pack-unpack.out">binary representation: '\x1f\x00A\x00'
+back to normal: (31, 65)
+</pre>
+</div>
+
+<div class="topic">
+  <h2>21) Hexadecimal Characters</h2>
+  <ul>
+  <li>What's <code>'\x1f\x00A\x00'</code>?
+    <ul>
+    <li>If Python finds a character in a string that doesn't have a printable representation, it prints a 2-digit <a href="{{page.root}}/book/glossary.html#hexadecimal" target="glo:hexadecimal">hexadecimal</a> (base-16) escape sequence
+      <ul>
+      <li>Uses the letters A-F (or a-f) to represent the digits from 10 to 15</li>
+      </ul>
+    </li>
+    <li>So this string represents the four bytes <code>['\x1f', '\x00', 'A', '\x00']</code>
+      <ul>
+      <li>1F<sub>16</sub> is 1x16+15, or 31</li>
+      <li>ASCII code for the letter <code>&quot;A&quot;</code> is 65<sub>10</sub></li>
+      </ul>
+    </li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>22) Format Specifiers</h2>
+  <div id="tbl:binary-formatspec">
+    <table>
+      <tr>
+        <th>Format</th>
+        <th>Meaning</th>
+      </tr>
+      <tr>
+        <td><code>&quot;c&quot;</code></td>
+        <td>Single character (i.e., string of length 1)</td>
+      </tr>
+      <tr>
+        <td><code>&quot;B&quot;</code></td>
+        <td>Unsigned 8-bit integer</td>
+      </tr>
+      <tr>
+        <td><code>&quot;h&quot;</code></td>
+        <td>Short (16-bit) integer</td>
+      </tr>
+      <tr>
+        <td><code>&quot;i&quot;</code></td>
+        <td>32-bit integer</td>
+      </tr>
+      <tr>
+        <td><code>&quot;f&quot;</code></td>
+        <td>32-bit float</td>
+      </tr>
+      <tr>
+        <td><code>&quot;d&quot;</code></td>
+        <td>Double-precision (64-bit) float</td>
+      </tr>
+      <tr>
+        <td><code>&quot;2&quot;</code></td>
+        <td>String of fixed size (see below)</td>
+      </tr>
+    </table>
+    <p>Table 20.2: Packing Format Specifiers</p>
+  </div>
+</div>
+
+<div class="topic">
+  <h2>23) Notes on Binary Format Specifiers</h2>
+  <ul>
+  <li>Any format can be preceded by a count
+    <ul>
+    <li>E.g., <code>&quot;4i&quot;</code> is four integers</li>
+    </ul>
+  </li>
+  <li>How much data is packed is specified by the format
+    <ul>
+    <li>Can pack the lowest 8 or 16 bits of an integer using <code>&quot;B&quot;</code> or <code>&quot;h&quot;</code> instead of the full 32</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>24) Calculating Sizes</h2>
+  <ul>
+  <li>Must <em>always</em> specify the size of strings
+    <ul>
+    <li>E.g., <code>&quot;4s&quot;</code> for a 4-character string</li>
+    <li>Otherwise, how would <code>unpack</code> know how much data to use?</li>
+    </ul>
+  </li>
+  <li><code>calcsize(fmt)</code> calculates how large (in bytes) the data produced using <code>fmt</code> will be
+    <ul>
+    <li>Data sizes can vary from platform to platform</li>
+    <li>And the computer is better at doing arithmetic than you are</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>25) Endianness</h2>
+  <ul>
+  <li>Note that the least significant byte of the integer comes first
+    <ul>
+    <li>This is called <a href="{{page.root}}/book/glossary.html#little-endian" target="glo:little-endian">little-endian</a>, and is used by all Intel processors</li>
+    <li>Other chips put the most significant byte first (<a href="{{page.root}}/book/glossary.html#big-endian" target="glo:big-endian">big-endian</a>)</li>
+    </ul>
+  </li>
+  <li>If you move data from one architecture to another, it's your responsibility to flip the bytes...
+    <ul>
+    <li>...because <em>the machine doesn't know what the bytes mean</em></li>
+    </ul>
+  </li>
+  </ul>
+  <pre file="binary/repack.py">import struct
+
+packed = struct.pack('4c', 'a', 'b', 'c', 'd')
+print 'packed string:', repr(packed)
+
+left16, right16 = struct.unpack('hh', packed)
+print 'as two 16-bit integers:', left16, right16
+
+all32 = struct.unpack('i', packed)
+print 'as a single 32-bit integer', all32[0]
+
+float32 = struct.unpack('f', packed)
+print 'as a 32-bit float', float32[0]
+</pre>
+  <pre class="out" file="binary/repack.out">packed string: 'abcd'
+as two 16-bit integers: 25185 25699
+as a single 32-bit integer 1684234849
+as a 32-bit float 1.67779994081e+22
+</pre>
+</div>
+
+<div class="topic">
+  <h2>26) Packing Variable-Length Data</h2>
+  <ul>
+  <li>How to store a variable-length vector of integers?
+    <ul>
+    <li>Store the number of elements in a fixed-size header</li>
+    <li>Then store that many integers one by one</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <figure id="fig:binary-pack-vec">
+    <img alt="Packing a Variable-Length Vector" src="binary/pack-vec.png"/>
+    <p>Figure 20.8: Packing a Variable-Length Vector</p>
+  </figure>
+  <ul>
+  <li>Packing is easy:</li>
+  </ul>
+  <pre file="binary/pack-vec.py" section="pack">def pack_vec(vec):
+    buf = struct.pack('i', len(vec))
+    for v in vec:
+        buf += struct.pack('i', v)
+    return buf
+</pre>
+</div>
+
+<div class="topic">
+  <h2>27) Unpacking Variable-Length Data</h2>
+  <ul>
+  <li>Unpacking is a little harder
+    <ul>
+    <li>Have to step up to the right location in the packed string on each pass through the unpacking loop</li>
+    </ul>
+  </li>
+  </ul>
+  <pre file="binary/pack-vec.py" section="unpack">def unpack_vec(buf):
+
+    # Get the count of the number of elements in the vector.
+    int_size = struct.calcsize('i')
+    count = struct.unpack('i', buf[0:int_size])[0]
+
+    # Get 'count' values, one by one.
+    pos = int_size
+    result = []
+    for i in range(count):
+        v = struct.unpack('i', buf[pos:pos+int_size])
+        result.append(v[0])
+        pos += int_size
+
+    return result
+</pre>
+</div>
+
+<div class="topic">
+  <h2>28) Dynamic Formats</h2>
+  <ul>
+  <li>Problem: what if you want to pack strings, but don't know their length in advance?</li>
+  <li>Solution: create the format string on the fly, and save the string's length as well as its characters</li>
+  </ul>
+  <pre file="binary/pack-string.py" section="pack">def pack_strings(strings):
+    result = ''
+    for s in strings:
+        length = len(s)
+        format = 'i%ds' % length
+        result += struct.pack(format, length, s)
+    return result
+</pre>
+</div>
+
+<div class="topic">
+  <h2>29) Unpacking Dynamic Formats</h2>
+  <ul>
+  <li>Unpacking is the same as it was for vectors</li>
+  </ul>
+  <pre file="binary/pack-string.py" section="unpack">def unpack_strings(buf):
+    int_size = struct.calcsize('i')
+    pos = 0
+    result = []
+    while pos &lt; len(buf):
+        length = struct.unpack('i', buf[pos:pos+int_size])[0]
+        pos += int_size
+        format = '%ds' % length
+        s = struct.unpack(format, buf[pos:pos+length])[0]
+        pos += length
+        result.append(s)
+    return result
+</pre>
+</div>
+
+<div class="topic">
+  <h2>30) Metadata</h2>
+  <ul>
+  <li><a href="{{page.root}}/book/glossary.html#metadata" target="glo:metadata">Metadata</a> literally means &quot;data about data&quot;
+    <ul>
+    <li>I.e., data that describes other data, such as the date it was collected, or its format</li>
+    </ul>
+  </li>
+  <li>When creating binary files, put a header at the start of the file that describes the format of the data the file contains
+    <ul>
+    <li>Advantages:
+      <ul>
+      <li>One parser handles all data files</li>
+      <li>Can't lose the format: programs come and go, but data is forever</li>
+      </ul>
+    </li>
+    <li>Disadvantages:
+      <ul>
+      <li>Slower (generality always is)</li>
+      <li>Reader is more complicated than a single special-purpose reader would be...</li>
+      <li>...but simpler than the sum of all the special-purpose readers you'd have to write...</li>
+      <li>...and you only have to debug it once</li>
+      </ul>
+    </li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>31) Metadata File Structure</h2>
+  <ul>
+  <li>Files have a three-part structure:
+    <ul>
+    <li>Integer (fixed size) recording the length of the metadata</li>
+    <li>Metadata (N bytes) describing the format of the records in the file</li>
+    <li>The records themselves</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <figure id="fig:binary-metadata">
+    <img alt="Structure of a Binary File With Metadata" src="binary/metadata.png"/>
+    <p>Figure 20.9: Structure of a Binary File With Metadata</p>
+  </figure>
+</div>
+
+<div class="topic">
+  <h2>32) Packing with Metadata</h2>
+  <ul>
+  <li>First step is to store a list of identically-structured records to a file</li>
+  </ul>
+  <pre file="binary/metadata.py" section="store">def store(outf, format, values):
+    '''Store a list of lists, each of which has the same structure.'''
+    length = struct.pack('i', len(format))
+    outf.write(length)
+    outf.write(format)
+    for v in values:
+        temp = [format] + v
+        binary = struct.pack(*temp)
+        outf.write(binary)
+</pre>
+  <ul>
+  <li>Notice how <code>struct.pack</code> is called
+    <ul>
+    <li>It takes each value to be packed as a separate argument, rather than taking a list of values</li>
+    <li>First argument has to be the format</li>
+    <li>So create a list with the format, and the values to be packed, and apply <code>struct.pack</code> to it</li>
+    <li>Common pattern when using variable number of arguments</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>33) Unpacking with Metadata</h2>
+  <ul>
+  <li>Second step is to unpack the bytes created by <code>store</code>
+    <ul>
+    <li>Read the size of the metadata, then the metadata, then the data</li>
+    </ul>
+  </li>
+  </ul>
+  <pre file="binary/metadata.py" section="retrieve">def retrieve(inf):
+    '''Retrieve data from a self-describing file.'''
+    data = inf.read(struct.calcsize('i'))
+    format_length = struct.unpack('i', data)[0]
+    format = inf.read(format_length)
+    record_size = struct.calcsize(format)
+    result = []
+    while True:
+        data = inf.read(record_size)
+        if not data:
+            break
+        values = list(struct.unpack(format, data))
+        result.append(values)
+    return result
+</pre>
+  <ul>
+  <li>Notice the <code>assert</code> in the reading loop
+    <ul>
+    <li>Defensive programming</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>34) Testing</h2>
+  <ul>
+  <li>Final step is to test that everything works
+    <ul>
+    <li>Just as important as steps 1 and 2</li>
+    </ul>
+    <pre file="binary/metadata.py" section="test">from cStringIO import StringIO
+tests = [
+    ['i',  [[17]]],
+    ['ii', [[17, 18]]],
+    ['ii', [[17, 18], [19, 20], [21, 22]]],
+    ['if', [[17, 18.0], [19, 20.0]]]
+]
+for (format, original) in tests:
+    storage = StringIO()
+    temp = store(storage, format, original)
+    storage.seek(0)
+    final = retrieve(storage)
+    assert original == final
+</pre>
+    <ul>
+    <li>Note that there's no output: tests should only ask for attention when something goes wrong</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>35) Summary</h2>
+  <ul>
+  <li>Binary data is to programming what chemistry is to biology
+    <ul>
+    <li>You don't want to spend any more time thinking at its level than you have to...</li>
+    <li>...but when you <em>do</em> have to, there's no substitute</li>
+    </ul>
+  </li>
+  <li>Remember: libraries already exist to handle (almost) every binary format ever created
+    <ul>
+    <li>The easiest code to debug is the code you didn't actually have to write</li>
+    </ul>
+  </li>
+  </ul>
+</div>

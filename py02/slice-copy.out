@@ -1,0 +1,6 @@
+before
+metals: ['Cr', 'Mn', 'Fe', 'Co', 'Ni', 'Cu', 'Zn']
+middle: ['Fe', 'Co', 'Ni']
+after
+metals: ['Cr', 'Mn', 'Fe', 'Co', 'Ni', 'Cu', 'Zn']
+middle: ['Al', 'Ni']

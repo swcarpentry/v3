@@ -1,0 +1,4 @@
+Traceback (most recent call last):
+  File "lec/inc/py01/add_int_str.py", line 4, in ?
+    print x + y            # but you can't add an integer and a string
+TypeError: cannot concatenate 'str' and 'int' objects

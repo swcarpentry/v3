@@ -1,0 +1,60 @@
+---
+layout: base
+root: ..
+title: Lessons (Version 3.0)
+prev: null
+uplink: null
+next: null
+children: [{"path" : "intro.html", "title" : "Introduction"},
+           {"path" : "py01.html", "title" : "Python Basics"},
+           {"path" : "py02.html", "title" : "Python Strings, Lists, and Files"},
+           {"path" : "py03.html", "title" : "Python Functions and Modules"},
+           {"path" : "debugging.html", "title" : "Debugging"},
+           {"path" : "version.html", "title" : "Version Control"},
+           {"path" : "py04.html", "title" : "Python Sets and Dictionaries"},
+           {"path" : "imgproc.html", "title" : "Image Processing"},
+           {"path" : "shell01.html", "title" : "Basic Unix Shell"},
+           {"path" : "shell02.html", "title" : "More Unix Shell"},
+           {"path" : "build.html", "title" : "Automated Builds"},
+           {"path" : "oop01.html", "title" : "Python Basic Object-Oriented Programming"},
+           {"path" : "oop02.html", "title" : "Python Advanced Object-Oriented Programming"},
+           {"path" : "qa.html", "title" : "Quality Assurance"},
+           {"path" : "unit.html", "title" : "Unit Testing"},
+           {"path" : "db.html", "title" : "Databases"},
+           {"path" : "re.html", "title" : "Regular Expressions"},
+           {"path" : "binary.html", "title" : "Binary Data"},
+           {"path" : "xml.html", "title" : "XML"},
+           {"path" : "gui.html", "title" : "GUI Programming"},
+           {"path" : "client.html", "title" : "Web Client Programming"},
+           {"path" : "server.html", "title" : "Web Application Programming"},
+           {"path" : "empirical.html", "title" : "Empirical Software Engineering"},
+           {"path" : "lifecycle.html", "title" : "Software Development Lifecycles"},
+           {"path" : "summary.html", "title" : "Summary"},
+           {"path" : "license.html", "title" : "License"},
+           {"path" : "ack.html", "title" : "Acknowledgments"},
+           {"path" : "glossary.html", "title" : "Glossary"},
+           {"path" : "bib.html", "title" : "Bibliography"}]
+---
+<p>
+  Software Carpentry is an intensive introduction to basic software development practices for scientists and engineers.
+  All of the material is open source:
+  it may be used freely by anyone for educational or commercial purposes.
+  To find out more, please check us out at
+  <a href="http://software-carpentry.org">http://software-carpentry.org</a>.
+</p>
+
+<p>
+  <strong>Note:</strong>
+  these notes are no longer maintained.
+  Please see <a href="{{page.root}}/v4/index.html">Version 4.0</a>
+  for more recent material.
+</p>
+
+<div class="contents">
+  <h2>Contents</h2>
+  <ul>
+    {% for lesson in page.children %}
+      <li><a href="{{lesson.path}}">{{lesson.title}}</a></li>
+    {% endfor %}
+  </ul>
+</div>

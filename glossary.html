@@ -1,0 +1,3081 @@
+---
+layout: base
+root: ..
+title: Glossary
+prev: v3/ack.html
+uplink: v3/index.html
+next: v3/bib.html
+---
+<h2 class="gloss">A</h2>
+
+<dl class="gloss">
+
+  <dt id="glo:absolute-path">absolute path</dt>
+  <dd>
+    A <a target="glo:path">path</a> that refers to a
+    particular location in a file system.  Absolute paths are usually
+    written with respect to the file system's <a target="glo:root-directory">root directory</a>, and begin with
+    either "/" (on Unix) or "\" (on Microsoft
+    Windows).
+    See also:
+      <a target="glo:relative-path">relative path</a>
+  </dd>
+
+  <dt id="glo:absolute-reference">absolute reference</dt>
+  <dd>
+    A <a target="glo:spreadsheet">spreadsheet</a> cell reference that
+    is not automatically adjusted when a formula is moved from one
+    location to another.  Absolute references are created by putting
+    <code>$</code> in front of the row and/or column designation, as in
+    <code>$C$4</code>.
+    See also:
+      <a target="glo:relative-reference">relative reference</a>
+  </dd>
+
+  <dt id="glo:abstract-data-type">abstract data type (ADT)</dt>
+  <dd>
+    A specification of a set of values, and the operations that can
+    be performed on them.  The term "abstract" means that
+    the implementation of the ADT is hidden from other code.
+  </dd>
+
+  <dt id="glo:abstract-syntax-tree">abstract syntax tree (AST)</dt>
+  <dd>
+    A data structure that represents the structure of a program or
+    program fragment.  Its leaves are literals, such as numbers and
+    variable names, while its internal nodes represent higher-level
+    structures, such as loops and expressions.
+  </dd>
+
+  <dt id="glo:access-control">access control</dt>
+  <dd>
+    A way to specify who has permission to view, edit, delete, run,
+    or otherwise interact with something, by explicitly listing what
+    rights each individual or group has.  This is in contrast with the
+    standard Unix <a target="glo:authorization">authorization</a> mechanism, which only
+    allows a fixed set of privileges to be listed for owner, one
+    group, and everyone else.
+  </dd>
+
+  <dt id="glo:access-control-list">access control list (ACL)</dt>
+  <dd>
+    A list that explicitly describes who can do what to a file,
+    directory, or other entity.  ACLs permit finer control over a
+    computer's resources than Unix's classic user/group/all system,
+    but are more complicated to administer.
+  </dd>
+
+  <dt id="glo:acid">ACID</dt>
+  <dd>
+    An acronym for atomic, consistent, isolated, and durable, which
+    are the properties that a <a target="glo:transaction">database
+    transaction</a> must guarantee.
+  </dd>
+
+  <dt id="glo:acquire-lock">acquire a lock</dt>
+  <dd>
+    To claim a <a target="glo:lock">lock</a> in order to establish
+    exclusive access to some resource.
+    See also:
+      <a target="glo:release-lock">release a lock</a>
+  </dd>
+
+  <dt id="glo:action">action</dt>
+  <dd>
+    The steps a <a target="glo:build-tool">build tool</a> must take to
+    bring a file or other object up to date.
+    See also:
+      <a target="glo:dependency">dependency</a>
+      <a target="glo:prerequisite">prerequisite</a>
+      <a target="glo:target">target</a>
+  </dd>
+
+  <dt id="glo:actual-outcome">actual outcome</dt>
+  <dd>
+    The actual result of a <a target="glo:unit-test">unit test</a>.
+    If this matches the <a target="glo:expected-outcome">expected
+    outcome</a>, the test passes.
+  </dd>
+
+  <dt id="glo:aggregate">aggregate</dt>
+  <dd>
+    To create a single value by combining multiple values, e.g. by
+    adding or averaging.
+  </dd>
+
+  <dt id="glo:algorithmic-complexity">algorithmic complexity</dt>
+  <dd>
+    The rate at which the work performed by an algorithm grows as a
+    function of problem size, ignoring constant factors.  Algorithmic
+    complexity is usually expressed using <em>O</em>-notation; for
+    example, the time required to compare each value in a list to each
+    other value is <em>O(N<sup>2</sup>)</em>.
+  </dd>
+
+  <dt id="glo:alias">alias</dt>
+  <dd>
+    A second (or subsequent) reference to a single piece of data.
+    Aliasing can make programs more difficult to understand, since
+    changes made through one reference "magically" affect
+    the other.
+  </dd>
+
+  <dt id="glo:analysis-and-estimation">analysis and estimation (A&amp;E)</dt>
+  <dd>
+    The step in a software development process in which developers
+    figure out how they're going to implement the desired features,
+    and how long they expect it will take.  The term is also applied
+    to the summary documents this process produces.
+  </dd>
+
+  <dt id="glo:anchor">anchor</dt>
+  <dd>
+    An element of a <a target="glo:regular-expression">regular
+    expression</a> that matches a location, rather than a sequence
+    of characters.  <code>^</code> matches the beginning of a line,
+    <code>\b</code> matches the break between word and non-word
+    characters, and <code>$</code> matches the end of a line.
+  </dd>
+
+  <dt id="glo:anchoring-effect">anchoring effect</dt>
+  <dd>
+    FIXME
+  </dd>
+
+  <dt id="glo:abi">Application Binary Interface (API)</dt>
+  <dd>
+    The calling conventions, data structures, and other interface
+    elements that compiled code exposes to other programs.
+    See also:
+      <a target="glo:api">Application Programming Interface (API)</a>
+  </dd>
+
+  <dt id="glo:api">Application Programming Interface (API)</dt>
+  <dd>
+    The source-level external interface that a library or operating
+    system provides for other programs to use.
+    See also:
+      <a target="glo:abi">Application Binary Interface (API)</a>
+  </dd>
+
+  <dt id="glo:arc">arc</dt>
+  <dd>
+    A connection between two <a target="glo:node">nodes</a> in a
+    <a target="glo:graph">graph</a>.  Arcs may be directed (i.e.,
+    unidirectional) or undirected (i.e., bidirectional).
+  </dd>
+
+  <dt id="glo:assertion">assertion</dt>
+  <dd>
+    An expression which is supposed to be true at a particular
+    point in a program.  Programmers typically put assertions in their
+    code to check for errors; if the assertion fails (i.e., if the
+    expression evaluates as false), the program halts and produces an
+    error message.
+  </dd>
+
+  <dt id="glo:asymmetric-cipher">asymmetric cipher</dt>
+  <dd>
+    A <a target="glo:cipher">cipher</a> which has two <a target="glo:key">keys</a>, each of which undoes the other's effects.
+    See also:
+      <a target="glo:symmetric-cipher">symmetric cipher</a>
+  </dd>
+
+  <dt id="glo:atomic">atomic</dt>
+  <dd>
+    Not interruptible.  An atomic operation is one that always takes
+    effect as a whole, no matter what else the system is doing.
+  </dd>
+
+  <dt id="glo:attribute">attribute</dt>
+  <dd>
+    An extra property added to an XML <a target="glo:element">element</a>.  Attributes are represented as
+    name/value pairs; a given name may appear at most once for any
+    particular element.
+  </dd>
+
+  <dt id="glo:authentication">authentication</dt>
+  <dd>
+    The act of establishing someone's identity.  This is almost
+    always done by requiring them to produce some credentials, such as
+    a password.
+    See also:
+      <a target="glo:authorization">authorization</a>
+      <a target="glo:access-control">access control</a>
+  </dd>
+
+  <dt id="glo:authorization">authorization</dt>
+  <dd>
+    The part of a computer security system that keeps track of
+    who's allowed to do what.
+    See also:
+      <a target="glo:authentication">authentication</a>
+      <a target="glo:access-control">access control</a>
+  </dd>
+
+  <dt id="glo:automatic-variable">automatic variable</dt>
+  <dd>
+    In <a target="bib:make">Make</a>, a variable whose value is automatically
+    redefined for each rule.  Automatic variables include <code>$@</code>,
+    which holds the rule's <a target="glo:target">target</a>, and
+    <code>$^</code>, which holds its <a target="glo:prerequisite">prerequisites</a>.  Automatic variables are
+    typically used in <a target="glo:pattern-rule">pattern rules</a>.
+  </dd>
+
+</dl>
+
+<h2 class="gloss">B</h2>
+
+<dl class="gloss">
+
+  <dt id="glo:basic-authentication">basic authentication</dt>
+  <dd>
+    A simple username/password <a target="glo:authentication">authentication</a> mechanism that is part
+    of the HTTP standard.  It sends passwords as cleartext (actually,
+    as base-64 encoded text), so it should never be used.
+  </dd>
+
+  <dt id="glo:bduf">Big Design Up Front (BDUF)</dt>
+  <dd>
+    A somewhat pejorative term applied to development processes that
+    rely on careful up-front analysis and design to prevent errors
+    from occurring.
+  </dd>
+
+  <dt id="glo:big-endian">big-endian</dt>
+  <dd>
+    Having the most significant byte in the memory location with
+    the lowest address.  In a big-endian system, the integer
+    <code>0x12345678</code> is stored as <code>[0x78, 0x45, 0x34, 0x12]</code>.
+    See also:
+      <a target="glo:little-endian">little-endian</a>
+  </dd>
+
+  <dt id="glo:binary-data">binary data</dt>
+  <dd>
+    Non-textual data.  All data is "binary", in the
+    sense that it's represented as 1's and 0's, but many tools
+    distinguish between 1's and 0's that represent printable
+    characters, and 1's and 0's that don't.
+  </dd>
+
+  <dt id="glo:binary-mode">binary mode</dt>
+  <dd>
+    Python (and some other programming languages) automatically
+    convert Windows-style line endings (carriage return followed by
+    newline) to Unix-style line endings (newline only) when reading
+    and writing files.  This is appropriate for textual data, but not
+    for <a target="glo:binary-data">binary data</a>, such as images.
+    If the file is in binary mode, this conversion is not done.
+  </dd>
+
+  <dt id="glo:binary-search">binary search</dt>
+  <dd>
+    A search technique which divides the values being searched in
+    half at each step, just as a person would go to the middle of a
+    phonebook, then the middle of either the upper or lower half, and
+    so on when looking for a name.  The <a target="glo:algorithmic-complexity">algorithmic complexity</a> of
+    binary search is <em class="math">O(log<sub>2</sub> N)</em>.
+  </dd>
+
+  <dt id="glo:bitwise-operations">bitwise operations</dt>
+  <dd>
+    Operations that act at the level of the bits making up a value,
+    rather than on what those bits mean.  The four most common bitwise
+    operations are and, or, xor, and not.
+  </dd>
+
+  <dt id="glo:blacklist">blacklist</dt>
+  <dd>
+    A list of addresses from which email will not be accepted, which
+    is part of an "allow unless forbidden" <a target="glo:authorization">authorization</a> policy.
+    See also:
+      <a target="glo:whitelist">whitelist</a>
+  </dd>
+
+  <dt id="glo:blog">blog</dt>
+  <dd>
+    Short for <a target="glo:weblog">weblog</a>; an on-line diary or
+    forum to which authors append new content.  Unlike <a target="glo:mailing-list">mailing lists</a>, blogs use a <a target="glo:publish-subscribe">publish-subscribe</a> model: readers
+    pull content when they want it, rather than having it sent to
+    them.
+  </dd>
+
+  <dt id="glo:boehms-curve">Boehm's Curve</dt>
+  <dd>
+    FIXME
+  </dd>
+
+  <dt id="glo:boilerplate">boilerplate</dt>
+  <dd>
+    The standardized parts of a family of programs that don't change
+    from instance to instance.
+  </dd>
+
+  <dt id="glo:branch">branch</dt>
+  <dd>
+    A separate line of development managed by a <a target="glo:version-control-system">version control system</a>.
+    Branches help projects manage incompatible sets of changes that
+    are being made concurrently.
+    See also:
+      <a target="glo:merge">merge</a>
+  </dd>
+
+  <dt id="glo:breakpoint">breakpoint</dt>
+  <dd>
+    A marker put in a program by a <a target="glo:debugger">debugger</a> that causes it to pause so that the
+    program's internal state can be inspected (and possibly
+    modified).
+  </dd>
+
+  <dt id="glo:buffer">buffer</dt>
+  <dd>
+    A block of memory used to store values temporarily in order to
+    "smooth out" communication.
+  </dd>
+
+  <dt id="glo:buffer-overflow-attack">buffer overflow attack</dt>
+  <dd>
+    A method used to attack programs (primarily those written in C and
+    C++) that injects code by writing past the end of a buffer.
+  </dd>
+
+  <dt id="glo:bug-tracker">bug tracker</dt>
+  <dd>
+    See <a target="glo:issue-tracker">issue tracker</a>.
+  </dd>
+
+  <dt id="glo:build-tool">build tool</dt>
+  <dd>
+    A piece of software, such as <a target="bib:make">Make</a>, whose main
+    purpose is to rebuild software, documentation, web sites, and
+    other things after changes have been made.
+  </dd>
+
+  <dt id="glo:burn-rate">burn rate</dt>
+  <dd>
+    The rate at which project tasks are actually being completed.
+    Comparing a project's actual burn rate with its schedule tells
+    developers when to start scaling back their plans, and/or moving
+    their deadlines.
+  </dd>
+
+</dl>
+
+<h2 class="gloss">C</h2>
+
+<dl class="gloss">
+
+  <dt id="glo:cache">cache</dt>
+  <dd>
+    A data structure, or portion of a disk, that stores temporary
+    copies of values.  Caches are normally used when fetching items is
+    expensive: keeping copies of values that are likely to be needed
+    again close at hand can make a program much faster, at the cost of
+    requiring extra synchronization effort.
+  </dd>
+
+  <dt id="glo:call-stack">call stack</dt>
+  <dd>
+    A data structure used to keep track of functions that are
+    currently being executed.  Each time a function is called, a new
+    <a target="glo:stack-frame">stack frame</a> is put on the top of
+    the stack to hold that function's local variables.  When the
+    function returns, the stack frame is discarded.
+    See also:
+      <a target="glo:heap">heap</a>
+      <a target="glo:static-space">static space</a>
+  </dd>
+
+  <dt id="glo:camel-case">camel case</dt>
+  <dd>
+    Text that is formatted with InternalCapitalLetters.
+  </dd>
+
+  <dt id="glo:css">Cascading Style Sheets (CSS)</dt>
+  <dd>
+    A language used to describe how HTML pages should be formatted for
+    display.
+  </dd>
+
+  <dt id="glo:catch-exception">catch exception</dt>
+  <dd>
+    To handle an <a target="glo:exception">exception</a>.
+    See also:
+      <a target="glo:raise-exception">raise exception</a>
+  </dd>
+
+  <dt id="glo:cell-range">cell range</dt>
+  <dd>
+    An expression specifying a contiguous block of cells in a <a target="glo:spreadsheet">spreadsheet</a>.  The cell range
+    <code>C4:E5</code>, for example, includes all the cells in the rectangle
+    bounded by C4 (upper left corner) and E5 (lower right corner).
+  </dd>
+
+  <dt id="glo:chain-call">chained calls</dt>
+  <dd>
+    A sequence of method calls, each of which uses the result of
+    the previous one, as in <code>"x".upper().center(5)</code>.
+  </dd>
+
+  <dt id="glo:changeset">changeset</dt>
+  <dd>
+    A set of changes to files <a target="glo:commit">committed</a>
+    to a <a target="glo:repository">repository</a> in a single
+    operation.
+  </dd>
+
+  <dt id="glo:checkpoint">checkpoint</dt>
+  <dd>
+    To save the state of a program so that it can be restarted later
+    (for example, in case of a computer crash).  The saved state is
+    also called a checkpoint.
+    See also:
+      <a target="glo:persistence">persistence</a>
+  </dd>
+
+  <dt id="glo:child-class">child class</dt>
+  <dd>
+    In <a target="glo:object-oriented-programming">object-oriented programming</a>, a new class derived from an
+    existing one (called the <a target="glo:parent-class">parent
+    class</a>).
+    See also:
+      <a target="glo:inheritance">inheritance</a>
+  </dd>
+
+  <dt id="glo:chunk">chunk</dt>
+  <dd>
+    A group of objects that are stored together in short-term
+    memory, such as the seven digits in a North American phone
+    number.
+  </dd>
+
+  <dt id="glo:cipher">cipher</dt>
+  <dd>
+    An algorithm used to <a target="glo:encryption">encrypt</a> and
+    <a target="glo:decryption">decrypt</a> data.
+  </dd>
+
+  <dt id="glo:ciphertext">ciphertext</dt>
+  <dd>
+    The <a target="glo:encryption">encrypted</a> form of a message.
+    Ciphertext is usually produced from <a target="glo:plaintext">plaintext</a> by a combination of a <a target="glo:cipher">cipher</a> algorithm and a <a target="glo:key">key</a>.
+  </dd>
+
+  <dt id="glo:class">class</dt>
+  <dd>
+    A definition that specifies the properties of a set of <a target="glo:object">objects</a>.
+  </dd>
+
+  <dt id="glo:class-browser">class browser</dt>
+  <dd>
+    A tool that shows an outline view of the classes making up a
+    software project, their methods, and their inheritance relations;
+    usually part of an <a target="glo:integrated-development-environment">integrated development
+    environment</a>.
+  </dd>
+
+  <dt id="glo:client">client</dt>
+  <dd>
+    A software application that accesses data over a network.  The
+    provider is called a <a target="glo:server">server</a>.
+  </dd>
+
+  <dt id="glo:client-server-architecture">client/server architecture</dt>
+  <dd>
+    An asymmetric system in which many <a target="glo:client">clients</a> communicate with a single centralized
+    <a target="glo:server">server</a>.
+  </dd>
+
+  <dt id="glo:code-assistant">code assistant</dt>
+  <dd>
+    FIXME
+  </dd>
+
+  <dt id="glo:code-review">code review</dt>
+  <dd>
+    The act of inspecting code to find errors, violations of style
+    guidelines, etc.  While labor intensive, code reviews are a good
+    way to transfer knowledge between project members, and can be more
+    effective at finding bugs than testing.
+  </dd>
+
+  <dt id="glo:collision">collision</dt>
+  <dd>
+    A situation in which one or more values are mapped to the same
+    location by a <a target="glo:hash-function">hash function</a>.
+    <a target="glo:hash-table">Has tables</a> typically handle this by
+    storing colliding values in a sublist.
+  </dd>
+
+  <dt id="glo:comma-separated-values">comma-separated values</dt>
+  <dd>
+    A format for representing tabular data.  Each row in the table
+    is represented by a line of text; the values in that row are
+    separated by commas.
+  </dd>
+
+  <dt id="glo:command-line-flag">command-line flag</dt>
+  <dd>
+    A terse way to specify an option or setting to a command-line
+    program.  By convention, Unix applications use a dash followed by
+    a single letter, such as <code>-v</code>, or two dashes followed by a
+    word, such as <code>--verbose</code>, while DOS applications use a
+    slash, such as <code>/V</code>.  Depending on the application, a flag
+    may be followed by a single argument, as in <code>-o
+    /tmp/output.txt</code>.
+  </dd>
+
+  <dt id="glo:comment-spam">comment spam</dt>
+  <dd>
+    The practice of posting comments on blog entries that contain
+    HTML links to external pages.  The purpose is to enhance the page
+    rank of the spammer's site with Google and similar search
+    engines.  This method also works in web forums, guestbooks, and
+    other web applications that allow users to add comments.
+  </dd>
+
+  <dt id="glo:commit">commit</dt>
+  <dd>
+    To send changes from a <a target="glo:working-copy">working
+    copy</a> to a <a target="glo:version-control-system">version control</a>'s
+    <a target="glo:repository">repository</a> to create a new
+    <a target="glo:revision">revision</a> of the affected
+    file(s).  Changes must be committed in order for other users to
+    see them.
+    See also:
+      <a target="glo:update">update</a>
+  </dd>
+
+  <dt id="glo:cgi">Common Gateway Interface (CGI)</dt>
+  <dd>
+    A protocol for communication between <a target="glo:server">web
+    servers</a> and external programs.  The web server passes data
+    to the external program through <a target="glo:environment-variable">environment variables</a> and <a target="glo:standard-input">standard input</a>, and reads the data to
+    be sent back to the <a target="glo:client">client</a> from the
+    external program's <a target="glo:standard-output">standard
+    output</a>.
+  </dd>
+
+  <dt id="glo:component-object-model">component object model</dt>
+  <dd>
+    A software architecture that specifies how components communicate
+    with each other, without specifying how they are implemented.
+    Microsoft's COM is the most widely used desktop example; modern
+    web services are increasingly emulating its most important
+    features.
+  </dd>
+
+  <dt id="glo:concurrency">concurrency</dt>
+  <dd>
+    The situation in which two or more things are going on at once.
+    See also:
+      <a target="glo:serialization">serialization</a>
+  </dd>
+
+  <dt id="glo:conditional-breakpoint">conditional breakpoint</dt>
+  <dd>
+    A <a target="glo:breakpoint">breakpoint</a> that only causes the
+    program to pause under certain conditions.  For example, a <a target="glo:debugger">debugger</a> may specify that the program is to
+    pause only when a certain function parameter is an empty string,
+    or when a loop index is greater than a specified value.
+  </dd>
+
+  <dt id="glo:conditional-expression">conditional expression</dt>
+  <dd>
+    An expression that yields one of two values, depending on whether
+    a sub-expression is true or false.  Conditional expressions are
+    used in place of if/then/else in <a target="glo:spreadsheet">spreadsheet</a>, and as a shorthand in most
+    modern programming languages.
+  </dd>
+
+  <dt id="glo:conflict">conflict</dt>
+  <dd>
+    A change made by one user of a <a target="glo:version-control-system">version control system</a>
+    that is incompatible with changes made by other users.  Helping
+    users <a target="glo:resolve">resolve</a> conflicts is one
+    of the <a target="glo:version-control-system">version control
+    system</a>'s major tasks.
+  </dd>
+
+  <dt id="glo:conflict-marker">conflict marker</dt>
+  <dd>
+    A string such as <code>&lt;&lt;&lt;&lt;&lt;&lt;</code>,
+    <code>======</code>, or <code>&gt;&gt;&gt;&gt;&gt;&gt;</code> put into a local
+    copy of a file by a <a target="glo:version-control-system">version
+    control system</a> to indicate where local changes overlap
+    with incompatible changes made by someone else.  The <a target="glo:version-control-system">version control system</a>
+    will typically not allow the user to <a target="glo:commit">commit</a> changes until all conflicts
+    have been <a target="glo:resolve">resolved</a>.
+  </dd>
+
+  <dt id="glo:connection">connection</dt>
+  <dd>
+    A communication channel between a program and a database.
+  </dd>
+
+  <dt id="glo:constructor">constructor</dt>
+  <dd>
+    A special method called when creating a new instance of a class
+    that initializes the instance's state.
+  </dd>
+
+  <dt id="glo:cookie">cookie</dt>
+  <dd>
+    A short piece of text created by a <a target="glo:server">server</a> and passed to a <a target="glo:client">client</a>, which the <a target="glo:client">client</a> can later return in order to identify
+    itself.  Cookies were invented to get around the fact that <a target="glo:http">Hypertext Transfer Protocol (HTTP)</a> is a <a target="glo:stateless-protocol">stateless
+    protocol</a>.
+  </dd>
+
+  <dt id="glo:coordinated-universal-time">Coordinated Universal Time</dt>
+  <dd>
+    See <a target="glo:utc">Coordinated Universal Time (UTC)</a>.
+  </dd>
+
+  <dt id="glo:copy-on-write">copy on write</dt>
+  <dd>
+    FIXME
+  </dd>
+
+  <dt id="glo:core-dump">core dump</dt>
+  <dd>
+    A file containing a byte-for-byte representation of the contents
+    of a program's memory.  On some <a target="glo:operating-system">operating systems</a>, programs produce
+    core dumps whenever they terminate abnormally (e.g., try to divide
+    by zero, or access memory that is out of bounds).  Core dumps are
+    often used as the basis for <a target="glo:post-mortem-debugging">post
+    mortem debugging</a>.
+  </dd>
+
+  <dt id="glo:coupling">coupling</dt>
+  <dd>
+    FIXME
+  </dd>
+
+  <dt id="glo:crc-cards">CRC cards</dt>
+  <dd>
+    A design aid used in <a target="glo:object-oriented-programming">object-oriented
+    programming</a>, in which the responsibilities and
+    collaborators of each class are written out on a 3&times;5 index
+    card <a target="bib:beck-cunningham-crc-cards">CITE</a>.
+  </dd>
+
+  <dt id="glo:cross-product">cross product</dt>
+  <dd>
+    A pairing of all elements of one set with all elements of another.
+    The cross product of two <em class="math">N</em>-element vectors <em class="math">L</em> and
+    <em class="math">R</em> is an <em class="math">N&times;N</em> matrix <em class="math">M</em>, in which
+    <em class="math">M<sub>i,j</sub>=L<sub>i</sub>R<sub>j</sub></em>.
+  </dd>
+
+  <dt id="glo:current-working-directory">current working directory</dt>
+  <dd>
+    The directory that <a target="glo:relative-path">relative
+    paths</a> are calculated from; equivalently, the place
+    where files referenced by name only are searched for.  Every
+    <a target="glo:process">process</a> has a current working
+    directory.  The current working directory is usually referred to
+    using the shorthand notation <code>.</code> (pronounced
+    "dot").
+  </dd>
+
+  <dt id="glo:cursor">cursor</dt>
+  <dd>
+    A pointer into a database that keeps track of outstanding
+    transactions and other operations.
+  </dd>
+
+  <dt id="glo:cvs">CVS</dt>
+  <dd>
+    A version control system that pioneered the use of <a target="glo:optimistic-concurrency">optimistic concurrency</a> in
+    the late 1980s and 1990s.  CVS was the backbone of most open
+    source software projects until the advent of <a target="bib:subversion">CITE</a>.
+  </dd>
+</dl>
+
+<h2 class="gloss">D</h2>
+
+<dl class="gloss">
+
+  <dt id="glo:data-scrubbing">data scrubbing</dt>
+  <dd>
+    Reformatting, rescaling, or otherwise cleaning up data to make it
+    easier to process.
+  </dd>
+
+  <dt id="glo:database-column">database column</dt>
+  <dd>
+    A set of data values of a particular type, one for each row in the
+    <a target="glo:database-table">table</a>.
+    See also:
+      <a target="glo:database-row">database row</a>
+  </dd>
+
+  <dt id="glo:database-row">database row</dt>
+  <dd>
+    A set of related values making up a single entry in a <a target="glo:database-table">database table</a>.
+    See also:
+      <a target="glo:database-column">database column</a>
+      <a target="glo:record">record</a>
+  </dd>
+
+  <dt id="glo:database-table">database table</dt>
+  <dd>
+    A set of values in a <a target="glo:relational-database">relational
+    database</a> that are organized into <a target="glo:database-column">columns</a> and <a target="glo:database-row">rows</a>.
+  </dd>
+
+  <dt id="glo:dbms">database management system (DBMS)</dt>
+  <dd>
+    A software package that manages access to a <a target="glo:relational-database">relational database</a>.
+  </dd>
+
+  <dt id="glo:dead-code">dead code</dt>
+  <dd>
+    A block of code which can never be reached, such as the body of
+    an <code>if</code> statement whose conditional expression is always
+    false.  Dead code often occurs when programmers modifying an
+    inherited program leave something in because they're not sure it's
+    safe to take out.
+  </dd>
+
+  <dt id="glo:deadlock">deadlock</dt>
+  <dd>
+    Any situation in which no one can proceed unless someone else
+    does first (analogous to having two locked boxes, each of which
+    holds the key to the other).
+    See also:
+      <a target="glo:race-condition">race condition</a>
+  </dd>
+
+  <dt id="glo:debuggee">debuggee</dt>
+  <dd>
+    See <a target="glo:target-program">target program</a>.
+  </dd>
+
+  <dt id="glo:debugger">debugger</dt>
+  <dd>
+    A computer program that is used to control and inspect another
+    program (called the <a target="glo:target-program">target
+    program</a>).  Most debuggers are <em>symbolic</em> debuggers
+    that show the target program's state in terms of the variables
+    that the programmer created, rather than showing the raw contents
+    of memory.
+  </dd>
+
+  <dt id="glo:declarative">declarative</dt>
+  <dd>
+    A programming system in which the relationships between values are
+    stated, rather than the algorithm used to compute or update those
+    values.  All widely-used programming languages are <a target="glo:imperative">imperative</a>, but <a target="glo:build-tool">build tools</a> like <a target="bib:make">Make</a>,
+    <a target="glo:spreadsheet">spreadsheets</a>, and some high-level
+    programming languages, are declarative.
+  </dd>
+
+  <dt id="glo:decorator">decorator</dt>
+  <dd>
+    An advanced programming construct in Python that allows one
+    function to wrap or modify another.
+  </dd>
+
+  <dt id="glo:decryption">decryption</dt>
+  <dd>
+    The process of translating <a target="glo:encryption">encrypted</a>
+    <a target="glo:ciphertext">ciphertext</a> back into the original
+    <a target="glo:plaintext">plaintext</a>.
+    See also:
+      <a target="glo:cipher">cipher</a>
+      <a target="glo:key">key</a>
+  </dd>
+
+  <dt id="glo:default-target">default target</dt>
+  <dd>
+    The <a target="glo:target">target</a> that a build
+    system will try to bring up to date if no other target is
+    specified.
+  </dd>
+
+  <dt id="glo:defensive-programming">defensive programming</dt>
+  <dd>
+    The practice of checking input values, <a target="glo:invariant">invariants</a>, and other aspects of a program
+    in order to catch errors as early as possible.
+  </dd>
+
+  <dt id="glo:denial-of-service">denial of service (DoS)</dt>
+  <dd>
+    An attack designed to overwhelm a system so that it cannot service
+    legitimate requests.  DoS does not destroy data, or reveal
+    secrets, but making a site or service unavailable can be just as
+    damaging.
+  </dd>
+
+  <dt id="glo:dependency">dependency</dt>
+  <dd>
+    In a build system, a file whose state some other file depends
+    on.  If any of a file's dependencies are newer than the file
+    itself, the file must be updated.  A file's dependencies are also
+    called its <a target="glo:prerequisite">prerequisites</a>.
+    See also:
+      <a target="glo:action">action</a>
+      <a target="glo:target">target</a>
+  </dd>
+
+  <dt id="glo:derive">derive</dt>
+  <dd>
+    To create one class from another using <a target="glo:inheritance">inheritance</a>.
+  </dd>
+
+  <dt id="glo:design-by-contract">design by contract</dt>
+  <dd>
+    A design methodology in which programmers define checkable
+    interface specifications using <a target="glo:pre-condition">pre-conditions</a>, <a target="glo:post-condition">post-conditions</a>, and <a target="glo:invariant">invariants</a>.
+  </dd>
+
+  <dt id="glo:design-pattern">design pattern</dt>
+  <dd>
+    A standard solution to a commonly-occurring problem.
+  </dd>
+
+  <dt id="glo:dictionary">dictionary</dt>
+  <dd>
+    A mutable unordered collection that pairs each <a target="glo:key">key</a> with a single value.  Dictionaries are also
+    known as maps, hashes, or associative arrays, and are typically
+    implemented using <a target="glo:hash-table">hash tables</a>.
+  </dd>
+
+  <dt id="glo:digital-signature">digital signature</dt>
+  <dd>
+    A block of data attached to a message to prove that the message
+    was created by a particular person, and has not been tampered
+    with.  Digital signatures are usually created by <a target="glo:encryption">encrypting</a> a <a target="glo:message-digest">message digest</a> with the <a target="glo:private-key">private key</a> of an <a target="glo:asymmetric-cipher">asymmetric cipher</a>.
+  </dd>
+
+  <dt id="glo:directed-graph">directed graph</dt>
+  <dd>
+    A <a target="glo:graph">graph</a> whose <a target="glo:arc">arcs</a> have a direction, i.e., if an <a target="glo:arc">arc</a> connects two <a target="glo:node">nodes</a> A and B, then it is possible to reach
+    B from A, but not necessarily possible to reach A from B.
+    Directed graphs are often used to visualize <a target="glo:dependency">dependencies</a> in build systems.
+  </dd>
+
+  <dt id="glo:directory-tree">directory tree</dt>
+  <dd>
+    File system directories are normally organized hierarchically:
+    each directory except the <a target="glo:root-directory">root</a> has a single parent, and each
+    may have zero or more children.  This means that directories may
+    be viewed as a tree.  Since files may not contain directories or
+    other files, they are always leaf nodes of this tree.
+  </dd>
+
+  <dt id="glo:dns">Domain Name System (DNS)</dt>
+  <dd>
+    A system which maps numeric <a target="glo:internet-protocol">Internet
+    Protocol</a> addresses, such as <code>128.100.171.16</code>, to
+    human-readable names, such as <code>pyre.third-bit.com</code>.
+  </dd>
+
+  <dt id="glo:docstring">docstring</dt>
+  <dd>
+    Short for "documentation string", this refers to
+    textual documentation embedded in Python programs.  Unlike
+    comments, docstrings are preserved in the running program, and can
+    be examined in interactive sessions.
+  </dd>
+
+  <dt id="glo:document">document</dt>
+  <dd>
+    A well-formed instance of <a target="glo:xml">XML</a>.  Documents
+    can be represented as trees (using <a target="glo:document-object-model">DOM</a>), stored as files on disk,
+    etc.
+  </dd>
+
+  <dt id="glo:document-object-model">Document Object Model (DOM)</dt>
+  <dd>
+    A cross-language standard for representing XML documents as
+    trees.
+  </dd>
+
+  <dt id="glo:drive">drive</dt>
+  <dd>
+    A disk drive is a piece of computer hardware used to store data
+    on a rotating disk.  In older operating systems, each drive was a
+    separate <a target="glo:file-system">file system</a>;
+    modern version of Microsoft Windows still use this notion, placing
+    one or more <a target="glo:file-system">file systems</a> on
+    each physical drive, and giving each a separate drive letter (such
+    as the familiar <code>C:</code>).
+  </dd>
+
+  <dt id="glo:driver">driver</dt>
+  <dd>
+    A software module designed to communicate with an external device
+    or software package.  A device driver is a piece of software that
+    can control a piece of hardware; a database driver is one that
+    knows how to open connections and send commands to a particular
+    <a target="glo:dbms">database manager</a>.
+  </dd>
+
+  <dt id="glo:duck-typing">duck typing</dt>
+  <dd>
+    An informal name for dynamic type systems that relies on
+    objects being able to do the same things, rather than on <a target="glo:inheritance">inheritance</a> or formal specification of
+    properties.  The term comes from the saying, "If it walks
+    like a duck, and quacks like a duck, it's a duck."
+  </dd>
+
+</dl>
+
+<h2 class="gloss">E</h2>
+
+<dl class="gloss">
+
+  <dt id="glo:element">element</dt>
+  <dd>
+    A named item in an <a target="glo:xml">XML</a> <a target="glo:document">document</a>, which has a unique parent, and may
+    contain <a target="glo:attribute">attributes</a>, text, and other
+    elements.
+    See also:
+      <a target="glo:tag-xml">tag (in XML)</a>
+  </dd>
+
+  <dt id="glo:elevator-pitch">elevator pitch</dt>
+  <dd>
+    Another name for a <a target="glo:vision-statement">vision
+    statement</a>.
+  </dd>
+
+  <dt id="glo:embed">embed</dt>
+  <dd>
+    To place code written in one programming language inside code
+    written in another.
+  </dd>
+
+  <dt id="glo:encapsulation">encapsulation</dt>
+  <dd>
+    The practice of hiding the implementation details of a class or
+    module; one of the three defining principles of object-oriented
+    programming.
+    See also:
+      <a target="glo:inheritance">inheritance</a>
+      <a target="glo:polymorphism">polymorphism</a>
+  </dd>
+
+  <dt id="glo:encryption">encryption</dt>
+  <dd>
+    The process of translating <a target="glo:plaintext">plaintext</a>
+    that anyone can understand into <a target="glo:ciphertext">ciphertext</a> that can only be understood by
+    someone possessing the correct <a target="glo:cipher">cipher</a>
+    and <a target="glo:key">key</a>.
+  </dd>
+
+  <dt id="glo:environment-variable">environment variable</dt>
+  <dd>
+    A named value associated with a running process by the
+    operating system.  Typical environment variables include
+    <code>HOME</code> (the user's home directory) and <code>PWD</code> (the
+    process's present working directory).  Environment variables are
+    typically used to specify things that many applications may want
+    to know, or to provide default configuration values.
+  </dd>
+
+  <dt id="glo:epoch">epoch</dt>
+  <dd>
+    The moment from which times are measured.  On Unix, the epoch
+    is midnight, January 1, 1970; on Windows, the epoch is January 1,
+    1601 (further proof that Microsoft takes backward compatibility
+    very seriously).
+  </dd>
+
+  <dt id="glo:escape-sequence">escape sequence</dt>
+  <dd>
+    A sequence of characters that represents some other character
+    or special entity.  <code>\t</code> and <code>\n</code> are escape sequences
+    in normal Python strings that represent tab and newline characters
+    respectively; <code>&amp;lt;</code> and <code>&amp;amp;</code> are escape
+    sequences in HTML and XML that represents the less than sign and
+    ampersand.
+  </dd>
+
+  <dt id="glo:event-driven-programming">event-driven programming</dt>
+  <dd>
+    A style of programming in which a <a target="glo:framework">framework</a> triggers events in the user's
+    program.  Event-driven programming is used by most graphical user
+    interfaces, and by <a target="glo:cgi">CGI</a> programs.
+  </dd>
+
+  <dt id="glo:event-log">event log</dt>
+  <dd>
+    A chronological list of recent events in a project, such as <a target="glo:repository">repository</a> <a target="glo:update">updates</a>, changes to <a target="glo:ticket">tickets</a>, messages to <a target="glo:mailing-list">mailing lists</a>, <a target="glo:wiki">wiki</a> page edits, and so on.  A project's event
+    log is often provided as a <a target="glo:blog">blog</a>.
+  </dd>
+
+  <dt id="glo:exception">exception</dt>
+  <dd>
+    An object that represents an error condition.  As a program
+    executes, it creates a stack of <a target="glo:exception-handler">exception handlers</a>.  When an
+    exception is <a target="glo:raise-exception">raised</a>, the
+    program searches this stack for the top-most handler, which <a target="glo:catch-exception">catches</a> and handles the exception.
+    Exceptions typically contain information such as the file and line
+    where the error occurred, the type of the error, and an error
+    message.
+  </dd>
+
+  <dt id="glo:exception-handler">exception handler</dt>
+  <dd>
+    A block of code that deals with the error signaled by an <a target="glo:exception">exception</a>.
+    See also:
+      <a target="glo:catch-exception">catch exception</a>
+      <a target="glo:raise-exception">raise exception</a>
+  </dd>
+
+  <dt id="glo:expected-outcome">expected outcome</dt>
+  <dd>
+    The outcome a test must produce in order to pass.  If the <a target="glo:actual-outcome">actual outcome</a> is different, the test
+    fails.
+  </dd>
+
+  <dt id="glo:exponent">exponent</dt>
+  <dd>
+    The power by which the <a target="glo:mantissa">mantissa</a> in
+    a floating-point number is multiplied.  The exponent in
+    <em class="math">2.7&times;10<sup>3</sup></em> is 3.
+  </dd>
+
+  <dt id="glo:extreme-programming">Extreme Programming</dt>
+  <dd>
+    A programming methodology which emphasizes quick reaction over
+    forward planning.  Its most widely-known components are probably
+    <a target="glo:pair-programming">pair programming</a> and
+    relentless <a target="glo:refactor">refactoring</a>.
+  </dd>
+
+</dl>
+
+<h2 class="gloss">F</h2>
+
+<dl class="gloss">
+
+  <dt id="glo:feature-creep">feature creep</dt>
+  <dd>
+    Changes in the aims or scope of a project over time.  The usual
+    result is that everyone spends so much time rewriting code that
+    the project never moves closer to completion.
+  </dd>
+
+  <dt id="glo:file-number">file number</dt>
+  <dd>
+    An integer that represents an open resource.  On some
+    operating systems like Unix, files and file-like resources are
+    assigned a number when they are opened.  The first three numbers,
+    0, 1, and 2, are usually reserved for
+    <a target="glo:standard-input">standard input</a>,
+    <a target="glo:standard-output">standard output</a>, and
+    <a target="glo:standard-error">standard error</a>, respectively.
+  </dd>
+  
+  <dt id="glo:file-system">file system</dt>
+  <dd>
+    A set of files, directories, and I/O devices (such as
+    keyboards, screens, printers, and so on).  A file system may be
+    spread across many physical devices, or many file systems may be
+    stored on a single physical device.  The <a target="glo:operating-system">operating system</a> will only allow
+    some file operations (such as copying, or creating symbolic links
+    or shortcuts) within a file system.
+  </dd>
+
+  <dt id="glo:filename-extension">filename extension</dt>
+  <dd>
+    The portion of a file's name that comes after the final
+    "." character.  By convention, this identifies the
+    file's type: <code>.txt</code> means "text file",
+    <code>.png</code> means "Portable Network Graphics file",
+    and so on.  These conventions are <em>not</em> enforced by most
+    operating systems: it is perfectly possible to name an MP3 sound
+    file <code>homepage.html</code>.  Since many applications use filename
+    extensions to identify the <a target="glo:mime">MIME
+    type</a> of the file, misnaming files may cause those
+    applications to fail.
+  </dd>
+
+  <dt id="glo:filter">filter</dt>
+  <dd>
+    A program that transforms a stream of data.  Many Unix
+    command-line tools are written as filters: they read data from
+    <a target="glo:standard-input">standard input</a>, process
+    it, and write the result to <a target="glo:standard-output">standard output</a>.  Image
+    processing applications are often constructed by connecting
+    filters to one another.
+  </dd>
+
+  <dt id="glo:finite-state-machine">finite state machine (FSM)</dt>
+  <dd>
+    A mathematical model of computation consisting of a finite
+    number of discrete states connected by transitions.  FSMs are often
+    visualized as <a target="glo:directed-graph">directed graphs</a>, in
+    which the nodes are states, and the arcs are transitions.
+    See also:
+      <a target="glo:regular-expression">regular expression (RE)</a>
+  </dd>
+
+  <dt id="glo:fixture">fixture</dt>
+  <dd>
+    The particular configuration of a system that is the subject of
+    a <a target="glo:unit-test">unit test</a>.  It is a good practice
+    to create a fresh fixture for each test, so that the actions and
+    outcomes of early tests cannot affect later ones.
+  </dd>
+
+  <dt id="glo:foreign-key">foreign key</dt>
+  <dd>
+    One or more values in a <a target="glo:database-table">database
+    table</a> that identify a <a target="glo:database-row">row</a>
+    in another table.
+  </dd>
+
+  <dt id="glo:form">form</dt>
+  <dd>
+    A web page that allows users to enter data.
+    See also:
+      <a target="glo:cgi">Common Gateway Interface (CGI)</a>
+      <a target="glo:http">Hypertext Transfer Protocol (HTTP)</a>
+  </dd>
+
+  <dt id="glo:framework">framework</dt>
+  <dd>
+    A library, or set of libraries, that implements the generic
+    parts of a family of applications.  Developers customize the
+    framework for a particular application by replacing generic
+    placeholders with more specific code.
+  </dd>
+
+  <dt id="glo:freeze">freeze</dt>
+  <dd>
+    To make an object immutable.  Once a Python set is frozen, for
+    example, values cannot be inserted or removed, and so its hash code
+    cannot change.
+  </dd>
+
+</dl>
+
+<h2 class="gloss">G</h2>
+
+<dl class="gloss">
+
+  <dt id="glo:garbage-collection">garbage collection</dt>
+  <dd>
+    Automatically reclaiming objects in memory when they are no longer
+    being used.
+    See also:
+      <a target="glo:reference-counting">reference counting</a>
+  </dd>
+
+  <dt id="glo:getter">getter</dt>
+  <dd>
+    A <a target="glo:method">method</a> used to read the value of a
+    <a target="glo:member">member</a>.
+  </dd>
+
+  <dt id="glo:gold-plating">gold plating</dt>
+  <dd>
+    Adding more features to the system than it needs, or making parts
+    of it much more elaborate than is required.
+  </dd>
+
+  <dt id="glo:graph">graph</dt>
+  <dd>
+    A mathematical structure that consists of <a target="glo:node">nodes</a> connected by <a target="glo:arc">arcs</a>.
+    Graphs may be directed (i.e., the arcs are unidirectional) or
+    undirected (i.e, the arcs are bidirectional), and are used to
+    represent everything from program structure to bus routes.
+  </dd>
+
+  <dt id="glo:greedy-matching">greedy matching</dt>
+  <dd>
+    In a <a target="glo:regular-expression">regular expression</a>,
+    the policy of matching as much as possible, as early as
+    possible.
+    See also:
+      <a target="glo:reluctant-matching">reluctant matching</a>
+  </dd>
+
+  <dt id="glo:group">group</dt>
+  <dd>
+    A sub-match in a <a target="glo:regular-expression">regular
+    expression</a>.
+  </dd>
+
+</dl>
+
+<h2 class="gloss">H</h2>
+
+<dl class="gloss">
+
+  <dt id="glo:hash-code">hash code</dt>
+  <dd>
+    The output of a <a target="glo:hash-function">hash
+    function</a>.  Typically, a hash code is a seemingly-random
+    integer, which is then used to determine to put or look for an
+    object in a <a target="glo:hash-table">hash table</a>.
+  </dd>
+
+  <dt id="glo:hash-function">hash function</dt>
+  <dd>
+    A function which takes an object as its input, and produces an
+    integer value as its output.  Good hash functions produce outputs
+    that are as random as possible, i.e., they have the property that
+    different inputs are likely to produce different outputs.
+  </dd>
+
+  <dt id="glo:hash-table">hash table</dt>
+  <dd>
+    A data structure which allows programs to look up objects by
+    value, rather than by location.  Hash tables do this by using
+    a <a target="glo:hash-function">hash function</a> to calculate
+    seemingly-random identifiers for values, and using those as
+    indices into an array.  Under normal conditions, it takes
+    constant time to find a value in a hash table.
+  </dd>
+
+  <dt id="glo:heap">heap</dt>
+  <dd>
+    An area of memory out of which a program can dynamically
+    allocate blocks of various sizes in order to store values.
+    See also:
+      <a target="glo:call-stack">call stack</a>
+      <a target="glo:static-space">static space</a>
+  </dd>
+
+  <dt id="glo:heisenbug">heisenbug</dt>
+  <dd>
+    A bug that hides when you are looking for it.  Bugs can arise in
+    sequential programs (for example, adding a <code>printf</code> call to a
+    C program may move things around in memory so that the bug is no
+    longer triggered), but are much more common in <a target="glo:concurrency">concurrent</a> programs.
+  </dd>
+
+  <dt id="glo:hexadecimal">hexadecimal</dt>
+  <dd>
+    A base-16 numeric representation in which the letters A-F (or
+    a-f) are used to represent the "digits" 10-15.  The
+    decimal integer 61 is 3D in hexadecimal:
+    <em class="math">3&times;16<sup>1</sup>+D(=13)&times;16<sup>0</sup></em>.
+  </dd>
+
+  <dt id="glo:hijack">hijack</dt>
+  <dd>
+    To take control of a connection between a user and a web
+    application after the user has authenticated, e.g., to impersonate
+    a user after he or she logs in.
+  </dd>
+
+  <dt id="glo:host-address">host address</dt>
+  <dd>
+    A computer's Internet address.
+  </dd>
+
+  <dt id="glo:http">Hypertext Transfer Protocol (HTTP)</dt>
+  <dd>
+    A set of rules for exchanging data (especially files) on the World
+    Wide Web.
+  </dd>
+
+  <dt id="glo:http-header">HTTP header</dt>
+  <dd>
+    A name/value pair at the start of an HTTP request or response.
+    Unlike dictionary keys, names are not required to be unique.
+  </dd>
+
+</dl>
+
+<h2 class="gloss">I</h2>
+
+<dl class="gloss">
+
+  <dt id="glo:idiom">idiom</dt>
+  <dd>
+    A manner of expression commonly used by native speakers of a
+    language.  A programming language's idioms are the ways that most
+    programmers habitually express their ideas.
+  </dd>
+
+  <dt id="glo:immutable">immutable</dt>
+  <dd>
+    Unchangeable.  The value of immutable data cannot be altered
+    after it has been created.
+    See also:
+      <a target="glo:mutable">mutable</a>
+  </dd>
+
+  <dt id="glo:imperative">imperative</dt>
+  <dd>
+    A programming system in which the steps taken to calculate values
+    are specified explicitly.  All widely-used programming languages
+    are imperative.
+    See also:
+      <a target="glo:declarative">declarative</a>
+  </dd>
+
+  <dt id="glo:in-place-operator">in-place operator</dt>
+  <dd>
+    An operator such as <code>+=</code> that provides a shorthand
+    notation for the common case in which the variable being assigned
+    to is also an operand on the right hand side of the assignment.
+    The statement <code>x += 3</code> means the same thing as <code>x = x +
+    3</code>.
+  </dd>
+
+  <dt id="glo:inheritance">inheritance</dt>
+  <dd>
+    In object-oriented programming, the practice of defining a new
+    <a target="glo:class">class</a> as an extension or specialization
+    of an existing one.
+    See also:
+      <a target="glo:encapsulation">encapsulation</a>
+      <a target="glo:polymorphism">polymorphism</a>
+  </dd>
+
+  <dt id="glo:inner-join">inner join</dt>
+  <dd>
+    A <a target="glo:join">join</a> in which rows are combined only
+    where values in corresponding columns satisfy some condition
+    (usually equality).
+  </dd>
+
+  <dt id="glo:invariant">invariant</dt>
+  <dd>
+    An expression whose value doesn't change during the execution
+    of a program.  For example, an invariant property of a loop
+    indexed by a variable <code>i</code> might be that the value of the
+    variable <code>M</code> is always greater than or equal to the values of
+    the array elements whose indices are less than <code>i</code>.
+    See also:
+      <a target="glo:pre-condition">pre-condition</a>
+      <a target="glo:post-condition">post-condition</a>
+  </dd>
+
+  <dt id="glo:invasion-percolation">invasion percolation</dt>
+  <dd>
+    A physical process in which a fluid seeps into a porous material,
+    displacing anything that might already be there.
+  </dd>
+
+  <dt id="glo:instance">instance</dt>
+  <dd>
+    An <a target="glo:object">object</a> created from a specific
+    <a target="glo:class">class</a> is called an instance of that
+    class.
+  </dd>
+
+  <dt id="glo:instruction-pointer">instruction pointer</dt>
+  <dd>
+    A <a target="glo:register">register</a> that points at either
+    the instruction the program is currently executing, or the one
+    that it is to execute next (depending on the computer).  When a
+    function is called, the instruction pointer's value is copied onto
+    the <a target="glo:call-stack">call stack</a>, along with the
+    values of the function's parameters, so that the program can
+    return to the point of the call when the function finishes.
+  </dd>
+
+  <dt id="glo:integrated-development-environment">Integrated Development Environment (IDE)</dt>
+  <dd>
+    A program that combines several software development tools into
+    one.  Typically, an IDE contains a "smart" editor
+    (that automatically indents and colorizes code), a build system
+    (for languages that need to be compiled), a <a target="glo:class-browser">class browser</a>, a <a target="glo:debugger">debugger</a>, and a graphical GUI designer.
+  </dd>
+
+  <dt id="glo:integration-test">integration test</dt>
+  <dd>
+    A test that checks whether the parts of a program work
+    together.
+    See also:
+      <a target="glo:unit-test">unit test</a>
+  </dd>
+
+  <dt id="glo:internet-protocol">Internet Protocol (IP)</dt>
+  <dd>
+    A family of communication protocols, the most widely used of which
+    are <a target="glo:udp">UDP</a> and <a target="glo:tcp">TCP</a>.
+  </dd>
+
+  <dt id="glo:invert">invert</dt>
+  <dd>
+    To invert a <a target="glo:dictionary">dictionary</a> is to
+    swap its keys and values; in mathematical terms, this is the same
+    as inverting the discrete function that the dictionary
+    represents.  Any inversion algorithm must deal with the fact that
+    values are not guaranteed to be unique.
+  </dd>
+
+  <dt id="glo:issue-tracker">issue tracker</dt>
+  <dd>
+    A tool that keeps track of a project's outstanding work items, or
+    <a target="glo:ticket">tickets</a>; a to-do list for the project.
+    Issue trackers are sometimes called <a target="glo:bug-tracker">bug
+    trackers</a>, since many of the items they record are bugs.
+  </dd>
+
+</dl>
+
+<h2 class="gloss">J</h2>
+
+<dl class="gloss">
+
+  <dt id="glo:join">join</dt>
+  <dd>
+    A database operation that combines values from two or more <a target="glo:database-table">tables</a>.
+    See also:
+      <a target="glo:inner-join">inner join</a>
+  </dd>
+
+  <dt id="glo:jsp">Java Server Page (JSP)</dt>
+  <dd>
+    A Java-based <a target="glo:template">template</a> system, in which
+    programmers mix HTML and Java code in a single file.  The file is
+    automatically translated to create a pure Java program that prints
+    pure HTML.
+  </dd>
+
+</dl>
+
+<h2 class="gloss">K</h2>
+
+<dl class="gloss">
+
+  <dt id="glo:key">key</dt>
+  <dd>
+    The data that is used to index a particular entry in a <a target="glo:dictionary">dictionary</a>.  In a phone book, for example,
+    people's names are keys.
+  </dd>
+
+</dl>
+
+<h2 class="gloss">L</h2>
+
+<dl class="gloss">
+
+  <dt id="glo:liskov-substitution-principle">Liskov Substitution Principle</dt>
+  <dd>
+    The principle that it should be possible to use an instance of
+    a <a target="glo:child-class">child class</a> anywhere that
+    instances of any of its <a target="glo:parent-class">parent
+    classes</a> can be used.
+    See also:
+      <a target="glo:inheritance">inheritance</a>
+      <a target="glo:polymorphism">polymorphism</a>
+      <a target="glo:post-condition">post-condition</a>
+      <a target="glo:pre-condition">pre-condition</a>
+  </dd>
+
+  <dt id="glo:literate-programming">literate programming</dt>
+  <dd>
+    The practice of writing computer programs using a mix of
+    natural language, mathematics, and code, in order to make them
+    easier for human beings to read.  Tools are used to translate
+    literate programs into code (for compilation and execution) and
+    documentation (for human consumption).
+  </dd>
+
+  <dt id="glo:little-endian">little-endian</dt>
+  <dd>
+    Having the least significant byte in the memory location with
+    the lowest address.  In a little-endian system, the integer
+    <code>0x12345678</code> is stored as <code>[0x12, 0x34, 0x56, 0x78]</code>.
+    See also:
+      <a target="glo:big-endian">big-endian</a>
+  </dd>
+
+  <dt id="glo:lock">lock</dt>
+  <dd>
+    A mechanism used to control access to resources in <a target="glo:concurrency">concurrent systems</a>.  If a <a target="glo:process">process</a> A tries to <a target="glo:acquire-lock">acquire</a> a lock held by some other <a target="glo:process">process</a> B, A is forced to wait until B
+    releases it.
+  </dd>
+
+  <dt id="glo:logging">logging</dt>
+  <dd>
+    The act of recording program events in a systematic way so that
+    they can be examined later; a morally-defensible refinement of the
+    practice of using <code>print</code> statements to debug.
+  </dd>
+
+  <dt id="glo:long-integer">long integer</dt>
+  <dd>
+    An integer whose value takes up as many words of computer
+    memory as necessary.  Most programming languages use 32 bits to
+    represent integers, which permits values in the range
+    <em class="math">-2<sup>31</sup>...2<sup>31</sup>-1</em> (or -2147483648 to
+    2147483647).  In contrast, a language will allocate as many words
+    of computer memory to a long integer's value as that value needs.
+    The advantage is that very large values can be represented and
+    manipulated; the disadvantage is that operating on such values is
+    much slower than operating on native ones.
+  </dd>
+
+  <dt id="glo:lookup-table">lookup table</dt>
+  <dd>
+    In a <a target="glo:spreadsheet">spreadsheet</a>, a pair of rows or
+    columns in which the first is used to select a value from the
+    second.
+  </dd>
+
+</dl>
+
+<h2 class="gloss">M</h2>
+
+<dl class="gloss">
+
+  <dt id="glo:macro">macro</dt>
+  <dd>
+    A variable in a <a target="glo:makefile">Makefile</a>.
+  </dd>
+
+  <dt id="glo:mailing-list">mailing list</dt>
+  <dd>
+    A set of addresses used to send email to many recipients at once.
+    Most mailing lists keep a searchable archive of past messages.
+    See also:
+      <a target="glo:blacklist">blacklist</a>
+      <a target="glo:whitelist">whitelist</a>
+  </dd>
+
+  <dt id="glo:makefile">Makefile</dt>
+  <dd>
+    A configuration file for <a target="bib:make">Make</a> that describes what
+    <a target="glo:dependency">depends</a> on what, and how to bring
+    things up to date.
+  </dd>
+
+  <dt id="glo:mantissa">mantissa</dt>
+  <dd>
+    The fractional part of a floating-point number.  The mantissa
+    in <em class="math">2.7&times;10<sup>3</sup></em> is 2.7.
+  </dd>
+
+  <dt id="glo:mask">mask</dt>
+  <dd>
+    FIXME
+  </dd>
+
+  <dt id="glo:match-object">match object</dt>
+  <dd>
+    The object returned after a successful match by a <a target="glo:regular-expression">regular expression</a> that contains
+    information about which parts of the text were matched by which
+    parts of the RE.
+  </dd>
+
+  <dt id="glo:member">member</dt>
+  <dd>
+    A variable contained within an <a target="glo:object">object</a>
+    that stores part of the object's state.
+  </dd>
+
+  <dt id="glo:merge">merge</dt>
+  <dd>
+    To combine the contents of two or more versions of a file in order
+    to <a target="glo:resolve">resolve</a> overlapping edits; also, to
+    combine material from two or more <a target="glo:branch">branches</a>.
+  </dd>
+
+  <dt id="glo:message-digest">message digest</dt>
+  <dd>
+    A fixed-length summary of a message whose value appears to be
+    random, so that it is practically impossible to construct a
+    message with a specific digest.  <a target="glo:digital-signature">Digital signatures</a> are usually
+    created by <a target="glo:encryption">encrypting</a> message
+    digests using <a target="glo:asymmetric-cipher">asymmetric
+    ciphers</a>.
+  </dd>
+
+  <dt id="glo:metadata">metadata</dt>
+  <dd>
+    Literally, "data about data", i.e., data such as a
+    format descriptor, which describes other data.
+  </dd>
+
+  <dt id="glo:method">method</dt>
+  <dd>
+    In object-oriented programming, a function which is tied to a
+    particular <a target="glo:object">object</a>.  Typically, each of
+    an object's methods implements one of the things it can do, or one
+    of the questions it can answer.
+  </dd>
+
+  <dt id="glo:milestone">milestone</dt>
+  <dd>
+    A date by which some work has to be completed.  Milestones are
+    usually given symbolic names, such as "First Beta
+    Release", to accommodate date changes.
+  </dd>
+
+  <dt id="glo:module">module</dt>
+  <dd>
+    A set of functions and variables that are grouped together to
+    make them more manageable.  In Python, every source file is
+    automatically a module; in other languages, source files may
+    contain many modules, or a single module may span several
+    files.
+  </dd>
+
+  <dt id="glo:multi-valued-assignment">multi-valued assignment</dt>
+  <dd>
+    An assignment statement which changes several values at once.
+    For example, <code>a,b = 2,3</code> sets <code>a</code> to 2 and <code>b</code> to
+    3, while <code>a,b = b,a</code> swaps those variables' values.
+  </dd>
+
+  <dt id="glo:mime">Multipurpose Internet Mail Extensions</dt>
+  <dd>
+    An Internet standard for the format of email that also
+    specifies which filename suffixes should be used to identify
+    particular types of content (such as <code>.png</code> for a PNG-format
+    image).
+  </dd>
+
+  <dt id="glo:mock-object">mock object</dt>
+  <dd>
+    A stand-in for a real object that mimics behavior using a fixed
+    set of preprogrammed responses.  Mock objects are used in testing
+    in order to isolate components, and/or improve performance.
+  </dd>
+
+  <dt id="glo:mutable">mutable</dt>
+  <dd>
+    Changeable.  The value of mutable data can be updated in
+    place.
+    See also:
+      <a target="glo:immutable">immutable</a>
+  </dd>
+
+</dl>
+
+<h2 class="gloss">N</h2>
+
+<dl class="gloss">
+
+  <dt id="glo:nested-query">nested query</dt>
+  <dd>
+    A <a target="glo:query">query</a> whose results are used as input
+    by some other query.
+  </dd>
+
+  <dt id="glo:nimble-language">nimble language</dt>
+  <dd>
+    A language designed to facilitate rapid development, rather
+    than high performance or static safety checks.  Nimble languages
+    are often called "scripting" or "agile"
+    languages, and include Python, Perl, Ruby, Tcl, Rexx, and
+    Scheme.
+    See also:
+      <a target="glo:sturdy-language">sturdy language</a>
+  </dd>
+
+  <dt id="glo:node">node</dt>
+  <dd>
+    An element in a <a target="glo:graph">graph</a> that may be
+    connected to other nodes by <a target="glo:arc">arcs</a>.
+  </dd>
+
+  <dt id="glo:normal-form">normal form</dt>
+  <dd>
+    One of the conditions a database must satisfy to conform with best
+    practices.
+  </dd>
+
+  <dt id="glo:normalize">normalize</dt>
+  <dd>
+    To make a database satisfy widely-used <a target="glo:normal-form">normal forms</a>.
+  </dd>
+
+</dl>
+
+<h2 class="gloss">O</h2>
+
+<dl class="gloss">
+
+  <dt id="glo:object">object</dt>
+  <dd>
+    A combination of data and functions (called <a target="glo:method">methods</a>) that are meant to work together.
+    In most programming languages, objects are instances of <a target="glo:class">classes</a>; each object represents one
+    "thing" that the program can operate on.
+  </dd>
+
+  <dt id="glo:object-oriented-programming">object-oriented programming</dt>
+  <dd>
+    A way to structure programs as collections of <a target="glo:object">objects</a> that invoke one another's <a target="glo:method">methods</a>.
+    See also:
+      <a target="glo:class">class</a>
+      <a target="glo:procedural-programming">procedural programming</a>
+  </dd>
+
+  <dt id="glo:object-relational-mapping">object-relational mapping</dt>
+  <dd>
+    A <a target="glo:persistence">persistence</a> strategy that stores
+    objects in database tables, then translates the rows in those
+    tables back into objects as necessary.
+  </dd>
+
+  <dt id="glo:operating-system">operating system</dt>
+  <dd>
+    The software responsible for managing a computer's hardware and
+    other processes.  Operating systems are also responsible for
+    making different computers present the same interface to other
+    programs, so that applications like word processors and compilers
+    don't have to be re-written each time a new generation of chips
+    comes out.  Popular desktop operating systems include Microsoft
+    Windows, Linux, and Mac OS X.
+  </dd>
+
+  <dt id="glo:operator-overloading">operator overloading</dt>
+  <dd>
+    Redefining the behavior of a built-in operator, such as <code>+</code>,
+    by <a target="glo:override">overriding</a> a specially-named
+    method.  C++ and Python permit it; Java does not.
+  </dd>
+
+  <dt id="glo:optimistic-concurrency">optimistic concurrency</dt>
+  <dd>
+    Any scheme in which different processes are allowed to make
+    changes that may prove incompatible, so long as they <a target="glo:resolve">resolve</a> them later.
+    See also:
+      <a target="glo:pessimistic-concurrency">pessimistic concurrency</a>
+  </dd>
+
+  <dt id="glo:override">override</dt>
+  <dd>
+    To replace a <a target="glo:method">method</a> in a <a target="glo:parent-class">parent class</a> with one in a <a target="glo:child-class">child class</a>.
+    See also:
+      <a target="glo:inheritance">inheritance</a>
+      <a target="glo:polymorphism">polymorphism</a>
+  </dd>
+
+</dl>
+
+<h2 class="gloss">P</h2>
+
+<dl class="gloss">
+
+  <dt id="glo:pack">pack</dt>
+  <dd>
+    To put data in a contiguous block of memory; also called
+    marshalling.
+  </dd>
+
+  <dt id="glo:packet">packet</dt>
+  <dd>
+    The smallest unit of data exchange on a computer network.  A
+    packet consists of a header specifying its length, destination,
+    and other values, and a payload containing the data to be
+    transmitted.
+    See also:
+      <a target="glo:internet-protocol">Internet Protocol (IP)</a>
+      <a target="glo:tcp">Transmission Control Protocol (TCP)</a>
+      <a target="glo:udp">User Datagram Protocol (UDP)</a>
+  </dd>
+
+  <dt id="glo:pair-programming">pair programming</dt>
+  <dd>
+    The practice of having two programmers sit together in front of
+    a single keyboard when writing code.  Pair programming is part of
+    the core of <a target="glo:extreme-programming">extreme
+    programming</a>; its advocates claim that it improves code
+    quality and intra-project communication <a target="bib:williams-kessler-pair-programming">cite</a>.
+  </dd>
+
+  <dt id="glo:paper-prototyping">paper prototyping</dt>
+  <dd>
+    A user interface design technique in which designers create
+    low-fidelity sketches of UI features, then assign users tasks and
+    "play computer".
+  </dd>
+
+  <dt id="glo:parent-class">parent class</dt>
+  <dd>
+    In object-oriented programming, the class from which a new
+    <a target="glo:child-class">child class</a> is <a target="glo:derive">derived</a>.
+  </dd>
+
+  <dt id="glo:parent-directory">parent directory</dt>
+  <dd>
+    The directory "above" a particular directory;
+    equivalently, the directory that "contains" the one in
+    question.  Every directory in a file system except the <a target="glo:root-directory">root</a> must a unique parent.  A
+    directory's parent is usually referred to using the shorthand
+    notation <code>..</code> (pronounced "dot dot").
+  </dd>
+
+  <dt id="glo:path">path</dt>
+  <dd>
+    A non-empty string specifying a single file or directory.
+    Paths consist of zero or more directory names, optionally followed
+    by a filename.  Directory and file names are separated by
+    "/" (on Unix) or "\" (on Microsoft
+    Windows).  If the path begins with this character, it is an
+    <a target="glo:absolute-path">absolute path</a>; otherwise,
+    it is a <a target="glo:relative-path">relative path</a>.
+    On Microsoft Windows, a path may optionally begin with a <a target="glo:drive">drive letter</a>.
+  </dd>
+
+  <dt id="glo:pattern-rule">pattern rule</dt>
+  <dd>
+    In <a target="bib:make">Make</a>, a rule that specifies a general way to
+    manage an entire class of files.  For example, a pattern rule
+    might specify how to compile any C file, rather than just a
+    particular C file.  Pattern rules typically make use of <a target="glo:automatic-variable">automatic variables</a>.
+  </dd>
+
+  <dt id="glo:peer-to-peer-architecture">peer-to-peer architecture</dt>
+  <dd>
+    A symmetric system in which all participants communicate equally.
+  </dd>
+
+  <dt id="glo:persistence">persistence</dt>
+  <dd>
+    Saving data structures on disk, or in other long-term storage, so
+    that they can be recreated later.
+    See also:
+      <a target="glo:checkpoint">checkpoint</a>
+      <a target="glo:object-relational-mapping">object-relational mapping</a>
+  </dd>
+
+  <dt id="glo:personal-software-process">Personal Software Process (PSP)</dt>
+  <dd>
+    An approach to improving software development practices in which
+    programmers record how long they spend on every task, how many
+    errors they make, and so on.
+  </dd>
+
+  <dt id="glo:pessimistic-concurrency">pessimistic concurrency</dt>
+  <dd>
+    Any scheme which prevents different processes from ever making
+    conflicting changes to a shared resource.
+    See also:
+      <a target="glo:optimistic-concurrency">optimistic concurrency</a>
+  </dd>
+
+  <dt id="glo:phishing">phishing</dt>
+  <dd>
+    Tricking someone into providing information they shouldn't, e.g.,
+    by impersonating a trusted web site.
+  </dd>
+
+  <dt id="glo:phony-target">phony target</dt>
+  <dd>
+    In a build system, a <a target="glo:target">target</a>
+    that does not correspond to a file or other object.  Phony targets
+    are usually just symbolic names for sequences of actions.
+  </dd>
+
+  <dt id="glo:pipe">pipe</dt>
+  <dd>
+    A connection from the output of one program to the input of
+    another.  When two or more programs are connected in this way,
+    they are called a "pipeline".
+  </dd>
+
+  <dt id="glo:plaintext">plaintext</dt>
+  <dd>
+    Data that has not been <a target="glo:encryption">encrypted</a>,
+    i.e., data that is in its original, readable, form.
+    See also:
+      <a target="glo:cipher">cipher</a>
+      <a target="glo:ciphertext">ciphertext</a>
+  </dd>
+
+  <dt id="glo:polymorphism">polymorphism</dt>
+  <dd>
+    A mechanism that allows <a target="glo:object">objects</a> of
+    different <a target="glo:class">classes</a> to be treated in the
+    same way.  In most languages, polymorphism depends on <a target="glo:inheritance">inheritance</a>, but some languages (such as
+    Python) allow <a target="glo:duck-typing">duck typing</a>, so that
+    classes without a common ancestor that implement the same methods
+    can be treated polymorphically.
+    See also:
+      <a target="glo:encapsulation">encapsulation</a>
+      <a target="glo:inheritance">inheritance</a>
+  </dd>
+
+  <dt id="glo:port">port</dt>
+  <dd>
+    A non-negative integer that identifies a socket connection on a
+    particular machine.  Ports 0-1023 are reserved for the operating
+    system's use.
+  </dd>
+
+  <dt id="glo:post-mortem">post mortem</dt>
+  <dd>
+    The final phase of a software project, in which the team discusses
+    what went right and what went wrong.
+  </dd>
+
+  <dt id="glo:post-mortem-debugging">post mortem debugging</dt>
+  <dd>
+    The act of debugging a program after it has terminated,
+    typically by inspecting a <a target="glo:core-dump">core
+    dump</a>.
+  </dd>
+
+  <dt id="glo:post-condition">post-condition</dt>
+  <dd>
+    A condition which a function or method guarantees will be true
+    if it terminates normally.
+    See also:
+      <a target="glo:design-by-contract">design by contract</a>
+      <a target="glo:invariant">invariant</a>
+      <a target="glo:pre-condition">pre-condition</a>
+  </dd>
+
+  <dt id="glo:pre-condition">pre-condition</dt>
+  <dd>
+    A condition which must be true at the start of a function or
+    method in order for it to execute correctly.
+    See also:
+      <a target="glo:design-by-contract">design by contract</a>
+      <a target="glo:invariant">invariant</a>
+      <a target="glo:post-condition">post-condition</a>
+  </dd>
+
+  <dt id="glo:prerequisite">prerequisite</dt>
+  <dd>
+    In a build system, a file whose state some other file depends
+    on.  If any of a file's prerequisites are newer than the file
+    itself, the file must be updated.  A file's prerequisites are also
+    called its <a target="glo:dependency">dependencies</a>.
+    See also:
+      <a target="glo:action">action</a>
+      <a target="glo:target">target</a>
+  </dd>
+
+  <dt id="glo:primary-key">primary key</dt>
+  <dd>
+    One or more <a target="glo:database-column">columns</a> in a <a target="glo:database-table">database table</a> whose values are
+    guaranteed to be unique for each <a target="glo:database-row">row</a>, i.e., whose values uniquely identify
+    the entry.
+  </dd>
+
+  <dt id="glo:principle-of-least-privilege">principle of least privilege</dt>
+  <dd>
+    Granting users only the privileges they actually need in order to
+    accomplish a specific operation, and no others.
+  </dd>
+
+  <dt id="glo:private-key">private key</dt>
+  <dd>
+    One of the two <a target="glo:key">keys</a> used in an <a target="glo:asymmetric-cipher">asymmetric cipher</a>.  The private key
+    is kept secret, while the <a target="glo:public-key">public key</a>
+    is shared with anyone the key's owner wishes to communicate with.
+  </dd>
+
+  <dt id="glo:procedural-programming">procedural programming</dt>
+  <dd>
+    A way to structure programs that separates data (the
+    "what") from functions (the "how").
+    See also:
+      <a target="glo:object-oriented-programming">object-oriented programming</a>
+  </dd>
+
+  <dt id="glo:process">process</dt>
+  <dd>
+    A running instance of a program, containing code, variable
+    values, open files and network connections, and so on.  Processes
+    are the "actors" that the <a target="glo:operating-system">operating system</a> manages;
+    typically, the OS runs each process for a few milliseconds at a
+    time to give the impression that they are executing
+    simultaneously.
+  </dd>
+
+  <dt id="glo:program-slice">program slice</dt>
+  <dd>
+    The subset of a program's statements which can affect the value
+    of a particular variable at some point in a program.
+  </dd>
+
+  <dt id="glo:public-key">public key</dt>
+  <dd>
+    One of the two <a target="glo:key">keys</a> used in an <a target="glo:asymmetric-cipher">asymmetric cipher</a>.  The public key
+    is shared with anyone the key's owner wishes to communicate with,
+    while the <a target="glo:private-key">private key</a> is kept
+    secret.
+  </dd>
+
+  <dt id="glo:public-key-cryptography">public key cryptography</dt>
+  <dd>
+    A cryptographic system based on an <a target="glo:asymmetric-cipher">asymmetric cipher</a>, in which the
+    keys used for <a target="glo:encryption">encryption</a> and <a target="glo:decryption">decryption</a> are different, and one cannot
+    be guessed or calculated from the other.
+    See also:
+      <a target="glo:private-key">private key</a>
+      <a target="glo:public-key">public key</a>
+  </dd>
+
+  <dt id="glo:publish-subscribe">publish-subscribe</dt>
+  <dd>
+    A technique for sharing content, in which an author makes the
+    material available, and readers download it when they want it
+    (rather than having it sent to them automatically).
+    Publish-subscribe is sometimes called "content pull",
+    to distinguish it from the "content push" model of
+    <a target="glo:mailing-list">mailing lists</a>.
+  </dd>
+
+</dl>
+
+<h2 class="gloss">Q</h2>
+
+<dl class="gloss">
+
+  <dt id="glo:query">query</dt>
+  <dd>
+    A database operation that reads values, but does not modify
+    anything.  Queries are expressed in a special-purpose language
+    called <a target="glo:sql">SQL</a>.
+  </dd>
+
+</dl>
+
+<h2 class="gloss">R</h2>
+
+<dl class="gloss">
+
+  <dt id="glo:race-condition">race condition</dt>
+  <dd>
+    A situation in which the final state of a system depends on the
+    order in which two or more competing processes modifies the state
+    last.  For example, if two people make changes to a shared file,
+    the final contents of the file depends on who saves their changes
+    last.  Race conditions are usually bugs, and are notoriously hard
+    to track down.
+  </dd>
+
+  <dt id="glo:raise-exception">raise exception</dt>
+  <dd>
+    To signal an error by creating an <a target="glo:exception">exception</a>, and triggering the process by
+    which the program searches for a matching <a target="glo:exception-handler">handler</a>.
+    See also:
+      <a target="glo:catch-exception">catch exception</a>
+  </dd>
+
+  <dt id="glo:range">range</dt>
+  <dd>
+    FIXME
+  </dd>
+
+  <dt id="glo:raw-string">raw string</dt>
+  <dd>
+    In Python, a string in which the backslash character represents
+    itself, rather than introducing an <a target="glo:escape-sequence">escape sequence</a>.  Raw strings are
+    written with a leading <code>r</code>, as in <code>r"a\nb"</code>.
+  </dd>
+
+  <dt id="glo:record">record</dt>
+  <dd>
+    A synonym for a <a target="glo:database-row">database row</a>.
+  </dd>
+
+  <dt id="glo:refactor">refactor</dt>
+  <dd>
+    To rewrite or reorganize software in order to improve its
+    structure or readability <a target="bib:fowler-refactoring">cite</a>.
+  </dd>
+
+  <dt id="glo:reference-counting">reference counting</dt>
+  <dd>
+    Keeping track of the number of references to an object while a
+    program is running, so that it can automatically be destroyed when
+    it is no longer in use.  Reference counting is an easy way to do
+    <a target="glo:garbage-collection">garbage collection</a>, but
+    isn't guaranteed to collect all objects: if A and B refer to each
+    other, but nothing else refers to them, their reference counts
+    will not be zero, and they will not be recycled.
+  </dd>
+
+  <dt id="glo:referential-integrity">referential integrity</dt>
+  <dd>
+    The internal consistency of values in a database.  If an entry in
+    one table contains a <a target="glo:foreign-key">foreign key</a>,
+    but the <a target="glo:record">record</a> that key is supposed to
+    identify doesn't exist, referential integrity has been violated.
+  </dd>
+
+  <dt id="glo:reflection">reflection</dt>
+  <dd>
+    Having a program treat itself as data, i.e., examine or manipulate
+    its own state.
+  </dd>
+
+  <dt id="glo:register">register</dt>
+  <dd>
+    A small amount (typically only 4 or 8 bytes in size) of very
+    fast memory that is built into a microprocessor.  Most modern
+    computer architectures only operate on values in registers; data
+    must be moved from memory into registers, and results moved the
+    other way.  The term is also used to refer to variables in <a target="glo:virtual-machine">virtual machines</a> that play a similar
+    role.
+  </dd>
+
+  <dt id="glo:regression-test">regression test</dt>
+  <dd>
+    A test that checks whether things that used to work are still
+    working; equivalently, a test that checks whether errors that had
+    been eliminated have been reintroduced.
+    See also:
+      <a target="glo:integration-test">integration test</a>
+      <a target="glo:unit-test">unit test</a>
+  </dd>
+
+  <dt id="glo:regular-expression">regular expression (RE)</dt>
+  <dd>
+    A pattern that specifies a set of character strings.  In
+    programs, REs are most often used to find sequences of characters
+    in strings.
+    See also:
+      <a target="glo:anchor">anchor</a>
+      <a target="glo:group">group</a>
+      <a target="glo:match-object">match object</a>
+  </dd>
+
+  <dt id="glo:relation">relation</dt>
+  <dd>
+    In mathematical terms, a subset of the <a target="glo:cross-product">cross product</a> of several sets; in human
+    terms, a set of values which are connected in some logical way.
+  </dd>
+
+  <dt id="glo:relational-database">relational database</dt>
+  <dd>
+    A collection of data organized into <a target="glo:database-table">tables</a>, each of which is made up of
+    <a target="glo:database-column">columns</a> and <a target="glo:database-row">rows</a>.
+  </dd>
+
+  <dt id="glo:relative-path">relative path</dt>
+  <dd>
+    A <a target="glo:path">path</a> that specifies the
+    location of a file or directory with respect to the <a target="glo:current-working-directory">current working
+    directory</a>.  Any <a target="glo:path">path</a>
+    that does <em>not</em> begin with a separator character
+    ("/" or "\") is a relative path.
+    See also:
+      <a target="glo:absolute-path">absolute path</a>
+  </dd>
+
+  <dt id="glo:relative-reference">relative reference</dt>
+  <dd>
+    A <a target="glo:spreadsheet">spreadsheet</a> cell reference that
+    is automatically adjusted when a formula is moved from one
+    location to another.  Relative references are created simply by
+    naming the cell, as in <code>C4</code>.
+    See also:
+      <a target="glo:absolute-reference">absolute reference</a>
+  </dd>
+
+  <dt id="glo:release-lock">release a lock</dt>
+  <dd>
+    To relinquish a <a target="glo:lock">lock</a> in order to signal
+    that other <a target="glo:process">processes</a> may now use a
+    shared resource.
+    See also:
+      <a target="glo:acquire-lock">acquire a lock</a>
+  </dd>
+
+  <dt id="glo:release-log">release log</dt>
+  <dd>
+    A file (often a <a target="glo:spreadsheet">spreadsheet</a>) that
+    records exactly what was shipped to whom, when.
+  </dd>
+
+  <dt id="glo:reluctant-matching">reluctant matching</dt>
+  <dd>
+    In a <a target="glo:regular-expression">regular expression</a>,
+    the policy of matching as little as possible, while still
+    satisfying the match.
+    See also:
+      <a target="glo:greedy-matching">greedy matching</a>
+  </dd>
+
+  <dt id="glo:replay-attack">replay attack</dt>
+  <dd>
+    An attack in which messages are recorded, then played back at a
+    later date.  For example, an attacker might record the signal that
+    means "open the vault", then use it to fool the system
+    into opening the vault door several hours later.
+  </dd>
+
+  <dt id="glo:repository">repository</dt>
+  <dd>
+    A central storage area where a <a target="glo:version-control-system">version control system</a>
+    stores old <a target="glo:revision">revisions</a> of files,
+    along with information about who created them and when.
+  </dd>
+
+  <dt id="glo:repository-browser">repository browser</dt>
+  <dd>
+    A read-only interface (usually web-based) to a <a target="glo:version-control-system">version control</a> <a target="glo:repository">repository</a>.
+  </dd>
+
+  <dt id="glo:resolve">resolve</dt>
+  <dd>
+    To eliminate the <a target="glo:conflict">conflicts</a>
+    between two or more incompatible changes to a file or set of files
+    being managed by a <a target="glo:version-control-system">version
+    control system</a>.
+  </dd>
+
+  <dt id="glo:revision">revision</dt>
+  <dd>
+    A particular state of a file, or a set of files, being managed
+    by a <a target="glo:version-control-system">version control
+    system</a>.
+  </dd>
+
+  <dt id="glo:risk-assessment">risk assessment</dt>
+  <dd>
+    The process of determining how a system's security could be
+    attacked, and what the effects of different failures would be.
+  </dd>
+
+  <dt id="glo:roadmap">roadmap</dt>
+  <dd>
+    A display that shows a project's future <a target="glo:milestone">milestones</a>.
+  </dd>
+
+  <dt id="glo:role">role</dt>
+  <dd>
+    A description of what some class of users can and cannot do to a
+    system.  A role is typically described by listing the actions its
+    members can perform; they simplify administration by making it
+    possible to redefine the capabilities of an entire group in a
+    single step.
+  </dd>
+
+  <dt id="glo:roll-back">roll back</dt>
+  <dd>
+    To undo a set of <a target="glo:revision">revisions</a> in a
+    <a target="glo:version-control-system">version control system</a>
+    in order to return content to a previous state.
+  </dd>
+
+  <dt id="glo:root-directory">root directory</dt>
+  <dd>
+    The top-most directory in a <a target="glo:file-system">file
+    system</a>'s <a target="glo:directory-tree">directory
+    tree</a>.  Its name is the <a target="glo:operating-system">operating system</a>'s separator
+    character, i.e., "/" on Unix (including Linux and Mac
+    OS X), and "\" on Microsoft Windows.
+  </dd>
+
+  <dt id="glo:rss">RSS</dt>
+  <dd>
+    An XML data format used for syndicating content, such as <a target="glo:blog">blogs</a>: the acronym stands for Rich Site Summary,
+    RDF Site Summary, or Really Simple Syndication.  Someone who
+    wishes to publish a blog creates an RSS file (typically using
+    off-the-shelf software) and places it on their web server.
+    Blog readers can then periodically check for updates, and, if there
+    are any, download and display the associated articles.
+  </dd>
+
+  <dt id="glo:rule">rule</dt>
+  <dd>
+    In a build system, a specification of a <a target="glo:target">target</a>'s <a target="glo:prerequisite">prerequisites</a>, and what <a target="glo:action">action(s)</a> to take to bring the <a target="glo:target">target</a> up to date.
+  </dd>
+
+</dl>
+
+<h2 class="gloss">S</h2>
+
+<dl class="gloss">
+
+  <dt id="glo:screen-scraping">screen scraping</dt>
+  <dd>
+    Using a program to extract information from an HTML page intended
+    for human viewing.  Screen scraping is a quick way to solve simple
+    problems, but breaks down when the pages are complex, or their
+    format changes frequently.
+    See also:
+      <a target="glo:web-services">web services</a>
+      <a target="glo:web-spider">web spider</a>
+  </dd>
+
+  <dt id="glo:search-path">search path</dt>
+  <dd>
+    The list of directories that the operating system searches when
+    the user asks to run a program.  The search path is usually stored
+    in the user's <code>PATH</code> <a target="glo:environment-variable">environment-variable</a>.  On
+    Unix, entries are separated by ":", while on Windows,
+    they are separated by ";".
+  </dd>
+
+  <dt id="glo:seek">seek</dt>
+  <dd>
+    To move to an arbitrary location in a file.
+  </dd>
+
+  <dt id="glo:separation-of-concerns">separation of concerns</dt>
+  <dd>
+    The practice of breaking programs into pieces that overlap as
+    little as possible.
+  </dd>
+
+  <dt id="glo:sequence">sequence</dt>
+  <dd>
+    A set of objects arranged in a dense, linear fashion, so that
+    they may be referred to by their index.  In Python, strings,
+    lists, and tuples are built-in sequence types, since the elements
+    of each may be referred to as <code>s[0]</code>, <code>s[1]</code>, and so on
+    up to <code>s[N-1]</code>, where <code>N</code> is the sequence's length.
+  </dd>
+
+  <dt id="glo:serialization">serialization</dt>
+  <dd>
+    The act of forcing operations to execute one at a time, instead of
+    <a target="glo:concurrency">concurrently</a>.
+  </dd>
+
+  <dt id="glo:server">server</dt>
+  <dd>
+    A software application that provides data to other programs.  The
+    consumer is called a <a target="glo:client">client</a>.
+    See also:
+      <a target="glo:web-server">web server</a>
+  </dd>
+
+  <dt id="glo:servlet">servlet</dt>
+  <dd>
+    A Java class that is loaded and run by a <a target="glo:servlet-container">servlet container</a> to generate web
+    content.  Servlets are an alternative to <a target="glo:cgi">CGI</a> scripts.
+  </dd>
+
+  <dt id="glo:servlet-container">servlet container</dt>
+  <dd>
+    A long-running server application, similar to a <a target="glo:web-server">web server</a>, that loads and runs Java
+    classes called <a target="glo:servlet">servlets</a> to produce web
+    content.
+  </dd>
+
+  <dt id="glo:setter">setter</dt>
+  <dd>
+    A <a target="glo:method">method</a> used to change the value of
+    a <a target="glo:member">member</a>.
+  </dd>
+
+  <dt id="glo:shared-library">shared library</dt>
+  <dd>
+    A compiled library that is loaded into memory at most once, and
+    whose contents are shared by all running programs that reference
+    it.  Shared libraries are implemented on Windows by <code>.dll</code>
+    files, and on Linux by <code>.so</code> files.
+  </dd>
+
+  <dt id="glo:shell">shell</dt>
+  <dd>
+    A command-line user interface program, such as Bash (the
+    Bourne-Again Shell) or the Microsoft Windows DOS shell.  Shells
+    commonly execute a read-evaluate-print cycle: when the user enters
+    a command in response to a prompt, the shell either executes the
+    command itself, or runs the program that the command has
+    specified.  In either case, output is sent to the shell window,
+    and the user is prompted to enter another command.  Most shells
+    include commands for looping, conditionals, and defining
+    functions, so that small (and sometimes large) programs can be
+    written by putting a sequence of shell commands in a file.
+  </dd>
+
+  <dt id="glo:short-circuit-evaluation">short-circuit evaluation</dt>
+  <dd>
+    Evaluation of an expression from left to right that stops as
+    soon as the expression's final value is known.  For example, if
+    <code>x</code> is false, the computer does not call the function
+    <code>f</code> in the expression <code>x and f(x)</code>.  Similarly, if
+    <code>x</code> is true, <code>f</code> does not have to be called in <code>x or
+    f(x)</code>.
+  </dd>
+
+  <dt id="glo:silver-bullet">silver bullet</dt>
+  <dd>
+    A tool or technique that purports to solve a hard problem, but
+    which is too good to be true.  The term comes from the myth that
+    only silver bullets can kill werewolves (in fact, ruthenium,
+    rhodium, and palladium are equally effective).
+  </dd>
+
+  <dt id="glo:simple-api-for-xml">Simple API for XML (SAX)</dt>
+  <dd>
+    A stream-oriented way to process XML documents.  Instead of
+    presenting the document as a tree, SAX presents it as a sequence
+    of events, such as "start of element",
+    "text", and "end of element".  The
+    application programmer is responsible for writing functions to
+    handle each type of event.  Its main advantage is that it does not
+    require programs to store entire documents in memory.  The
+    disadvantage is that any moderately complex application therefore
+    winds up building some sort of tree in memory anyway.
+    See also:
+      <a target="glo:document-object-model">Document Object Model (DOM)</a>
+  </dd>
+
+  <dt id="glo:soap">Simple Object Access Protocol (SOAP)</dt>
+  <dd>
+    A misleadingly-named standard for exchanging XML documents between
+    programs over the Internet.  SOAP is the building block for most
+    modern <a target="glo:web-services">web services</a>.
+  </dd>
+
+  <dt id="glo:single-step">single-step</dt>
+  <dd>
+    To advance a program by one instruction, or one line, while
+    debugging.
+    See also:
+      <a target="glo:step-into">step into</a>
+      <a target="glo:step-over">step over</a>
+  </dd>
+
+  <dt id="glo:slice">slice</dt>
+  <dd>
+    A regular subsequence of a larger <a target="glo:sequence">sequence</a>, such as the first five elements,
+    or every second element.
+  </dd>
+
+  <dt id="glo:social-engineering">social engineering</dt>
+  <dd>
+    An attack based on deceiving users, or on relying on social
+    conventions.  Posing as an old lady in distress, or as a bank
+    official who is checking information, are both attacks of this
+    kind.
+  </dd>
+
+  <dt id="glo:socket">socket</dt>
+  <dd>
+    One end of an <a target="glo:internet-protocol">IP</a>
+    communication channel.
+  </dd>
+
+  <dt id="glo:software-architecture">software architecture</dt>
+  <dd>
+    The overarching pattern or principle of a software application
+    which guides the design of particular modules.
+  </dd>
+
+  <dt id="glo:sparse">sparse</dt>
+  <dd>
+    Being mostly empty.  A sparse vector or matrix is one in which
+    most values are zero.
+  </dd>
+
+  <dt id="glo:special-method">special method</dt>
+  <dd>
+    In Python, a <a target="glo:method">method</a> which has a
+    special meaning to the interpreter.  By conventions, these
+    methods' names begin and end with two underscore characters.
+    For example, if an object has a <code>--str--</code> method, Python
+    automatically calls it whenever it needs a text representation of
+    the object.
+  </dd>
+
+  <dt id="glo:specification">specification</dt>
+  <dd>
+    A formal or semi-formal description of what a piece of software
+    is supposed to do.  Specifications may include everything from
+    English prose ("The system must be able to handle at least
+    100 requests per second") to algebra so complex that neither
+    customers nor developers really understand it.
+  </dd>
+
+  <dt id="glo:spiral-model">spiral model</dt>
+  <dd>
+    A software development process which creates successively larger
+    prototypes on the way to delivering the final application.  The
+    development of each prototype goes through the steps of the <a target="glo:waterfall-model">waterfall model</a>.
+  </dd>
+
+  <dt id="glo:spreadsheet">spreadsheet</dt>
+  <dd>
+    A program for manipulating tabular numeric data, or the data
+    manipulated in that way.  Microsoft Excel is the most widely used
+    spreadsheet in the world, but many others (such as <a target="bib:gnumeric">Gnumeric</a>) also exist.
+  </dd>
+
+  <dt id="glo:sql">SQL</dt>
+  <dd>
+    A special-purpose language for describing operations on <a target="glo:relational-database">relational databases</a>.  SQL is
+    <em>not</em> actually an acronym for "Structured Query
+    Language".
+  </dd>
+
+  <dt id="glo:stack-frame">stack frame</dt>
+  <dd>
+    A data structure that provides storage for a function's local
+    variables.  Each time a function is called, a new stack frame is
+    created and put on the top of the <a target="glo:call-stack">call
+    stack</a>.  When the function returns, the stack frame is
+    discarded.
+  </dd>
+
+  <dt id="glo:stack-pointer">stack pointer</dt>
+  <dd>
+    A <a target="glo:register">register</a> that points at the
+    top of the <a target="glo:call-stack">call stack</a>.
+  </dd>
+
+  <dt id="glo:standard-error">standard error</dt>
+  <dd>
+    A process's "other" default output stream,
+    typically used for error messages.
+    See also:
+      <a target="glo:standard-output">standard output</a>
+  </dd>
+
+  <dt id="glo:standard-input">standard input</dt>
+  <dd>
+    A process's default input stream.  In interactive command-line
+    applications, it is typically connected to the keyboard; in a
+    <a target="glo:pipe">pipeline</a>, it receives data from
+    the <a target="glo:standard-output">standard output</a> of
+    the preceding process.
+  </dd>
+
+  <dt id="glo:standard-output">standard output</dt>
+  <dd>
+    A process's default output stream.  In interactive command-line
+    applications, data sent to standard output is displayed on the
+    screen; in a <a target="glo:pipe">pipeline</a>, it is
+    passed to the <a target="glo:standard-input">standard
+    input</a> of the next process.
+  </dd>
+
+  <dt id="glo:starvation">starvation</dt>
+  <dd>
+    A situation in which a process never completes a task because
+    other processes are continually being given access to a resource
+    that the starving process needs.  Starvation is not the same as
+    <a target="glo:deadlock">deadlock</a>, although the
+    symptoms are similar.
+  </dd>
+
+  <dt id="glo:stateless-protocol">stateless protocol</dt>
+  <dd>
+    A communication protocol in which each basic operation is
+    independent of each other.  <a target="glo:http">HTTP</a> is the
+    best-known example: <a target="glo:server">servers</a> do not
+    remember anything about <a target="glo:client">clients</a> between
+    requests.
+  </dd>
+
+  <dt id="glo:static-space">static space</dt>
+  <dd>
+    A portion of a program's memory reserved for storing values
+    that are allocated even before the program starts to run, such as
+    constant strings.
+    See also:
+      <a target="glo:call-stack">call stack</a>
+      <a target="glo:heap">heap</a>
+  </dd>
+
+  <dt id="glo:status-code">status code</dt>
+  <dd>
+    An integer value returned to the operating system by a program
+    when that program terminates, which indicates whether the program
+    terminated normally or abnormally.  By convention, 0 is used to
+    indicate normal termination ("zero errors"), while
+    non-zero values indicate specific problems (e.g., 1 for
+    "file not found", 2 for "no permission",
+    etc.).
+  </dd>
+
+  <dt id="glo:step-into">step into</dt>
+  <dd>
+    To go into a function call when debugging.
+    See also:
+      <a target="glo:single-step">single-step</a>
+      <a target="glo:step-over">step over</a>
+  </dd>
+
+  <dt id="glo:step-over">step over</dt>
+  <dd>
+    To execute a function without going into it when debugging.
+    See also:
+      <a target="glo:single-step">single-step</a>
+      <a target="glo:step-into">step into</a>
+  </dd>
+
+  <dt id="glo:stored-procedure">stored procedure</dt>
+  <dd>
+    A function or program that has been compiled and stored in a
+    database for more efficient execution.
+  </dd>
+
+  <dt id="glo:stride">stride</dt>
+  <dd>
+    FIXME
+  </dd>
+
+  <dt id="glo:stub">stub</dt>
+  <dd>
+    A temporary placeholder for a function or method that hasn't been
+    written yet.  Stubs typically return the same value on every call,
+    or (less often) a random value.
+  </dd>
+
+  <dt id="glo:sturdy-language">sturdy language</dt>
+  <dd>
+    A language that separates compilation from execution in order
+    to maximize performance, check safety conditions, or both.  Sturdy
+    languages typically have longer turnaround times than <a target="glo:nimble-language">nimble languages</a>, but scale up to
+    very large problems better.  Sturdy languages include C/C++,
+    Fortran, Java, and C#.
+  </dd>
+
+  <dt id="glo:submodule">submodule</dt>
+  <dd>
+    A <a target="glo:module">module</a> that is contained inside
+    another module.  Large software libraries are divided into
+    submodules for the same reason that large programs are divided
+    into functions.
+  </dd>
+
+  <dt id="glo:suspended-process">suspended process</dt>
+  <dd>
+    A <a target="glo:process">process</a> which is not running.  A
+    process may be suspended because some other process is using the
+    CPU, or because it is waiting to <a target="glo:acquire-lock">acquire
+    a lock</a>.
+  </dd>
+
+  <dt id="glo:symmetric-cipher">symmetric cipher</dt>
+  <dd>
+    A <a target="glo:cipher">cipher</a> in which a single key is used
+    for both <a target="glo:encryption">encryption</a> and <a target="glo:decryption">decryption</a>.  Symmetric ciphers are less
+    secure than <a target="glo:asymmetric-cipher">asymmetric</a> ones,
+    but are typically much faster.
+  </dd>
+
+</dl>
+
+<h2 class="gloss">T</h2>
+
+<dl class="gloss">
+
+  <dt id="glo:tag-version">tag (in version control)</dt>
+  <dd>
+    A symbolic label in a version control system that uniquely
+    identifies a particular state of the repository.
+    See also:
+      <a target="glo:branch">branch</a>
+  </dd>
+
+  <dt id="glo:tag-xml">tag (in XML)</dt>
+  <dd>
+    A textual representation of an <a target="glo:xml">XML</a> <a target="glo:element">element</a>.  Tags come in matched opening and
+    closing pairs, such as <code>&lt;x&gt;</code> and <code>&lt;/x&gt;</code>; if
+    the element the tag pair represents does not contain text or other
+    elements, the short form <code>&lt;x/&gt;</code> may be used.
+    See also:
+      <a target="glo:branch">branch</a>
+  </dd>
+
+  <dt id="glo:target">target</dt>
+  <dd>
+    In a build system, a thing that may be created or updated.
+    Targets typically have <a target="glo:prerequisite">prerequisites</a> that must be up to
+    date before the target itself can be updated.  Targets may also be
+    symbolic, i.e., there may be targets that do not correspond to
+    files or other objects.  In this case, the target is simply a
+    symbolic name for a set of actions.
+    See also:
+      <a target="glo:action">action</a>
+      <a target="glo:default-target">default target</a>
+      <a target="glo:dependency">dependency</a>
+      <a target="glo:phony-target">phony target</a>
+  </dd>
+
+  <dt id="glo:target-program">target program</dt>
+  <dd>
+    The program being controlled by a <a target="glo:debugger">debugger</a>; also called the <a target="glo:debuggee">debuggee</a>.
+  </dd>
+
+  <dt id="glo:template">template</dt>
+  <dd>
+    An outline of a web page, which a program then fills in with
+    specific content.  In older systems, templates contain a mix of
+    program code and HTML; newer systems try to keep the two separate
+    in order to simplify maintenance.
+  </dd>
+
+  <dt id="glo:test-suite">test suite</dt>
+  <dd>
+    A collection of <a target="glo:unit-test">unit tests</a>.  Tests
+    are grouped into test suites in order to make them easier to
+    manage, and so that developers can easily re-run
+    logically-connected sets of tests.
+  </dd>
+
+  <dt id="glo:test-driven-development">test-driven development (TDD)</dt>
+  <dd>
+    The practice of writing unit tests <em>before</em> writing
+    application code.  TDD is a core practice in <a target="glo:extreme-programming">Extreme Programming</a>, but has
+    been around since at least the 1970s.  Its main advantage is that
+    it helps programmers clarify their ideas about what their code is
+    supposed to do before they have become emotionally attached to
+    that code.  It also increases the odds of some tests actually
+    being written, and gives programmers a finish line to aim for:
+    when all the tests pass, the code must be done.
+  </dd>
+
+  <dt id="glo:text">text</dt>
+  <dd>
+    The non-<a target="glo:element">element</a> content of an <a target="glo:xml">XML</a> <a target="glo:document">document</a>; in an
+    HTML page, the text is what is displayed, while the <a target="glo:tag-xml">tags</a> control its formatting.
+  </dd>
+
+  <dt id="glo:three-tier-architecture">three-tier architecture</dt>
+  <dd>
+    An architecture in which data is stored in a database (tier 1),
+    which is manipulated by a <a target="glo:server">server</a> (tier
+    2), and viewed in a web browser (tier 3).
+  </dd>
+
+  <dt id="glo:ticket">ticket</dt>
+  <dd>
+    A single work item in an <a target="glo:issue-tracker">issue
+    tracker</a>.  A ticket may describe a bug that needs to be
+    fixed, an enhancement that is to be added, a question that needs
+    to be answered, or any other task.
+    See also:
+      <a target="glo:ticket-closed">ticket, closed</a>
+      <a target="glo:ticket-open">ticket, open</a>
+  </dd>
+
+  <dt id="glo:ticket-assigned">ticket, assigned</dt>
+  <dd>
+    A ticket that someone is currently responsible for.
+  </dd>
+
+  <dt id="glo:ticket-closed">ticket, closed</dt>
+  <dd>
+    A <a target="glo:ticket">ticket</a> that has been completed.
+    (Note, however, that closed tickets may later be reopened if it
+    turns out that a bug fix doesn't work, or that an enhancement is
+    incomplete.)
+  </dd>
+
+  <dt id="glo:ticket-open">ticket, open</dt>
+  <dd>
+    A <a target="glo:ticket">ticket</a> that has not yet been
+    completed.
+  </dd>
+
+  <dt id="glo:time-complexity">time complexity</dt>
+  <dd>
+    FIXME
+  </dd>
+
+  <dt id="glo:traceability">traceability</dt>
+  <dd>
+    The ability to determine where a piece of code or data came
+    from, and/or how it was produced.
+  </dd>
+
+  <dt id="glo:transaction">transaction</dt>
+  <dd>
+    A set of operations which take effect in a reliable, consistent
+    manner.  If a transaction cannot be completed (e.g., because of a
+    system failure), it is guaranteed to have no effect.
+  </dd>
+
+  <dt id="glo:tcp">Transmission Control Protocol (TCP)</dt>
+  <dd>
+    A communication protocol in the <a target="glo:internet-protocol">IP</a> family that provides reliable
+    in-order delivery of data.  Programs communicating via TCP can
+    read and write as they would with files (at least, until something
+    goes wrong).
+    See also:
+      <a target="glo:socket">socket</a>
+      <a target="glo:udp">User Datagram Protocol (UDP)</a>
+  </dd>
+
+  <dt id="glo:triage">triage</dt>
+  <dd>
+    The process of sorting, prioritizing, and assigning <a target="glo:ticket">tickets</a>.  As the project deadline approaches,
+    triage is done more frequently, in order to keep the team focused
+    on things that actually need to be done.
+  </dd>
+
+  <dt id="glo:trigger">trigger</dt>
+  <dd>
+    A procedure which is automatically invoked when a database table
+    is modified.  The term is also applied to code that runs whenever
+    the content of a version control <a target="glo:repository">repository</a> are updated.
+  </dd>
+
+  <dt id="glo:tuple">tuple</dt>
+  <dd>
+    An immutable <a target="glo:sequence">sequence</a>.
+  </dd>
+
+  <dt id="glo:twos-complement">two's complement</dt>
+  <dd>
+    A way to represent signed integers in computer memory.  The most
+    significant bit in positive integers is 0; the other bits are used
+    to store magnitude.  Negative values "wrap around",
+    like a car's odometer, so that -1 is the bit string 111...111,
+    -2 is 111...110, and so on, all the way to the most negative
+    number, which is 100...000.  Note that two's complement is
+    asymmetric: since zero counts as a positive number, the absolute
+    value of the most negative number is one greater than the absolute
+    value of the most positive number.  Put another way, N bits can
+    represent values from <em class="math">-(2<sup>N-1</sup>)</em> to
+    <em class="math">2<sup>N-1</sup>-1</em>.  Thus, three bits can represent the
+    integers -4...3.
+  </dd>
+
+  <dt id="glo:type-switch">type-switch</dt>
+  <dd>
+    A <a target="glo:procedural-programming">procedural</a> way to
+    implement <a target="glo:polymorphism">polymorphism</a>, in which
+    the program tests the type of the data, then chooses which
+    function to call.
+  </dd>
+
+</dl>
+
+<h2 class="gloss">U</h2>
+
+<dl class="gloss">
+
+  <dt id="glo:udp">User Datagram Protocol (UDP)</dt>
+  <dd>
+    A communication protocol in the <a target="glo:internet-protocol">IP</a> family that guarantees neither
+    reliability nor ordering.  The network does its best to deliver
+    <a target="glo:packet">packets</a>, but they may arrive out of
+    order, or not at all.
+    See also:
+      <a target="glo:socket">socket</a>
+      <a target="glo:tcp">Transmission Control Protocol (TCP)</a>
+  </dd>
+
+  <dt id="glo:unicode">Unicode</dt>
+  <dd>
+    An international standard for representing characters and other
+    symbols.  Each symbol is assigned a unique number; those numbers
+    are then encoded in any of several standard ways (such as <a target="glo:utf-8">UTF-8</a>).
+  </dd>
+
+  <dt id="glo:unit-test">unit test</dt>
+  <dd>
+    A test that exercises a single basic element of a program, such
+    as a particular function or method.
+    See also:
+      <a target="glo:integration-test">integration test</a>
+  </dd>
+
+  <dt id="glo:unpack">unpack</dt>
+  <dd>
+    To take data that has been <a target="glo:pack">packed</a> into
+    a contiguous block of memory, and put it back in the language's
+    native storage format; also called unmarshalling.
+  </dd>
+
+  <dt id="glo:update">update</dt>
+  <dd>
+    To update a <a target="glo:working-copy">working
+    copy</a> with the most recent changes in a <a target="glo:version-control-system">version control system</a>
+    <a target="glo:repository">repository</a>.
+    See also:
+      <a target="glo:commit">commit</a>
+  </dd>
+
+  <dt id="glo:url-encoding">URL encoding</dt>
+  <dd>
+    A translation standard that replaces characters that are
+    meaningful in URLs (such as <code>&amp;</code> and <code>?</code>) with their
+    hexadecimal encodings.
+  </dd>
+
+  <dt id="glo:utc">Coordinated Universal Time (UTC)</dt>
+  <dd>
+    The standard time that others are defined against; formerly known
+    as Greenwich Mean Time (GMT).
+  </dd>
+
+  <dt id="glo:utf-8">UTF-8</dt>
+  <dd>
+    A standard for encoding character data; the acronym is short for
+    "<a target="glo:unicode">Unicode</a> Transformation Format,
+    8-bit encoding form".  <a target="bib:spolsky-unicode">CITE</a>
+    presents the details, and explains why UTF-8 is currently the best
+    choice for character encoding on the web.
+  </dd>
+
+</dl>
+
+<h2 class="gloss">V</h2>
+
+<dl class="gloss">
+
+  <dt id="glo:validate">validate</dt>
+  <dd>
+    To check that input data is of the right type, in range, etc.
+    Failing to validate data is a common source of security problems.
+  </dd>
+
+  <dt id="glo:verifiable-deliverable">verifiable deliverable</dt>
+  <dd>
+    A project task (such as implementation of a particular feature)
+    whose completion can be checked by an independent observer.  Where
+    possible, features should be described in terms of verifiable
+    deliverables, so that there is some way to tell what's actually
+    done at any time.
+  </dd>
+
+  <dt id="glo:version-control-system">version control system</dt>
+  <dd>
+    A tool for managing changes to a set of files.  Each set of
+    changes creates a new <a target="glo:revision">revision</a>
+    of the files; the version control system allows users to recover
+    old <a target="glo:revision">revisions</a> reliably, and
+    helps manage conflicting changes made by different users.
+  </dd>
+
+  <dt id="glo:version-number">version number</dt>
+  <dd>
+    A multi-part number used to identify a software release.
+    "6.2.3.1407" means major version 6, minor version 2,
+    patch 3, build 1407.  By convention, the major number is only
+    incremented when changes make this version incompatible with
+    previous versions.  Minor version numbers are for
+    backward-compatible releases that add new features, while patches
+    usually identify partial releases (typically, bug fixes).
+    Finally, the build number is incremented every time a new
+    installer is created, so that testers can uniquely identify
+    it.
+  </dd>
+
+  <dt id="glo:virtual-machine">virtual machine (VM)</dt>
+  <dd>
+    A program that makes a computer behave as if it were some other
+    type of computer.  Many modern programming languages, such as Java
+    and Python, run on virtual machines, rather than directly on the
+    computer's hardware.  The main advantages are portability (once
+    the VM has been ported to a new machine, all of the programs
+    running on it will also run on that machine) and security (the VM
+    can enforce much more complicated safety rules than today's
+    hardware).  The main disadvantage is speed: since the VM may have
+    to execute several physical instructions to simulate a single
+    logical instruction, programs running on a VM may be many times
+    slower than programs running natively.
+  </dd>
+
+  <dt id="glo:vision-statement">vision statement</dt>
+  <dd>
+    A one- or two-sentence summary of a project's purpose and plan;
+    also known as an <a target="glo:elevator-pitch">elevator pitch</a>.
+  </dd>
+
+</dl>
+
+<h2 class="gloss">W</h2>
+
+<dl class="gloss">
+
+  <dt id="glo:watchpoint">watchpoint</dt>
+  <dd>
+    A <a target="glo:breakpoint">breakpoint</a> that is associated
+    with a variable, or a region of memory, rather than with a
+    location in the program's source code.  The program suspends
+    execution whenever any of the data associated with a watchpoint is
+    modified.
+    See also:
+      <a target="glo:conditional-breakpoint">conditional breakpoint</a>
+  </dd>
+
+  <dt id="glo:waterfall-model">waterfall model</dt>
+  <dd>
+    A software development process in which requirements analysis,
+    design, implementation, and testing are done strictly in that
+    order.  The waterfall model is almost never used in practice;
+    instead, its main reason for existing is to give software
+    engineering professors something to critique.
+  </dd>
+
+  <dt id="glo:web-services">web services</dt>
+  <dd>
+    A software application that exchanges data with others by sending
+    <a target="glo:xml">XML</a> data via the <a target="glo:http">HTTP</a> protocol.  Most modern web services encode
+    data using the <a target="glo:soap">SOAP</a> standard.
+    See also:
+      <a target="glo:screen-scraping">screen scraping</a>
+  </dd>
+
+  <dt id="glo:web-server">web server</dt>
+  <dd>
+    A <a target="glo:server">server</a> that handles <a target="glo:http">HTTP</a> requests.
+  </dd>
+
+  <dt id="glo:web-spider">web spider</dt>
+  <dd>
+    A program that browses the web on its own by recursively following
+    links in the pages it finds.
+  </dd>
+
+  <dt id="glo:weblog">weblog</dt>
+  <dd>
+    See <a target="glo:blog">blog</a>.
+  </dd>
+
+  <dt id="glo:whitelist">whitelist</dt>
+  <dd>
+    A list of email addresses from which messages will be accepted,
+    which is part of a "forbid unless allowed" <a target="glo:authorization">authorization</a> policy.
+    See also:
+      <a target="glo:blacklist">blacklist</a>
+  </dd>
+
+  <dt id="glo:wiki">wiki</dt>
+  <dd>
+    A web site that allows users to edit pages in place, typically
+    using markup rules much simpler than those of standard HTML.  The
+    name comes from the Hawaiian word for "quickly".
+  </dd>
+
+  <dt id="glo:wildcard">wildcard</dt>
+  <dd>
+    A character used in pattern matching.  In the Unix shell, the
+    wildcard "*" matches zero or more characters, so that
+    <code>*.txt</code> matches all files whose names end in <code>.txt</code>.
+  </dd>
+
+  <dt id="glo:working-copy">working copy</dt>
+  <dd>
+    A personal copy of the files being managed by a <a target="glo:version-control-system">version control system</a>.
+    Changes the user makes to the working copy do not affect other
+    users until they are <a target="glo:commit">committed</a>
+    to the <a target="glo:repository">repository</a>.
+  </dd>
+
+</dl>
+
+<h2 class="gloss">X</h2>
+
+<dl class="gloss">
+
+  <dt id="glo:xml">XML</dt>
+  <dd>
+    The Extensible Markup Language; a standard for defining
+    application-specific markup languages.
+    See also:
+      <a target="glo:attribute">attribute</a>
+      <a target="glo:document">document</a>
+      <a target="glo:document-object-model">Document Object Model (DOM)</a>
+      <a target="glo:element">element</a>
+  </dd>
+
+</dl>
+
+<h2 class="gloss">Y</h2>
+
+<dl class="gloss">
+
+  <dt id="glo:yagni">You Ain't Gonna Need It (YAGNI)</dt>
+  <dd>
+    FIXME
+  </dd>
+
+</dl>
+
+<h2 class="gloss">Z</h2>

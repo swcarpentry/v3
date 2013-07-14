@@ -1,0 +1,10 @@
+# What does the program depend on?
+dependencies = ['file1.c', 'file2.c']
+if os.platform == 'win32':
+    dependencies.append('win32.c')
+
+# Which version are we building?
+if 'debug' in COMMAND_LINE_TARGETS:
+    Program('hello_dbg', dependencies)
+else:
+    Program('hello', dependencies)

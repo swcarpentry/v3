@@ -1,0 +1,981 @@
+---
+layout: v3_slideshow
+title: Python Basics
+prev: v3/intro.html
+uplink: v3/index.html
+next: v3/py02.html
+---
+<div class="topic">
+  <h2>1) Introduction</h2>
+  <ul>
+  <li>Two things determine time to solution:
+    <ul>
+    <li>How long it takes to write a program (human time)</li>
+    <li>How long it takes that program to run (machine time)</li>
+    </ul>
+  </li>
+  <li>Different languages make different tradeoffs between these <a href="bib.html#bib:prechelt-language-comparison" target="bib:prechelt-language-comparison">[Prechelt 2000]</a>
+    <ul>
+    <li>High-level languages let programmers express their thoughts more quickly...</li>
+    <li>...but the more abstract the language, the more slowly it runs</li>
+    </ul>
+  </li>
+  <li>This series of lectures introduces a versatile high-level language called <a href="bib.html#bib:python" target="bib:python">[Python]</a>
+    <ul>
+    <li>A good way to build tools and crunch data</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>2) You Can Skim This Lecture If...</h2>
+  <ul>
+  <li>You know Python, Perl, Ruby, Tcl, or Rexx
+    <ul>
+    <li>Same basic ideas</li>
+    <li>Different syntax</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>3) Python's Strengths</h2>
+  <ul>
+  <li>As flexible as the shell, but with real data structures
+    <ul>
+    <li>Don't have to squeeze everything into lists of strings</li>
+    </ul>
+  </li>
+  <li>Freely available for many platforms</li>
+  <li>Widely used and well documented</li>
+  <li>Much easier to learn and read than Perl
+    <ul>
+    <li>Material that took three days to teach in Perl took only two to teach in Python</li>
+    <li>Follow-up surveys showed significantly higher retention rates</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>4) Python's Weaknesses</h2>
+  <ul>
+  <li><a href="{{page.root}}/book/glossary.html#nimble-language" target="glo:nimble-language">Nimble languages</a> like Python are slower than <a href="{{page.root}}/book/glossary.html#sturdy-language" target="glo:sturdy-language">sturdy languages</a> like Fortran, C/C++, or Java
+    <ul>
+    <li>Factor of 20 is common</li>
+    <li>But it's relatively easy to call libraries in those other languages from Python</li>
+    </ul>
+  </li>
+  <li>Doesn't have as many numerical or statistical tools as MATLAB
+    <ul>
+    <li>But its <code>Numeric</code> package isn't bad</li>
+    </ul>
+  </li>
+  <li>Not as widely used as Perl
+    <ul>
+    <li>But it's catching up</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>5) Why Another Language?</h2>
+  <ul>
+  <li>This course isn't really about Python
+    <ul>
+    <li>It's about solving software engineering problems</li>
+    </ul>
+  </li>
+  <li>But we have to write the examples in something
+    <ul>
+    <li>Might as well choose something useful</li>
+    <li>And it puts everyone on an equal footing</li>
+    </ul>
+  </li>
+  <li>For more information:
+    <ul>
+    <li><a href="bib.html#bib:lutz-ascher-learning-python" target="bib:lutz-ascher-learning-python">[Lutz &amp; Ascher 2003]</a> is the standard introduction</li>
+    <li><a href="bib.html#bib:martelli-python-cookbook" target="bib:martelli-python-cookbook">[Martelli 2005]</a> is a collection of useful tips and tricks</li>
+    <li>See <a href="bib.html#bib:python-cookbook" target="bib:python-cookbook">[Python Cookbook]</a> for the on-line version</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>6) Execution Cycle</h2>
+  <ul>
+  <li><a href="{{page.root}}/book/glossary.html#sturdy-language" target="glo:sturdy-language">Sturdy languages</a> use a two-step execution cycle
+    <ul>
+    <li>Compile source code, putting machine-oriented form in file</li>
+    <li>Run the contents of that file on top of an operating system or <a href="{{page.root}}/book/glossary.html#virtual-machine" target="glo:virtual-machine">virtual machine</a></li>
+    </ul>
+  </li>
+  <li><a href="{{page.root}}/book/glossary.html#nimble-language" target="glo:nimble-language">Nimble languages</a> combine these two steps
+    <ul>
+    <li>Compiler and virtual machine are the same program</li>
+    <li>Load source code, translate into more compact form if necessary, and execute</li>
+    </ul>
+  </li>
+  </ul>
+  <figure id="fig:py01-sturdy-vs-nimble">
+    <img alt="Sturdy vs. Nimble Execution" src="py01/sturdy-vs-nimble.png"/>
+    <p>Figure 2.1: Sturdy vs. Nimble Execution</p>
+  </figure>
+  <ul>
+  <li>This is why sturdy programs run faster, but nimble programs are faster to write
+    <ul>
+    <li>Compiling gives the computer a chance to optimize</li>
+    <li>Load-and-go makes human turnaround faster
+      <ul>
+      <li>And as we'll see <a href="oop02.html" target="lec:oop02">Python Advanced Object-Oriented Programming</a>, it permits some powerful high-level programming tricks</li>
+      </ul>
+    </li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>7) Running Python Programs</h2>
+  <ul>
+  <li>Can run Python interactively, like the shell
+    <ul>
+    <li><code>^D</code> represents control-D, which is Unix's way of saying &quot;end of input&quot;</li>
+    </ul>
+  </li>
+  </ul>
+  <pre class="in" file="py01/interactive-1.cmd">$ python
+Python 2.4.2 (#67, Sep 28 2005, 12:41:11) [MSC v.1310 32 bit (Intel)] on win32
+Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;license&quot; for more information.
+&gt;&gt;&gt; print 124/28
+</pre>
+  <pre class="out" file="py01/interactive-2.out">4
+</pre>
+  <pre class="in" file="py01/interactive-3.cmd">&gt;&gt;&gt; print 124.0/28.0
+</pre>
+  <pre class="out" file="py01/interactive-4.out">4.4285714285714288
+</pre>
+  <pre class="in" file="py01/interactive-5.cmd">&gt;&gt;&gt; ^D
+</pre>
+  <ul>
+  <li>Obviously don't want to retype program every time you want to run it
+    <ul>
+    <li>Save program in a file with a <code>.py</code> extension, and type <code>python filename.py</code></li>
+    </ul>
+  </li>
+  </ul>
+  <pre class="in" file="py01/saved-1.cmd">$ cat saved.py
+</pre>
+  <pre class="out" file="py01/saved-2.out">print 124/28
+print 124.0/28.0
+</pre>
+  <pre class="in" file="py01/saved-3.cmd">$ python saved.py
+</pre>
+  <pre class="out" file="py01/saved-4.out">4
+4.42857142857
+</pre>
+</div>
+
+<div class="topic">
+  <h2>8) Execution Shortcuts</h2>
+  <ul>
+  <li>On Unix, make <code>#!/usr/bin/python</code> the first line of the program
+    <ul>
+    <li>This tells Unix to execute <code>/usr/bin/python</code> with the rest of the file as its input</li>
+    </ul>
+  </li>
+  <li>Of course, this doesn't work if Python is installed somewhere else
+    <ul>
+    <li>Use <code>which python</code> to find out</li>
+    </ul>
+  </li>
+  <li>Better: use <code>#!/usr/bin/env python</code> as the first line
+    <ul>
+    <li>This tells Unix to use <code>/usr/bin/env</code> to find Python, then run the script with it</li>
+    </ul>
+  </li>
+  </ul>
+  <pre class="in" file="py01/hashbang-1.cmd">$ cat hashbang.py
+</pre>
+  <pre class="out" file="py01/hashbang-2.out">#!/usr/bin/env python
+print 124/28
+print 124.0/28.0
+</pre>
+  <pre class="in" file="py01/hashbang-3.cmd">$ hashbang.py
+</pre>
+  <pre class="out" file="py01/hashbang-4.out">4
+4.42857142857
+</pre>
+  <ul>
+  <li>On Windows, associate <code>.py</code> files with Python
+    <ul>
+    <li>Happens automatically when you run the Python Windows installer</li>
+    <li>Double-clicking on anything ending in <code>.py</code> will then run it</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>9) Variables</h2>
+  <ul>
+  <li>Variables are names for values
+    <ul>
+    <li>No declarations: variables are created when something is assigned to them</li>
+    </ul>
+  </li>
+  </ul>
+  <pre file="py01/variables.py">planet = &quot;Pluto&quot;
+moon = &quot;Charon&quot;
+p = planet
+</pre>
+    <figure id="fig:py01-vars-values">
+      <img alt="Variables Refer to Values" src="py01/vars-values.png"/>
+      <p>Figure 2.2: Variables Refer to Values</p>
+    </figure>
+  <ul>
+  <li>No types: a variable is just a name, and can refer to different types of values at different times</li>
+  </ul>
+  <pre file="py01/untyped.py">planet = &quot;Pluto&quot;
+moon = &quot;Charon&quot;
+p = planet
+planet = 9
+</pre>
+  <figure id="fig:py01-vars-untyped">
+    <img alt="Variables Are Untyped" src="py01/vars-untyped.png"/>
+    <p>Figure 2.3: Variables Are Untyped</p>
+  </figure>
+  <ul>
+  <li>Your code will be easier to understand if you don't abuse this</li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>10) Possible Mistakes</h2>
+  <ul>
+  <li>Must give a variable a value before using it</li>
+  </ul>
+  <pre file="py01/undefined-var.py">planet = &quot;Sedna&quot;
+print plant      # note the misspelling
+</pre>
+  <pre class="err" file="py01/undefined-var.err">Traceback (most recent call last):
+  File &quot;lec/inc/py01/undefined_var.py&quot;, line 2, in ?
+    print plant      # note the misspelling
+NameError: name 'plant' is not defined
+</pre>
+  <ul>
+  <li>Unlike some languages, Python doesn't provide a default value
+    <ul>
+    <li>Because doing so can hide a lot of errors</li>
+    </ul>
+  </li>
+  <li>Note: anything from <code>&quot;#&quot;</code> to the end of the line is a comment</li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>11) Who Has a Type?</h2>
+  <ul>
+  <li>Variables don't have types, but values do
+    <ul>
+    <li>Python complains if you try to operate on incompatible values</li>
+    </ul>
+  </li>
+  </ul>
+  <pre file="py01/add-int-str.py">x = &quot;two&quot;       # &quot;two&quot; is a string
+y = 2           # 2 is an integer
+print x * y     # multiplying a string concatenates it repeatedly
+print x + y     # but you can't add an integer and a string
+</pre>
+  <pre class="out" file="py01/add-int-str.out">twotwo
+</pre>
+  <pre class="err" file="py01/add-int-str.err">Traceback (most recent call last):
+  File &quot;lec/inc/py01/add_int_str.py&quot;, line 4, in ?
+    print x + y            # but you can't add an integer and a string
+TypeError: cannot concatenate 'str' and 'int' objects
+</pre>
+</div>
+
+<div class="topic">
+  <h2>12) Printing</h2>
+  <ul>
+  <li>The <code>print</code> statement prints zero or more values to standard output
+    <ul>
+    <li>Separated by spaces</li>
+    </ul>
+  </li>
+  <li>Automatically puts a newline at the end
+    <ul>
+    <li>So <code>print</code> on its own just prints a blank line</li>
+    <li>Putting a comma at the end of the line suppresses the newline</li>
+    </ul>
+  </li>
+  </ul>
+  <pre file="py01/printing.py">planet = &quot;Pluto&quot;
+num_moons = 1
+moon = &quot;Charon&quot;
+print planet, &quot;has&quot;, num_moons, &quot;satellite&quot;,
+print &quot;and its name is&quot;, moon
+</pre>
+  <pre class="out" file="py01/printing.out">Pluto has 1 satellite and its name is Charon
+</pre>
+</div>
+
+<div class="topic">
+  <h2>13) Quoting</h2>
+  <ul>
+  <li>Use either single or double quotes to create strings
+    <ul>
+    <li>Each string must start and end with the same kind of quote</li>
+    <li>But different strings in the same program can use different kinds of quotes</li>
+    </ul>
+  </li>
+  </ul>
+  <pre file="py01/nested-quotes.py">print &quot;He said, \&quot;It ain't what you know, it's what you can.\&quot;&quot;
+</pre>
+  <pre class="out" file="py01/nested-quotes.out">He said, &quot;It ain't what you know, it's what you can.&quot;
+</pre>
+  <ul>
+  <li>Use triple quotes (of either kind) to create a multi-line string</li>
+  </ul>
+  <pre file="py01/quoting.py">print &quot;Sedna was discovered in 2004&quot;
+print 'It takes 10,500 years to circle the sun.'
+print '''The tiny world may be part of the Oort Cloud,
+a shell of icy proto-comets left over from
+the formation of the Solar System.'''
+</pre>
+</div>
+
+<div class="topic">
+  <h2>14) Converting Values to Strings</h2>
+  <ul>
+  <li>The built-in function <code>str</code> converts things to strings</li>
+  </ul>
+  <pre file="py01/tostring.py">print &quot;Diameter: &quot; + str(1280) + &quot;-&quot; + str(1760) + &quot; km&quot;
+</pre>
+  <pre class="out" file="py01/tostring.out">Diameter: 1280-1760 km
+</pre>
+  <ul>
+  <li>Use <code>int</code>, <code>float</code>, etc. to convert values to other types</li>
+  </ul>
+  <pre file="py01/totype.py">print int(12.3)
+print float(4)
+</pre>
+  <pre class="out" file="py01/totype.out">12
+4.0
+</pre>
+</div>
+
+<div class="topic">
+  <h2>15) Escape Sequences</h2>
+  <ul>
+  <li>Use <a href="{{page.root}}/book/glossary.html#escape-sequence" target="glo:escape-sequence">escape sequences</a> to put special characters in strings
+    <ul>
+    <li>Borrowed directly from C</li>
+    <li>Most common are tab <code>&quot;\t&quot;</code> and newline <code>&quot;\n&quot;</code></li>
+    </ul>
+  </li>
+    <div id="tbl:py01-escapes">
+      <table>
+        <tr>
+          <th>Expression</th>
+          <th>Meaning</th>
+        </tr>
+        <tr>
+          <td><code>\\</code></td>
+          <td><code>backslash</code></td>
+        </tr>
+        <tr>
+          <td><code>\'</code></td>
+          <td><code>single quote</code></td>
+        </tr>
+        <tr>
+          <td><code>\</code></td>
+          <td><code>double quote</code></td>
+        </tr>
+        <tr>
+          <td><code>\b</code></td>
+          <td><code>backspace</code></td>
+        </tr>
+        <tr>
+          <td><code>\n</code></td>
+          <td><code>newline</code></td>
+        </tr>
+        <tr>
+          <td><code>\r</code></td>
+          <td><code>carriage return</code></td>
+        </tr>
+        <tr>
+          <td><code>\t</code></td>
+          <td><code>tab</code></td>
+        </tr>
+      </table>
+      <p>Table 2.1: Character Escape Sequences</p>
+    </div>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>16) Numbers</h2>
+  <ul>
+  <li><code>14</code> is an integer (32 bits long on most machines)</li>
+  <li><code>14.0</code> is double-precision floating point (64 bits long)</li>
+  <li><code>1+4j</code> is a complex number (two 64-bit values)
+    <ul>
+    <li>Use <code>x.real</code> and <code>x.imag</code> to get the real and imaginary parts</li>
+    </ul>
+  </li>
+  <li><code>123456789L</code> is a <a href="{{page.root}}/book/glossary.html#long-integer" target="glo:long-integer">long integer</a>
+    <ul>
+    <li>Arbitrary length: uses as much memory as it needs to</li>
+    <li>Operations are several times slower</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>17) Arithmetic</h2>
+  <ul>
+  <li>Python borrows C's numeric operators
+    <ul>
+    <li>And adds <code>**</code> for exponentiation</li>
+      <div id="tbl:py01-arithops">
+        <table>
+          <tr>
+            <th>Name</th>
+            <th>Operator</th>
+            <th>Use</th>
+            <th>Value</th>
+            <th>Notes</th>
+          </tr>
+          <tr>
+            <td>Addition</td>
+            <td><code>+</code></td>
+            <td><code>35 + 22</code></td>
+            <td><code>57</code></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td></td>
+            <td></td>
+            <td><code>'Py' + 'thon'</code></td>
+            <td><code>'Python'</code></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>Subtraction</td>
+            <td><code>-</code></td>
+            <td><code>35 - 22</code></td>
+            <td><code>13</code></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>Multiplication</td>
+            <td><code>*</code></td>
+            <td><code>3 * 2</code></td>
+            <td><code>6</code></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td></td>
+            <td></td>
+            <td><code>'Py' * 2</code></td>
+            <td><code>'PyPy'</code></td>
+            <td><code>2 * 'Py'</code> is illegal</td>
+          </tr>
+          <tr>
+            <td>Division</td>
+            <td><code>/</code></td>
+            <td><code>3.0 / 2</code></td>
+            <td><code>1.5</code></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td></td>
+            <td></td>
+            <td><code>3 / 2</code></td>
+            <td><code>1</code></td>
+            <td>Integer division rounds down: <code>-3 / 2</code> is <code>-2</code>, not <code>-1</code></td>
+          </tr>
+          <tr>
+            <td>Exponentiation</td>
+            <td><code>**</code></td>
+            <td><code>2 ** 0.5</code></td>
+            <td><code>1.4142135623730951</code></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>Remainder</td>
+            <td><code>%</code></td>
+            <td><code>13 % 5</code></td>
+            <td><code>3</code></td>
+            <td></td>
+          </tr>
+        </table>
+        <p>Table 2.2: Numeric Operators in Python</p>
+      </div>
+    </ul>
+  </li>
+  <li>Python also has C's <a href="{{page.root}}/book/glossary.html#in-place-operator" target="glo:in-place-operator">in-place operators</a>
+    <ul>
+    <li><code>x += 3</code> does the same thing as <code>x = x + 3</code></li>
+    <li><code>5 += 3</code> is an error, since you can't assign a new value to 5...</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>18) Booleans</h2>
+  <ul>
+  <li><code>True</code> and <code>False</code> are true and false (d'oh)</li>
+  <li>Empty string and 0 are considered false
+    <ul>
+    <li>Just as 3 is equivalent to 3.0</li>
+    </ul>
+  </li>
+  <li>(Almost) everything else is true</li>
+  <li>Combine Booleans using <code>and</code>, <code>or</code>, <code>not</code></li>
+    <div id="tbl:py01-boolops">
+      <table>
+        <tr>
+          <th>Expression</th>
+          <th>Result</th>
+          <th>Notes</th>
+        </tr>
+        <tr>
+          <td><code>True or False</code></td>
+          <td><code>True</code></td>
+          <td></td>
+        </tr>
+        <tr>
+          <td><code>True and False</code></td>
+          <td><code>False</code></td>
+          <td></td>
+        </tr>
+        <tr>
+          <td><code>'a' or 'b'</code></td>
+          <td><code>'a'</code></td>
+          <td><code>or</code> is true if either side is true, so it stops after evaluating <code>'a'</code></td>
+        </tr>
+        <tr>
+          <td><code>'a' and 'b'</code></td>
+          <td><code>'b'</code></td>
+          <td><code>and</code> is only true if both sides are true, so it doesn't stop until it has evaluated <code>'b'</code></td>
+        </tr>
+        <tr>
+          <td><code>0 or 'b'</code></td>
+          <td><code>'b'</code></td>
+          <td>0 is false, but <code>'b'</code> is true</td>
+        </tr>
+        <tr>
+          <td><code>0 and 'b'</code></td>
+          <td><code>0</code></td>
+          <td>Since 0 is false, Python can stop evaluating there</td>
+        </tr>
+        <tr>
+          <td><code>0 and (1/0)</code></td>
+          <td><code>0</code></td>
+          <td><code>1/0</code> would be an error, but Python never gets that far</td>
+        </tr>
+        <tr>
+          <td><code>(x and 'set') or 'not set'</code></td>
+          <td>It depends</td>
+          <td>If <code>x</code> is true, this expression's value is <code>'set'</code>; if <code>x</code> is false, it is <code>'not set'</code></td>
+        </tr>
+      </table>
+      <p>Table 2.3: Boolean Operators in Python</p>
+    </div>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>19) Short-Circuit Evaluation</h2>
+  <ul>
+  <li><code>and</code> and <code>or</code> are <a href="{{page.root}}/book/glossary.html#short-circuit-evaluation" target="glo:short-circuit-evaluation">short-circuit</a> operators
+    <ul>
+    <li>Evaluate expressions left to right</li>
+    <li>Stop as soon as answer is known</li>
+    <li>Result is the last thing evaluated (rather than <code>True</code> or <code>False</code>)</li>
+      <figure id="fig:py01-short-circuit-eval">
+        <img alt="Short-Circuit Evaluation" src="py01/short-circuit-eval.png"/>
+        <p>Figure 2.4: Short-Circuit Evaluation</p>
+      </figure>
+    </ul>
+  </li>
+  <li>Can be used to create expressions like <code>val = cond and left or right</code>
+    <ul>
+    <li>If <code>cond</code> is <code>True</code>, <code>val</code> is assigned <code>left</code></li>
+    <li>If <code>cond</code> is <code>False</code>, <code>val</code> is assigned <code>right</code></li>
+    <li>It works, but it's hard to read</li>
+    <li>Clever isn't always smart</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>20) Comparisons</h2>
+  <ul>
+  <li>Python borrows C's comparison operators, too
+    <ul>
+    <li>But allows you to chain comparisons together, just as in mathematics</li>
+    </ul>
+  </li>
+    <div id="tbl:py01-compareops">
+      <table>
+        <tr>
+          <th>Expression</th>
+          <th>Value</th>
+        </tr>
+        <tr>
+          <td><code>3 &lt; 5</code></td>
+          <td><code>True</code></td>
+        </tr>
+        <tr>
+          <td><code>3.0 &lt; 5</code></td>
+          <td><code>True</code></td>
+        </tr>
+        <tr>
+          <td><code>3 != 5</code></td>
+          <td><code>True</code></td>
+        </tr>
+        <tr>
+          <td><code>3 == 5</code></td>
+          <td><code>False</code></td>
+        </tr>
+        <tr>
+          <td><code>3 &lt; 5 &lt;= 7</code></td>
+          <td><code>True</code></td>
+        </tr>
+        <tr>
+          <td><code>3 &lt; 5 &gt;= 2</code></td>
+          <td><code>True</code> (but please don't write this: it's hard to read)</td>
+        </tr>
+        <tr>
+          <td><code>3+2j &lt; 5</code></td>
+          <td>Error: can only use <code>==</code> and <code>!=</code> on complex numbers</td>
+        </tr>
+      </table>
+      <p>Table 2.4: Comparison Operators in Python</p>
+    </div>
+  <li>Note the difference between assignment and testing for equality
+    <ul>
+    <li>Use a single equals sign <code>=</code> for assignment</li>
+    <li>Use a double equals sign <code>==</code> to test if two things have equal values</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>21) String Comparisons</h2>
+  <ul>
+  <li>Characters are encoded as numbers: digits come before uppercase letters, all of which come before lowercase letters
+    <ul>
+    <li>Punctuation is mixed in between, just to make matters difficult</li>
+    </ul>
+  </li>
+  <li>Strings are compared character by character from first to last until:
+    <ul>
+    <li>One character is less than another</li>
+    <li>One string runs out of characters</li>
+    </ul>
+  </li>
+    <div id="tbl:py01-stringcompareops">
+      <table>
+        <tr>
+          <th>Expression</th>
+          <th>Value</th>
+        </tr>
+        <tr>
+          <td><code>'abc' &lt; 'def'</code></td>
+          <td><code>True</code></td>
+        </tr>
+        <tr>
+          <td><code>'abc' &lt; 'Abc'</code></td>
+          <td><code>False</code></td>
+        </tr>
+        <tr>
+          <td><code>'ab' &lt; 'abc'</code></td>
+          <td><code>True</code></td>
+        </tr>
+        <tr>
+          <td><code>'0' &lt; '9'</code></td>
+          <td><code>True</code></td>
+        </tr>
+        <tr>
+          <td><code>'100' &lt; '2'</code></td>
+          <td><code>True</code></td>
+        </tr>
+      </table>
+      <p>Table 2.5: String Comparisons in Python</p>
+    </div>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>22) Conditionals</h2>
+  <ul>
+  <li>Python uses <code>if</code>, <code>elif</code> (<em>not</em> <code>else if</code>), and <code>else</code></li>
+  <li>Use a colon and indentation to show nesting</li>
+  </ul>
+  <pre file="py01/conditional.py">a = 3
+if a &lt; 0:
+    print 'less'
+elif a == 0:
+    print 'equal'
+else:
+    print 'greater'
+</pre>
+  <pre class="out" file="py01/conditional.out">greater
+</pre>
+</div>
+
+<div class="topic">
+  <h2>23) Why Indentation?</h2>
+  <ul>
+  <li>Why doesn't Python use <code>begin/end</code> or <code>{...</code>}?
+    <ul>
+    <li>Because studies showed that indentation is what everyone actually pays attention to</li>
+    <li>Just count the number of warnings in C/Java books about misleading indentation</li>
+    </ul>
+  </li>
+  <li>Doesn't matter how much you use, but:
+    <ul>
+    <li>Everything in the block must be indented the same amount</li>
+    <li>And most people use four spaces</li>
+    </ul>
+  </li>
+  <li>Please do <em>not</em> use tabs
+    <ul>
+    <li>Python interprets them as (up to) eight characters</li>
+    <li>But different editors may display them differently</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>24) While Loops</h2>
+  <ul>
+  <li>Do something repeatedly as long as some condition is true
+    <ul>
+    <li>Again, use colon and indentation to show nesting</li>
+    </ul>
+  </li>
+  </ul>
+  <pre file="py01/while.py">num_moons = 3
+while num_moons &gt; 0:
+    print num_moons
+    num_moons -= 1
+</pre>
+  <pre class="out" file="py01/while.out">3
+2
+1
+</pre>
+  <ul>
+  <li>Do the &quot;something&quot; zero times if the condition is false the first time it is tested</li>
+  </ul>
+  <pre file="py01/while-none.py">print 'before'
+num_moons = -1
+while num_moons &gt; 0:
+    print num_moons
+    num_moons -=1
+print 'after'
+</pre>
+  <pre class="out" file="py01/while-none.out">before
+after
+</pre>
+  <ul>
+  <li>If the condition is always true, the loop never ends</li>
+  </ul>
+  <pre file="py01/while-infinite.py">num_moons = 3
+while num_moons &gt; 0:
+    print num_moons
+    # oops --- forgot to subtract one
+</pre>
+  <pre class="out" file="py01/while-infinite.out">3
+3
+3
+</pre>
+</div>
+
+<div class="topic">
+  <h2>25) Break and Continue</h2>
+  <ul>
+  <li>Can break out of the middle of a loop using <code>break</code></li>
+  </ul>
+  <pre file="py01/while-break.py">num_moons = 3
+while True:             # Looks like an infinite loop...
+    print num_moons
+    num_moons -= 1
+    if num_moons &lt;= 1:
+        break           # ...but there's a way out
+</pre>
+  <pre class="out" file="py01/while-break.out">3
+2
+</pre>
+  <ul>
+  <li>Can skip to the next iteration using <code>continue</code></li>
+  </ul>
+  <pre file="py01/while-continue.py">num_moons = 5
+while num_moons &gt; 0:
+    print 'top:', num_moons
+    num_moons -= 1
+    if (num_moons % 2) == 0:
+        continue
+    print '...bottom:', num_moons
+</pre>
+  <pre class="out" file="py01/while-continue.out">top: 5
+top: 4
+...bottom: 3
+top: 3
+top: 2
+...bottom: 1
+top: 1
+</pre>
+  <ul>
+  <li>Don't abuse these
+    <ul>
+    <li>A single test at the top of the loop makes code much easier to read</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>26) String Formatting</h2>
+  <ul>
+  <li>Python's <code>%</code> operator formats output
+    <ul>
+    <li>Left side is a string specifying how things are to be formatted</li>
+    <li>Right side is the values to be formatted
+      <ul>
+      <li>One value on its own...</li>
+      <li>...or several values in parentheses, separated by commas</li>
+      </ul>
+    </li>
+    </ul>
+  </li>
+  <li><code>'here %s go' % 'we'</code> creates <code>&quot;here we go&quot;</code>
+    <ul>
+    <li>The <code>&quot;%s&quot;</code> in the left string means &quot;insert a string here&quot;</li>
+    <li>Creates a new string (since strings are immutable)</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>27) Format Specifiers</h2>
+  <ul>
+  <li><code>'left %d right %d' % (-1, 1)</code> creates <code>&quot;left -1 right 1&quot;</code>
+    <ul>
+    <li><code>&quot;%d&quot;</code> stands for &quot;decimal integer&quot;</li>
+    </ul>
+  </li>
+  <li><code>'%04d' % 13</code> creates <code>&quot;0013&quot;</code>
+    <ul>
+    <li>The leading zero means &quot;pad with zeroes&quot;</li>
+    <li>The 4 means &quot;at least 4 characters wide&quot;</li>
+    <li><code>'[%-4d]' % 13</code> creates <code>&quot;[13~~]&quot;</code></li>
+    </ul>
+  </li>
+  <li><code>'%6.4f %%' % 37.2</code> creates <code>&quot;37.2000 %&quot;</code>
+    <ul>
+    <li>A floating point number, at least six characters wide, padded on the left with spaces, with four characters after the decimal point</li>
+    <li><code>&quot;%%&quot;</code> is translated into a single <code>&quot;%&quot;</code>
+      <ul>
+      <li>Just as <code>&quot;\\&quot;</code> is how you represent a single <code>&quot;\&quot;</code> in a string</li>
+      </ul>
+    </li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>28) Supported Formats</h2>
+  <div id="tbl:py01-formats">
+    <table>
+      <tr>
+        <th>Format</th>
+        <th>Meaning</th>
+        <th>Example</th>
+        <th>Output</th>
+      </tr>
+      <tr>
+        <td><code>&quot;d&quot;</code></td>
+        <td>Signed decimal integer</td>
+        <td><code>'%d %d' % (13, 15)</code></td>
+        <td><code>&quot;13 15&quot;</code></td>
+      </tr>
+      <tr>
+        <td><code>&quot;o&quot;</code></td>
+        <td>Unsigned octal (base-8)</td>
+        <td><code>'%o %o' % (13, 15)</code></td>
+        <td><code>&quot;15 17&quot;</code></td>
+      </tr>
+      <tr>
+        <td><code>&quot;x&quot;</code></td>
+        <td>Lower case unsigned hexadecimal (base-16)</td>
+        <td><code>'%x %x' % (13, 15)</code></td>
+        <td><code>&quot;d f&quot;</code></td>
+      </tr>
+      <tr>
+        <td><code>&quot;X&quot;</code></td>
+        <td>Upper case unsigned hexadecimal (base-16)</td>
+        <td><code>'%X %X' % (13, 15)</code></td>
+        <td><code>&quot;D F&quot;</code></td>
+      </tr>
+      <tr>
+        <td><code>&quot;e&quot;</code></td>
+        <td>Lower case exponential floating point</td>
+        <td><code>'%e' % 123.45</code></td>
+        <td><code>&quot;1.234500e+02&quot;</code></td>
+      </tr>
+      <tr>
+        <td><code>&quot;E&quot;</code></td>
+        <td>Upper case exponential floating point</td>
+        <td><code>'%E' % 123.45</code></td>
+        <td><code>&quot;1.234500E+02&quot;</code></td>
+      </tr>
+      <tr>
+        <td><code>&quot;f&quot;</code></td>
+        <td>Decimal floating point</td>
+        <td><code>'%f' % 123.45</code></td>
+        <td><code>&quot;123.4500&quot;</code></td>
+      </tr>
+      <tr>
+        <td><code>&quot;s&quot;</code></td>
+        <td>String (converts other types using <code>str()</code>)</td>
+        <td><code>'%s %s %s' % ('nickel', 28, 58.69)</code></td>
+        <td><code>&quot;nickel 28 58.69&quot;</code></td>
+      </tr>
+    </table>
+    <p>Table 2.6: String Formats in Python</p>
+  </div>
+</div>
+
+<div class="topic">
+  <h2>29) Summary</h2>
+  <ul>
+  <li>Scripting languages are increasingly popular because they optimize human time
+    <ul>
+    <li>Which is now more expensive than machine time in all but a handful of cases</li>
+    </ul>
+  </li>
+  <li>Python is one of the cleanest scripting languages around
+    <ul>
+    <li>A good tool in its own right</li>
+    <li>An excellent way to build other tools</li>
+    </ul>
+  </li>
+  </ul>
+</div>

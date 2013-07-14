@@ -1,0 +1,577 @@
+---
+layout: v3_slideshow
+title: More Unix Shell
+prev: v3/shell01.html
+uplink: v3/index.html
+next: v3/build.html
+---
+<div class="topic">
+  <h2>1) Introduction</h2>
+<ul>
+        <li>In the first lecture we talked about three components of an OS for which the shell can act as a interface: files, processes, communication</li>
+        <li>We will first fill in a few pieces about files that we didn't have time to cover in the first lecture and focus this lecture around process management and communication</li>
+</ul>
+</div>
+
+
+<div class="topic">
+  <h2>2) You Can Skip This Lecture If...</h2>
+  <ul>
+  <li>You know what <code>stdin</code> and <code>stdout</code> are</li>
+  <li>You know what a process is</li>
+  <li>You know what a pipe is</li>
+  <li>You know what <code>$PATH</code> is</li>
+  <li>You know what <code>-rwxr-xr-x</code> means</li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>3) Wildcards</h2>
+<p>Some characters (called <a href="{{page.root}}/book/glossary.html#wildcard" target="glo:wildcard">wildcards</a>) mean special things to the shell.  (You will see this again when you get to regular expressions.)</p>
+    <ul>
+    <li><code>*</code> matches zero or more characters
+      <ul>
+      <li>So <code>ls bio/*.txt</code> lists all the text files in the <code>bio</code> directory</li>
+      </ul>
+    </li>
+    </ul>
+  
+  <pre class="in" file="shell02/wc-wildcard.cmd">$ ls bio/*.txt
+</pre>
+  <pre class="out" file="shell02/wc-wildcard.out">bio/albus.txt   bio/ginny.txt   bio/harry.txt   bio/hermione.txt    bio/ron.txt
+</pre>
+  <ul>
+  <li><code>?</code> matches any single character
+    <ul>
+    <li>So <code>ls jan-??.txt</code> lists text files whose names start with &quot;jan-&quot; followed by two characters</li>
+    <li>You can probably guess what <code>ls jan-??.*</code> does</li>
+    </ul>
+  </li>
+  <li>Note that:
+    <ul>
+    <li>The shell expands wildcards, not individual applications
+      <ul>
+      <li><code>ls</code> can't tell whether it was invoked as <code>ls *.txt</code> or as <code>ls earth.txt venus.txt</code></li>
+      </ul>
+    </li>
+    <li>Wildcards only work with filenames, not with command names
+      <ul>
+      <li><code>ta*</code> does <em>not</em> find the <code>tabulate</code> command</li>
+      </ul>
+    </li>
+        </ul></li>
+        
+        <li><code>~</code> is not strictly a wild card, but it is a character with a special meaning
+                <ul>
+                        <li>By itself it refers to the current user's home directory
+                                <ul>
+                                        <li><code>cd ~</code> is the same as <code>cd $HOME</code></li>
+                                </ul>
+                        </li>
+                        <li>As the prefix to a user name (E.g., <code>~reid</code>), it refers to that user's home directory
+                        </li>
+                </ul>
+        </li>
+    </ul>
+
+
+</div>
+
+<div class="topic">
+  <h2>4) File Ownership and Permissions</h2>
+  <ul>
+  <li>On Unix, every user belongs to one or more groups
+    <ul>
+    <li>The <code>groups</code> command will show you which ones you are in</li>
+    </ul>
+  </li>
+  <li>Every file is owned by a particular user <em>and</em> a particular group
+    <ul>
+    <li>Can assign read (r), write (w), and execute (x) permissions independently to user, group, and others</li>
+    <li>Read: can look at contents, but not modify them</li>
+    <li>Write: can modify contents</li>
+    <li>Execute: can run the file (e.g., it's a program)</li>
+    </ul>
+  </li>
+  <li><code>ls -l</code> shows this information
+    <ul>
+    <li>Along with the file's size and a few other things</li>
+    </ul>
+  </li>
+  <li>Permissions displayed as three <code>rwx</code> triples
+    <ul>
+    <li>&quot;Missing&quot; permissions shown by <code>&quot;-&quot;</code></li>
+    <li>So <code>rw-rw-r--</code> means:
+      <ul>
+      <li>User and group can read and write</li>
+      <li>Everyone else can read, but not write</li>
+      <li>No one can execute</li>
+      </ul>
+    </li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>5) Directory Permissions</h2>
+  <ul>
+  <li>Execute permission means something different for directories
+    <ul>
+    <li>Allows you to &quot;go into&quot; a directory, but does <em>not</em> mean you can read its contents</li>
+    </ul>
+  </li>
+  <li>If <code>tools</code> has permission <code>rwx--x--x</code>, then:
+    <ul>
+    <li>If someone other than the owner does <code>ls tools</code>, permission is denied</li>
+    <li>But anyone who wants to can run <code>tools/pfold</code></li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>6) Changing Permissions</h2>
+  <ul>
+  <li>Change permissions using <code>chmod</code>
+    <ul>
+    <li><code>chmod u+x broom</code> allows <code>broom</code>'s owner to run it</li>
+    <li><code>chmod o-r notes.txt</code> takes away the world's read permission for <code>notes.txt</code></li>
+    </ul>
+  </li>
+
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>7) Changing Permissions Continued</h2>
+  <ul>
+  <li>Change permissions to <code>rwxr-xr-x</code></li>
+  <li>Run it with <code>./nojunk</code>
+    <ul>
+    <li>Or if <code>$HOME/bin</code> is in your search path, move it there</li>
+    </ul>
+  </li>
+  <li>Don't call your temporary test programs <code>test</code>
+    <ul>
+    <li>There's already <code>/usr/bin/test</code></li>
+    <li>Your PATH may cause that program to run instead of yours</li>
+    <li>Confusion results, so use something else, e.g., <code>./try</code></li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>8) Ownership and Permission: Windows</h2>
+  <ul>
+  <li>Of course, it all works differently on Windows
+    <ul>
+    <li>Not better or worse, just differently</li>
+    </ul>
+  </li>
+  <li>Windows XP uses <a href="{{page.root}}/book/glossary.html#access-control-list" target="glo:access-control-list">access control lists</a>
+    <ul>
+    <li>Every file and directory has a list of (who, what) pairs</li>
+    <li>&quot;Who&quot; can be a group</li>
+    <li>Some versions of Unix provide ACLs as well, but many tools don't understand them</li>
+    </ul>
+  </li>
+  <li>Older versions of Windows (such as Windows 95 and Windows 2000) are fundamentally insecure, and shouldn't be used</li>
+  <li>Cygwin does its best to make the Windows model look like Unix's
+    <ul>
+    <li>When you trip over the differences, please consult a system administrator</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>9) Configuration</h2>
+  <ul>
+  <li>To set a variable's value automatically when you log in, edit <code>~/.bashrc</code>
+    <ul>
+    <li><code>&quot;~&quot;</code> is a shortcut meaning &quot;your home directory&quot;</li>
+    </ul>
+  </li>
+  </ul>
+  <pre file="shell02/bash-rc.txt"># Add personal tools directory to PATH.
+PATH=$HOME/bin:$PATH
+
+# Personal settings.
+export EDITOR=/local/bin/emacs
+export PRINTER=gryffindor-laserwriter
+
+# Change default behavior of commands.
+alias ls=&quot;ls -F&quot;
+</pre>
+  <ul>
+  <li>Note: <code>.bashrc</code> files can become very complex...</li>
+  <li>Many applications look for personal configuration files in the user's home directory
+    <ul>
+    <li>By convention, their names begin with &quot;.&quot; so that a normal <code>ls</code> won't show them</li>
+    <li>Once upon a time, the &quot;rc&quot; at the end meant &quot;run commands&quot;</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+<h2>10) The Shell as a programming environment</h2>
+  <ul>
+  <li>The real power of the shell is when you look at it as a component-based programming environment
+    <ul>
+    <li>Small tools that each do one job</li>
+    <li>...can be connected together to create ad hoc solutions to larger problems</li>
+    </ul>
+  </li>
+  <li>A good model, even when you're building large GUI or web applications</li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>11) Redirecting Input and Output</h2>
+  <ul>
+  <li>A running program is called a <a href="{{page.root}}/book/glossary.html#process" target="glo:process">process</a></li>
+  <li>Every process automatically has three connections to the outside world:
+    <ul>
+    <li><a href="{{page.root}}/book/glossary.html#standard-input" target="glo:standard-input">Standard input</a> (stdin): connected to the keyboard</li>
+    <li><a href="{{page.root}}/book/glossary.html#standard-output" target="glo:standard-output">Standard output</a> (stdout): connected to the screen</li>
+    <li><a href="{{page.root}}/book/glossary.html#standard-error" target="glo:standard-error">Standard error</a> (stderr): also connected to the screen
+      <ul>
+      <li>Used for error messages</li>
+      </ul>
+    </li>
+    </ul>
+  </li>
+  <li>You can tell the shell to connect standard input and standard output to files instead
+    <ul>
+    <li><code>command &lt; input_file</code> reads from <code>input_file</code> instead of from the keyboard
+      <ul>
+      <li>Don't need to use this very often, because most Unix commands let you specify the input file (or files) as command-line arguments</li>
+      </ul>
+    </li>
+    <li><code>command &gt; output_file</code> writes to <code>output_file</code> instead of to the screen
+      <ul>
+      <li>Only &quot;normal&quot; output goes to the file, not error messages</li>
+      </ul>
+    </li>
+    <li><code>command &lt; input_file &gt; output_file</code> does both</li>
+    <figure id="fig:shell02-redirection">
+      <img alt="Redirecting Standard Input and Output" src="shell02/redirection.png"/>
+      <p>Figure 10.1: Redirecting Standard Input and Output</p>
+    </figure>
+    <li>Note that redirection takes effect command-by-command, rather than permanently</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>12) Redirection Examples</h2>
+  <ul>
+  <li>Save number of words in all text files to <code>words.len</code>:</li>
+  </ul>
+  <pre class="in" file="shell02/redirecting-wc.cmd">$ cd bio
+$ wc *.txt &gt; words.len
+</pre>
+  <ul>
+  <li>Nothing appears on the screen because output is being sent to the file <code>words.len</code></li>
+  <li>Check contents using <code>cat</code></li>
+  </ul>
+  <pre class="in" file="shell02/wc-output.cmd">$ cat words.len
+</pre>
+  <pre class="out" file="shell02/wc-output.out">   7   66  468 albus.txt
+   5   46  311 ginny.txt
+   5   49  342 harry.txt
+   5   49  331 hermione.txt
+   6   54  364 ron.txt
+  28  264 1816 total
+</pre>
+  <ul>
+  <li>Try typing <code>cat &gt; junk.txt</code>
+    <ul>
+    <li>No input file specified, so <code>cat</code> reads from the keyboard</li>
+    <li>Output sent to a file</li>
+    <li>The world's dumbest text editor</li>
+    </ul>
+  </li>
+  <li>When you're done, use <code>rm junk.txt</code> to get rid of the file
+    <ul>
+    <li>Don't type <code>rm *</code> unless you're really, really sure that's what you want to do...</li>
+    </ul>
+  </li>
+  <li>Don't redirect out to the same file, e.g., <code>sort words &gt;words</code>
+    <ul>
+    <li>The shell sets up redirection before running the command</li>
+    <li>Redirecting out to an existing file truncates it make it empty</li>
+    <li><code>sort</code> then goes and reads the empty file</li>
+    <li>Contents of <code>words</code> are lost</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>13) Pipes</h2>
+  <ul>
+  <li>Suppose you want to use the output of one program as the input of another
+    <ul>
+    <li>E.g., use <code>wc -w *.txt</code> to count the words in some files, then <code>sort -n</code> to sort numerically</li>
+    </ul>
+  </li>
+  <li>The obvious solution is to send output of first command to a temporary file, then read from that file</li>
+  </ul>
+  <pre class="in" file="shell02/wc-sort-temp-1.cmd">$ wc -w *.txt &gt; words.tmp
+$ sort -n words.tmp
+</pre>
+  <pre class="out" file="shell02/wc-sort-temp-2.out">  46 ginny.txt
+  49 harry.txt
+  49 hermione.txt
+  54 ron.txt
+  66 albus.txt
+ 264 total
+</pre>
+  <pre class="in" file="shell02/wc-sort-temp-3.cmd">$ rm words.tmp
+</pre>
+  <ul>
+  <li>The <em>right</em> answer is to use a <a href="{{page.root}}/book/glossary.html#pipe" target="glo:pipe">pipe</a>
+    <ul>
+    <li>Written as <code>&quot;|&quot;</code></li>
+    <li>Tells the operating system to connect the standard output of the first program to the standard input of the second</li>
+    </ul>
+  </li>
+  </ul>
+  <pre class="in" file="shell02/wc-sort-pipe.cmd">wc -w *.txt | sort -n
+</pre>
+  <pre class="out" file="shell02/wc-sort-pipe.out">  46 ginny.txt
+  49 harry.txt
+  49 hermione.txt
+  54 ron.txt
+  66 albus.txt
+ 264 total
+</pre>
+  <figure id="fig:shell02-pipes">
+    <img alt="Pipes" src="shell02/pipes.png"/>
+    <p>Figure 10.2: Pipes</p>
+  </figure>
+  <ul>
+  <li>More convenient and less error prone than temporary files</li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>14) Combining Pipes</h2>
+  <ul>
+  <li>Can chain any number of commands together
+    <ul>
+    <li>And combine with input and output redirection</li>
+    </ul>
+  </li>
+  </ul>
+  <pre class="in" file="shell02/complex-pipe.cmd">$ grep 'Title' spells.txt | sort | uniq -c | sort -n -r | head -10 &gt; popular_spells.txt
+</pre>
+  <ul>
+  <li>Any program that reads from standard input and writes to standard output can use redirection and pipes
+    <ul>
+    <li>Such programs are often called <a href="{{page.root}}/book/glossary.html#filter" target="glo:filter">filters</a></li>
+    <li>If your programs work like filters, you (and other people) can combine them with standard tools</li>
+    <li>A combinatorial explosion of goodness</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+
+
+
+
+<div class="topic">
+  <h2>15) Cygwin on Windows</h2>
+  <ul>
+  <li><a href="bib.html#bib:cygwin" target="bib:cygwin">[Cygwin]</a> does things a little differently</li>
+  <li>Uses the notation <code>/cygdrive/c/somewhere</code> instead of Windows' <code>C:/somewhere</code>
+    <ul>
+    <li>Because the colon in <code>C:/somewhere</code> would clash with the colons in the <code>PATH</code> variable</li>
+    </ul>
+  </li>
+  <li>By default, Cygwin treats <code>C:/cygwin</code> as the root of its file system
+    <ul>
+    <li>So <code>/home/rweasley</code> is a synonym for <code>C:/cygwin/home/rweasley</code></li>
+    </ul>
+  </li>
+  <li>Yes, it can be confusing
+    <ul>
+    <li>But then, it <em>is</em> trying to make one operating system look like another</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+        <h2>16) Job control</h2>
+        <ul>
+        <li>A job is a program whose execution has been initiated by the user</li>      
+        <li>At any moment a process can be running or suspended</li>
+        <li>Foreground job:
+                <ul>
+                        <li>a process that has control of the terminal</li>
+                </ul>
+        </li>
+        <li>Background job:
+                <ul>
+                        <li>runs concurrently with the parent shell and does not take control of the keyboard</li>
+                        <li>output may still appear in the shell</li>
+                </ul>
+        </li>
+        <li>Start a job in the background by appending <code>&amp;</code></li>
+        <li>Commands: 
+        <div id="tbl:shell02-jobcommands">
+            <table>
+              <tr>
+                <td><code>^C</code></td>
+                <td>Send the SIGTERM signal to the foreground process</td>
+              </tr>
+              <tr>
+                <td><code>^Z</code></td>
+                <td>Send the SIGSTOP signal to the foreground process</td>
+              </tr>
+              <tr>
+                <td><code>jobs</code></td>
+                <td>Display the status of active background jobs controlled by the shell.</td>
+              </tr>
+              <tr>
+                <td><code>fg</code></td>
+                <td>Change the first background job to the foreground</td>
+              </tr>
+              <tr>
+                <td><code>bg</code></td>
+                <td>Continue the suspended job in the background</td>
+              </tr>
+            </table>
+            <p>Table 10.1: Job Commands</p>
+        </div>
+        </li>
+        </ul>
+</div>
+
+<div class="topic">
+        <h2>17) grep</h2>
+        <ul>
+                <li>One of the most useful shell commands</li>
+                <li>Search for a word or pattern in a file or set of files</li>
+                <li>E.g., <code>grep reid /etc/passwd</code></li>
+                <li>Lots of useful options:
+                        <ul>
+                        <li><code>-i</code> case-insensitive search</li>
+                        <li><code>-r</code> recurse through subdirectories</li>
+                        </ul>
+                </li>
+        </ul>
+</div>
+
+
+<div class="topic">
+  <h2>18) Shell Programs</h2>
+  <ul>
+  <li>Any set of shell commands can be turned into a program!
+    <ul>
+    <li>If it's worth doing again, it's worth automating</li>
+    </ul>
+  </li>
+  <li>Create a file called <code>nojunk</code></li>
+  </ul>
+  <pre file="shell02/nojunk.txt">#!/usr/bin/bash
+rm -f *.junk
+</pre>
+  <ul>
+  <li>Use <code>man rm</code> to find out what the &quot;-f&quot; flag does</li>
+  <li><code>#!/usr/bin/bash</code> means &quot;run this using the Bash shell&quot;
+    <ul>
+    <li>Any program name can follow the <code>#!</code></li>
+    <li>We'll see some possibilities later</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>19) More Advanced Tools</h2>
+  <div id="tbl:shell02-advanced">
+    <table>
+      <tr>
+        <td><code>chmod</code></td>
+        <td>Change file and directory permissions.</td>
+      </tr>
+      <tr>
+        <td><code>du</code></td>
+        <td>Print the disk space used by files and directories.</td>
+      </tr>
+      <tr>
+        <td><code>find</code></td>
+        <td>Find files with names that match patterns, that are of a certain age or size, etc.</td>
+      </tr>
+      <tr>
+        <td><code>grep</code></td>
+        <td>Print lines matching a pattern.</td>
+      </tr>
+      <tr>
+        <td><code>gunzip</code></td>
+        <td>Uncompress a file.</td>
+      </tr>
+      <tr>
+        <td><code>gzip</code></td>
+        <td>Compress a file.</td>
+      </tr>
+      <tr>
+        <td><code>lpr</code></td>
+        <td>Send a file to a printer.</td>
+      </tr>
+      <tr>
+        <td><code>lprm</code></td>
+        <td>Remove a print job from a printer's queue.</td>
+      </tr>
+      <tr>
+        <td><code>lpq</code></td>
+        <td>Check the status of a printer's queue.</td>
+      </tr>
+      <tr>
+        <td><code>ps</code></td>
+        <td>Display running processes.</td>
+      </tr>
+      <tr>
+        <td><code>tar</code></td>
+        <td>Archive files.</td>
+      </tr>
+      <tr>
+        <td><code>which</code></td>
+        <td>Find the path to a program.</td>
+      </tr>
+      <tr>
+        <td><code>who</code></td>
+        <td>See who is logged in.</td>
+      </tr>
+      <tr>
+        <td><code>xargs</code></td>
+        <td>Execute a command for each line of input.</td>
+      </tr>
+    </table>
+    <p>Table 10.2: Advanced Command-Line Tools</p>
+  </div>
+</div>
+
+<div class="topic">
+  <h2>20) Summary</h2>
+  <ul>
+  <li>The shell is as powerful as most programming languages
+    <ul>
+    <li>Actually has features that most programming languages don't</li>
+    </ul>
+  </li>
+  <li>But its limits are as important as its capabilities
+    <ul>
+    <li>As soon as you need functions or data structures, you should switch to <a href="py01.html" target="lec:py01">Python Basics</a></li>
+    </ul>
+  </li>
+  </ul>
+</div>

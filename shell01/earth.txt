@@ -1,0 +1,4 @@
+Name: Earth
+Period: 365.26 days
+Inclination: 0.00
+Eccentricity: 0.02

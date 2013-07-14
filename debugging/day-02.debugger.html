@@ -1,0 +1,127 @@
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+
+<title>Software Carpentry Day 2: Debugger Exercises</title>
+<!-- base href="http://www.software-carpentry.org/day-02.html" --></head><body>
+<h1>Software Carpentry Day 2: Debugger Exercises</h1>
+
+<h2>Debugger (Morning)</h2>
+
+<p>
+For all of the following exercises, you should <b>avoid</b>
+using cut-and-paste and <b>avoid</b> adding <code>print</code> statements.
+</p>
+
+<ol>
+
+<li>
+Using the Wing IDE, type in the following program <b>verbatim</b>.
+
+<pre>
+import sys
+
+# From http://en.literateprograms.org/Fibonacci_numbers_(Python)
+def fib(n):
+    if n == 0:
+        return 0
+    elif n == 1:
+        return 1
+    else:
+        return fib(n-1) + fib(n-2)
+
+for i in range(len(sys.argv)):
+    arg = sys.argv[i]
+    num = int(arg)
+    print "fib of", num, " = ", fib(num)
+</pre>
+
+<p>
+Note that program, as written, has a small, subtle bug
+when you run it, such as:
+
+<pre>
+% python bug.py 1 2 3 4
+Traceback (most recent call last):
+  File "bug.py", line 14, in <module>
+    num = int(arg)
+ValueError: invalid literal for int() with base 10: 'bug.py'
+</pre>
+
+<p>
+Use the Wing IDE debugger to find and fix the bug.
+Remember, do not add any print statements.
+
+</li>
+
+
+<hr>
+
+<li>
+Using the Wing IDE, type in the following program <b>verbatim</b>.
+
+<pre>
+import sys
+
+# Modified From Software Carpentry notes
+def quick_sort(list):
+    ''' Sort list in non-decreasing order, using Quick Sort. '''
+    # If list contains at most 1 element, it is already sorted.
+    if len(list) <= 1:
+        return list
+    # Select a pivot, then partition the list.
+    pivot = list[0]
+    smaller = [x for x in list if x < pivot]
+    equal   = [x for x in list if x == pivot]
+    greater = [x for x in list if x > pivot]
+    if len(greater) > 1:
+        print # Set breakpoint here.  Inspect 'pivot' and list 'greater'
+    # Recurse and copy the results back into list.
+    quick_sort(smaller)
+    quick_sort(greater)
+    list[:] = smaller + equal + greater
+    return list
+
+list = sys.argv[:]
+print "Before:  ", list
+sorted = quick_sort(list)
+print "After:   ", sorted
+</pre>
+
+<p>
+Note that the program does NOT have any (known) bugs.
+You can run the program as follows:
+
+<pre>
+% python debug.sort.py 2 3 1 4 alpha beta 10
+Before:   ['debug.sort.py', '2', '3', '1', '4', 'alpha', 'beta', '10']
+
+
+
+After:    ['1', '10', '2', '3', '4', 'alpha', 'beta', 'debug.sort.py']
+</pre>
+
+<p>
+The extra blank lines are due to the (empty) <code>print</code>
+after the <code>if len(greater) > 1:</code>.
+The if statement and the print are there to make it easier to
+use breakpoints, etc. with the debugger.
+
+<p>
+Use the Wing IDE debugger to determine the value of variables
+<code>pivot</code> and list <code>greater</code> at that point
+in the function, for each of the following invocations/runs.
+
+<pre>
+% python debug.sort.py 2 3 1 4 alpha beta 10
+% python debug.sort.py the quick brown fox jumped over the lazy dog
+% python debug.sort.py python can be fun but my number one language is still C
+</pre>
+
+<p>
+Remember, do not add any print statements.
+</li>
+
+
+
+</ol>
+</body></html>

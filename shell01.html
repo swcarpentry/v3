@@ -1,0 +1,802 @@
+---
+layout: v3_slideshow
+title: Basic Unix Shell
+prev: v3/imgproc.html
+uplink: v3/index.html
+next: v3/shell02.html
+---
+<div class="topic">
+  <h2>1) Introduction</h2>
+  <p>A <a href="{{page.root}}/book/glossary.html#shell" target="glo:shell">shell</a> is a command line interpreter that is the interface between the user and the Operating System</p>
+  <ul>
+  <li>Most modern OSes have a graphical user interface (GUI)
+    <ul>
+    <li>Simplifies common tasks</li>
+    <li>You don't need to remember which config files to edit</li>
+    </ul>
+  </li>
+  <li>But the shell still gives more comprehensive access to many of the features provided by the OS.
+    <ul>
+    <li>And you can actually see what the OS is doing</li>
+    </ul>
+  </li>
+  <li>A shell can also be used to combine small tools (programs) together
+    <ul>
+    <li>Small tools, combined in many ways, can be very powerful</li>
+    </ul>
+  </li>
+  <li>This lecture focuses on Unix
+    <ul>
+    <li>Because while there are good Unix emulators for Windows, there aren't good Windows emulators for Unix</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>2) You Can Skip This Lecture If...</h2>
+  <ul>
+  <li>You know what a shell is</li>
+  <li>You know the difference between an absolute path and a relative path</li>
+  <li>You know what <code>ls</code>, <code>cp</code>, and <code>wc</code> do</li>
+  <li>You have read <a href="bib.html#bib:ray-ray-unix" target="bib:ray-ray-unix">[Ray &amp; Ray 2003]</a>, <a href="bib.html#bib:kernighan-pike-unix-environment" target="bib:kernighan-pike-unix-environment">[Kernighan &amp; Pike 1984]</a>, or something similar</li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>3) A Shell is a Program That...</h2>
+  <ul>
+  <li>Reads commands from the keyboard</li>
+  <li>Interprets the command
+    <ul>
+    <li>First word is the program to be run</li>
+    <li>The rest are treated as arguments to the program</li>
+    </ul>
+  </li>
+  <li>Executes the program</li>
+  <li>Captures or displays the output</li>
+  </ul>
+  <figure id="fig:shell01-in-action">
+    <img alt="A Shell in Action" src="shell01/shell-screenshot.png"/>
+    <p>Figure 9.1: A Shell in Action</p>
+  </figure>
+  <ul>
+  <li>Many different shells have been written</li>
+  <li>The Bourne shell, called <code>sh</code>, is an ancestor of many of them
+    <ul>
+    <li>It's still a lowest common denominator that you can always rely on</li>
+    </ul>
+  </li>
+  <li>We'll use <code>bash</code> (the Bourne Again Shell) in this course
+    <ul>
+    <li>It is a superset of <code>sh</code></li>
+    <li>It is the default shell on most flavours of Linux/Unix</li>
+    <li>It is the default shell on <a href="bib.html#bib:cygwin" target="bib:cygwin">[Cygwin]</a></li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>4) The Shell and the Operating System</h2>
+  <p>The <a href="{{page.root}}/book/glossary.html#operating-system" target="glo:operating-system">operating system</a> is the low level software that runs everything</p>
+  <ul>
+  <li> The OS
+    <ul>
+    <li>is automatically loaded when the computer boots up</li>
+    <li>provides a common interface to different hardware</li>
+    <li>controls the running of programs</li>
+    </ul>
+  </li>
+  </ul>
+  <figure id="fig:shell01-operating-system">
+    <img alt="Operating System" src="shell01/operating-system.png"/>
+    <p>Figure 9.2: Operating System</p>
+  </figure>
+  <ul>
+  <li>Three main components of an operating system:
+    <ul>
+    <li>files</li>
+    <li>processes (running programs)</li>
+    <li>communication between processes</li>
+    </ul>
+  </li>
+  <li>The shell gives you an interface to work with all three.  (We will focus on the file systems and processes.)</li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>5) The File System</h2>
+  <ul>
+  <li>The <a href="{{page.root}}/book/glossary.html#file-system" target="glo:file-system">file system</a> is the set of files and directories the computer can access
+    <ul>
+    <li>&quot;Everything that doesn't go away when you reboot&quot;</li>
+    </ul>
+  </li>
+  <li>Data is stored in files
+    <ul>
+    <li>By convention, files have two part names, like <code>notes.txt</code> or <code>home.html</code></li>
+    <li>Most operating systems allow you to associate a <a href="{{page.root}}/book/glossary.html#filename-extension" target="glo:filename-extension">filename extension</a> with an application
+      <ul>
+      <li>E.g., <code>.txt</code> is associated with an editor, and <code>.html</code> with a web browser</li>
+      </ul>
+    </li>
+    <li>But this is all just convention: you can call files (almost) anything you want</li>
+    </ul>
+  </li>
+  <li>Files are stored in directories (often called folders)
+    <ul>
+    <li>Directories can contain other directories, too</li>
+    <li>Results in the familiar <a href="{{page.root}}/book/glossary.html#directory-tree" target="glo:directory-tree">directory tree</a></li>
+    <figure id="fig:shell01-directory-tree">
+      <img alt="A Directory Tree" src="shell01/directory-tree.png"/>
+      <p>Figure 9.3: A Directory Tree</p>
+    </figure>
+    <li>Everything in a particular directory must have a unique name
+      <ul>
+      <li>Otherwise, how would you identify it?</li>
+      </ul>
+    </li>
+    <li>But items in different directories can have the same name</li>
+    </ul>
+  </li>
+  <li>On Unix, the file system has a unique <a href="{{page.root}}/book/glossary.html#root-directory" target="glo:root-directory">root directory</a> called <code>/</code>
+    <ul>
+    <li>Every other directory is a child of it, or a child of a child, etc.</li>
+    </ul>
+  </li>
+  <li>On Windows, every <a href="{{page.root}}/book/glossary.html#drive" target="glo:drive">drive</a> has its own root directory
+    <ul>
+    <li>So <code>C:\home\gvwilson\notes.txt</code> is different from <code>J:\home\gvwilson\notes.txt</code></li>
+    <li>When you're using Cygwin, you can also write <code>C:\home\gvwilson</code> as <code>c:/home/gvwilson</code></li>
+    <li>Or as <code>/cygdrive/c/home/gvwilson</code>
+      <ul>
+      <li>Some Unix programs give <code>&quot;:&quot;</code> a special meaning, so Cygwin needed a way to write paths without it...</li>
+      </ul>
+    </li>
+    </ul>
+  </li>
+  <li>Note: file and directory names are case-sensitive on Unix, but (usually) case-<em>in</em>sensitive on Windows
+    <ul>
+    <li>So don't ever rely on case differences when naming things</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>6) Paths</h2>
+<p>A <a href="{{page.root}}/book/glossary.html#path" target="glo:path">path</a> is a description of how to find something in a file system</p>
+
+    <ul>
+    <li>An <a href="{{page.root}}/book/glossary.html#absolute-path" target="glo:absolute-path">absolute path</a> describes a location from the root directory down
+      <ul>
+      <li>Equivalent to full street address
+                <ul>
+                        <li>E.g., 40 St. George Street, Toronto, Ontario, Canada</li>
+                </ul></li>
+                
+      <li>Always starts with <code>&quot;/&quot;</code></li>
+      <li><code>/home/hpotter</code> is Harry Potter's home directory</li>
+      <li><code>/courses/swc/web/lec/shell.html</code> is this file</li>
+      </ul>
+    </li>
+
+    <li>A <a href="{{page.root}}/book/glossary.html#relative-path" target="glo:relative-path">relative path</a> describes how to find something from some other location
+      <ul>
+                <li>E.g., If your current location is Toronto, then Room 2270, 40 St. George Street is enough information to find the room</li>
+      <li>From <code>/courses/swc</code>, the relative path to this file is <code>web/lec/shell.html</code></li>
+      </ul>
+    </li>
+
+
+  <li>Every program (including the shell) has a <a href="{{page.root}}/book/glossary.html#current-working-directory" target="glo:current-working-directory">current working directory</a>
+    <ul>
+    <li>&quot;Where am I?&quot;</li>
+    <li>Relative paths are deciphered relative to this location</li>
+    <li>It can change while a program is running</li>
+    </ul>
+  </li>
+  <li>Two special directory names:
+    <ul>
+    <li><code>&quot;.&quot;</code> (pronounced &quot;dot&quot;) is the current directory</li>
+    <li><code>&quot;..&quot;</code> (pronounced &quot;dot dot&quot;) is the directory one level up
+      <ul>
+      <li>Also called the <a href="{{page.root}}/book/glossary.html#parent-directory" target="glo:parent-directory">parent directory</a></li>
+      <li>In <code>/courses/swc/data</code>, <code>..</code> is <code>/courses/swc</code></li>
+      <li>In <code>/courses/swc/data/elements</code>, <code>..</code> is <code>/courses/swc/data</code></li>
+        <figure id="fig:shell01-parent-directory">
+          <img alt="Parent Directories" src="shell01/parent-directory.png"/>
+          <p>Figure 9.4: Parent Directories</p>
+        </figure>
+      </ul>
+    </li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>7) Navigating the File System</h2>
+  <ul>
+  <li>Easiest way to learn basic Unix commands is to see them in action</li>
+  <li>Type <code>pwd</code> (short for &quot;print working directory&quot;) to find out where you are
+    <ul>
+    <li>Unfortunately, most Unix commands have equally cryptic names</li>
+    </ul>
+  </li>
+  </ul>
+  <pre class="in" file="shell01/pwd.cmd">$ pwd
+</pre>
+  <pre class="out" file="shell01/pwd.out">/home/hpotter/swc
+</pre>
+  <ul>
+  <li>Then type <code>ls</code> (for &quot;listing&quot;) to see what's in the current directory</li>
+  </ul>
+  <pre class="in" file="shell01/ls.cmd">$ ls
+</pre>
+  <pre class="out" file="shell01/ls.out">LICENSE.txt     conf        data        docs    index.swc   license.swc     print.css   swc.css     tests
+Makefile        config.mk   depend.mk   img     lec         press           sites       swc.dtd     util
+</pre>
+  <ul>
+  <li>To see what's in the <code>data</code> directory, type <code>ls data</code></li>
+  </ul>
+  <pre class="in" file="shell01/ls-data.cmd">$ ls data
+</pre>
+  <pre class="out" file="shell01/ls-data.out">bio     elements    haiku.txt   morse.txt   pdb         solarsystem.txt
+</pre>
+  <ul>
+  <li>Or:
+    <ul>
+    <li>Type <code>cd data</code> to &quot;go into&quot; <code>data</code>
+      <ul>
+      <li>I.e., change the current working directory to <code>data</code></li>
+      </ul>
+    </li>
+    <li>Type <code>ls</code> on its own</li>
+    <li>Type <code>cd ..</code> to go back to where you started</li>
+    </ul>
+  </li>
+  </ul>
+  <pre class="in" file="shell01/cd-ls-cd-1.cmd">$ cd data
+$ pwd
+</pre>
+  <pre class="out" file="shell01/cd-ls-cd-2.out">/home/hpotter/swc/data
+</pre>
+  <pre class="in" file="shell01/cd-ls-cd-3.cmd">$ ls
+</pre>
+  <pre class="out" file="shell01/cd-ls-cd-4.out">bio     elements    haiku.txt   morse.txt   pdb         solarsystem.txt
+</pre>
+  <pre class="in" file="shell01/cd-ls-cd-5.cmd">$ cd ..
+$ pwd
+</pre>
+  <pre class="out" file="shell01/cd-ls-cd-6.out">/home/hpotter/swc
+</pre>
+</div>
+
+<div class="topic">
+  <h2>8) Execution Cycle</h2>
+  <ul>
+  <li>When you type a command like <code>ls</code>, the OS:
+    <ul>
+    <li>Reads characters from the keyboard</li>
+    <li>Passes them to the shell (because it's the currently active window)</li>
+    </ul>
+  </li>
+  <li>The shell:
+    <ul>
+    <li>Breaks the line of text it receives into words</li>
+    <li>Looks for a program with the same name as the first word
+      <ul>
+      <li>See in a moment how the shell knows where to look</li>
+      </ul>
+    </li>
+    <li>Runs that program</li>
+    </ul>
+  </li>
+  <li>That program's output goes back to the shell...</li>
+  <li>...which gives it to the OS...</li>
+  <li>...which displays it on the screen
+    <ul>
+    <li>(Actually, the OS hands it to the window manager, which takes care of the display)</li>
+    </ul>
+  </li>
+    <figure id="fig:shell01-running-program">
+      <img alt="Running a Program" src="shell01/running-program.png"/>
+      <p>Figure 9.5: Running a Program</p>
+    </figure>
+  <li>All well-designed software systems work this way
+    <ul>
+    <li>Break the task down into pieces</li>
+    <li>Write a tool that solves each sub-problem</li>
+    <li>Hook 'em up</li>
+    </ul>
+  </li>
+  <li>Allows you to:
+    <ul>
+    <li>Develop and test components independently</li>
+    <li>Replace or re-use components incrementally</li>
+    <li>Add new components as you go along</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>9) Providing Options</h2>
+  <ul>
+  <li>Can make <code>ls</code> produce more informative output by giving it some <a href="{{page.root}}/book/glossary.html#command-line-flag" target="glo:command-line-flag">flags</a>
+    <ul>
+    <li>By convention, flags for Unix tools start with <code>&quot;-&quot;</code>, as in <code>&quot;-c&quot;</code> or <code>&quot;-l&quot;</code></li>
+    <li>Some flags take arguments (such as filenames)</li>
+    </ul>
+  </li>
+  <li>Show directories with trailing slash</li>
+  </ul>
+  <pre class="in" file="shell01/ls-f.cmd">$ ls -F
+</pre>
+  <pre class="out" file="shell01/ls-f.out">LICENSE.txt     conf/       data/       docs/   index.swc   license.swc     print.css   swc.css     tests/
+Makefile        config.mk   depend.mk   img/    lec/        press/          sites/      swc.dtd     util/
+</pre>
+  <ul>
+  <li>Show all files and directories, including those whose names begin with <code>.</code>
+    <ul>
+    <li>By default, <code>ls</code> doesn't show things whose names begin with <code>.</code>
+      <ul>
+      <li>So that <code>.</code> and <code>..</code> don't always show up</li>
+      </ul>
+    </li>
+    <li>We'll see what the <code>.svn</code> directory is for later</li>
+    </ul>
+  </li>
+  </ul>
+  <pre class="in" file="shell01/ls-a.cmd">$ ls -a
+</pre>
+  <pre class="out" file="shell01/ls-a.out">.   .svn        Makefile    config.mk   depend.mk   img         lec         press       sites   swc.dtd util
+..  LICENSE.txt conf        data        docs        index.swc   license.swc print.css   swc.css tests
+</pre>
+  <ul>
+  <li>Flags can be combined</li>
+  </ul>
+  <pre class="in" file="shell01/ls-a-f.cmd">$ ls -a -F
+</pre>
+  <pre class="out" file="shell01/ls-a-f.out">.   .svn/       Makefile    config.mk   depend.mk   img/        lec/        press/      sites/  swc.dtd util/
+..  LICENSE.txt conf/       data/       docs/       index.swc   license.swc print.css   swc.css tests/
+</pre>
+</div>
+
+<div class="topic">
+  <h2>10) Creating Files and Directories</h2>
+  <ul>
+  <li>Rather than messing with the course files, let's create a temporary directory and play around in there</li>
+  </ul>
+  <pre class="in" file="shell01/mkdir.cmd">$ mkdir tmp
+</pre>
+  <ul>
+  <li>Note: no output (but <code>-v</code> (&quot;verbose&quot;) would tell <code>mkdir</code> to print a confirmation message)</li>
+  <li>Go into that directory: no files there yet</li>
+  </ul>
+  <pre class="in" file="shell01/cd-tmp-ls.cmd">$ cd tmp
+$ ls
+</pre>
+  <ul>
+  <li>Use the editor of your choice to create a file called <code>earth.txt</code> with the following contents:</li>
+  </ul>
+  <pre file="shell01/earth.txt">Name: Earth
+Period: 365.26 days
+Inclination: 0.00
+Eccentricity: 0.02
+</pre>
+  <pre file="shell01/venus.txt">Name: Venus
+Period: 224.70 days
+Inclination: 3.39
+Eccentricity: 0.01
+</pre>
+  <ul>
+  <li>Different editors do different things:
+    <ul>
+    <li>Notepad (on Windows) runs in a window of its own</li>
+    <li>Pico (on Unix) takes over the shell window temporarily</li>
+    <li>We'll look at more advanced programming editors later</li>
+    </ul>
+  </li>
+  <li>Easiest way to create a similar file <code>venus.txt</code> is to copy <code>earth.txt</code> and edit it</li>
+  </ul>
+  <pre class="in" file="shell01/cp-edit-ls.cmd">$ cp earth.txt venus.txt
+$ edit venus.txt
+$ ls -t
+</pre>
+  <pre class="out" file="shell01/cp-edit-ls.out">venus.txt   earth.txt
+</pre>
+  <ul>
+  <li><code>-t</code> tells <code>ls</code> to list by modification time, instead of alphabetically</li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>11) Looking at Files</h2>
+  <ul>
+  <li>Check the contents of the file using <code>cat</code> (short for &quot;concatenate&quot;)
+    <ul>
+    <li>Prints the contents of a file to the screen</li>
+    </ul>
+  </li>
+  </ul>
+  <pre class="in" file="shell01/cat-venus.cmd">$ cat venus.txt
+</pre>
+  <pre class="out" file="shell01/cat-venus.out">Name: Venus
+Period: 224.70 days
+Inclination: 3.39
+Eccentricity: 0.01
+</pre>
+  <ul>
+  <li>Compare the sizes of the two files using:
+    <ul>
+    <li><code>ls -l</code> (&quot;-l&quot; meaning &quot;long form&quot;)</li>
+    </ul>
+  </li>
+  </ul>
+  <pre class="in" file="shell01/ls-long.cmd">$ ls -l
+</pre>
+  <pre class="out" file="shell01/ls-long.out">total 2
+-rwxr-xr-x  1 gvwilson None 73 Jan  4 15:58 earth.txt
+-rwxr-xr-x  1 gvwilson None 73 Jan  4 15:58 venus.txt
+</pre>
+  <ul>
+  <li>Fifth column is size in bytes</li>
+  <li><code>wc</code> (for &quot;word count&quot;)</li>
+  </ul>
+  <pre class="in" file="shell01/wc.cmd">$ wc earth.txt venus.txt
+</pre>
+  <pre class="out" file="shell01/wc.out">  4   9  73 earth.txt
+  4   9  73 venus.txt
+  8  18 146 total
+</pre>
+  <ul>
+  <li>Columns show lines, words, and characters</li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>12) Environment Variables</h2>
+  <ul>
+  <li>The OS stores some <a href="{{page.root}}/book/glossary.html#environment-variable" target="glo:environment-variable">environment variables</a> for every process
+    <ul>
+    <li>Like variables in a program, each has a name and a value
+      <ul>
+      <li>By convention, names are all upper case</li>
+      <li>Values are always strings</li>
+      </ul>
+    </li>
+    </ul>
+  </li>
+  <li>Type <code>set</code> or <code>env</code>at the command prompt to get a listing:</li>
+  </ul>
+  <pre class="in" file="shell02/set.cmd">$ set
+</pre>
+  <pre class="out" file="shell02/set.out">BASH=/usr/bin/bash
+BASH_VERSION='2.05b.0(1)-release'
+COLUMNS=120
+HISTFILE=/home/.bash_history
+HISTFILESIZE=500
+HISTSIZE=500
+HOME=/home/rweasley
+HOSTNAME=hogwarts
+HOSTTYPE=i686
+LINES=60
+NUMBER_OF_PROCESSORS=1
+OSTYPE=cygwin
+PATH='/usr/local/bin:/usr/bin:/bin:/Python24:/home/rweasley/bin'
+PWD=/home/rweasley
+SHELL=/bin/bash
+UID=1003
+USER=rweasley
+</pre>
+  <ul>
+  <li>Get a variable's value by putting <code>&quot;$&quot;</code> in front of its name
+    <ul>
+    <li>So <code>ls $HOME</code> is the same as <code>ls /home/rweasley</code> (if you're Ron Weasley)</li>
+    <li>Use the <code>echo</code> command to print out a variable's value</li>
+    </ul>
+  </li>
+  </ul>
+  <pre class="in" file="shell02/echo.cmd">$ echo $HOME
+</pre>
+  <pre class="out" file="shell02/echo.out">/cygdrive/c/home/rweasley
+</pre>
+  <ul>
+  <li>Why must you type <code>echo $HOME</code>, and not just <code>$HOME</code>?</li>
+  <li>If a variable hasn't been defined, its value is the empty string (rather than an error)</li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>13) Commonly-Used Shell Variables</h2>
+  <p>The default set of environment variables can be quite different on different machines and operating systems, but here are the most commonly used ones:</p>
+  <div id="tbl:shell02-vars">
+    <table>
+      <tr>
+        <th>Name</th>
+        <th>Typical Value</th>
+        <th>Notes</th>
+      </tr>
+      <tr>
+        <td><code>EDITOR</code></td>
+        <td><code>/bin/edit</code></td>
+        <td>Preferred editor</td>
+      </tr>
+      <tr>
+        <td><code>HOME</code></td>
+        <td><code>/home/rweasley</code></td>
+        <td>The current user's home directory</td>
+      </tr>
+      <tr>
+        <td><code>HOMEDRIVE</code></td>
+        <td><code>C:</code></td>
+        <td>The current user's home drive (Windows only)</td>
+      </tr>
+
+      <tr>
+        <td><code>PATH</code></td>
+        <td><code>&quot;/home/rweasley/bin:/usr/local/bin:/usr/bin:/bin:/Python24/&quot;</code></td>
+        <td>Where to look for programs</td>
+      </tr>
+      <tr>
+        <td><code>PWD</code></td>
+        <td><code>/home/rweasley/swc/lec</code></td>
+        <td>Present working directory (sometimes <code>CWD</code>, for current working directory)</td>
+      </tr>
+      <tr>
+        <td><code>SHELL</code></td>
+        <td><code>/bin/bash</code></td>
+        <td>What shell is being run</td>
+      </tr>
+    </table>
+    <p>Table 9.1: Shell Variables</p>
+  </div>
+</div>
+
+<div class="topic">
+  <h2>14) Setting Environment Variables</h2>
+  <ul>
+  <li>Different shells have different syntaxes for setting environment variables</li>
+  <li>For Bash, use this:</li>
+  </ul>
+  <pre class="in" file="shell02/bash-set-var.cmd">$ VILLAIN=&quot;Lord Voldemort&quot;
+</pre>
+  <ul>
+  <li>Notice that values with spaces in them have to be quoted</li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>15) Scoping</h2>
+  <ul>
+  <li>Setting an environment variable only affects that program (i.e., that shell)
+    <ul>
+    <li>To see this, set a variable, then run a new shell, and echo the variable's value</li>
+    </ul>
+  </li>
+  </ul>
+  <pre class="in" file="shell02/bash-set-no-export-1.cmd">$ VILLAIN=&quot;Lord Voldemort&quot;
+$ bash
+$ echo $VILLAIN
+</pre>
+  <pre class="out" file="shell02/bash-set-no-export-2.out">
+</pre>
+  <pre class="in" file="shell02/bash-set-no-export-3.cmd">$ exit
+</pre>
+  <figure id="fig:shell02-shell-no-export">
+    <img alt="Setting a Variable Without Export It" src="shell02/shell-no-export.png"/>
+    <p>Figure 9.6: Setting a Variable Without Exporting It</p>
+  </figure>
+  <ul>
+  <li>If you want programs run from that shell to inherit the value, you must export it:</li>
+  </ul>
+  <pre class="in" file="shell02/bash-set-then-export-1.cmd">$ VILLAIN=&quot;Lord Voldemort&quot;
+$ export VILLAIN
+$ bash
+$ echo $VILLAIN
+</pre>
+  <pre class="out" file="shell02/bash-set-then-export-2.out">Lord Voldemort
+</pre>
+  <pre class="in" file="shell02/bash-set-then-export-3.cmd">$ exit
+</pre>
+  <figure id="fig:shell02-shell-with-export">
+    <img alt="Exporting a Variable's Value" src="shell02/shell-with-export.png"/>
+    <p>Figure 9.7: Exporting a Variable's Value</p>
+  </figure>
+  <ul>
+  <li>Can perform both operations in a single step</li>
+  </ul>
+  <pre class="in" file="shell02/bash-set-and-export.cmd">$ export VILLAIN=&quot;Lord Voldemort&quot;
+$ bash
+$ echo $VILLAIN
+- Lord Voldemort
+$ exit
+</pre>
+</div>
+
+
+<div class="topic">
+  <h2>16) How the Shell Finds Programs</h2>
+  <ul>
+  <li>The <code>PATH</code> environment variables defines the shell's <a href="{{page.root}}/book/glossary.html#search-path" target="glo:search-path">search path</a></li>
+  <li>When you run a command like <code>broom</code>, the shell:
+    <ul>
+    <li>Splits <code>$PATH</code> into components to get a list of directories
+      <ul>
+      <li>Unix uses &quot;:&quot; as a separator</li>
+      <li>Windows uses &quot;;&quot;</li>
+      </ul>
+    </li>
+    <li>Looks for the program in each directory in left-to-right order</li>
+    <li>Runs the first one that it finds</li>
+    </ul>
+  </li>
+  <li>Example
+    <ul>
+    <li><code>PATH</code> is <code>/home/rweasley/bin:/usr/local/bin:/usr/bin:/bin:/Python24</code></li>
+    <li>Both <code>/usr/local/bin/broom</code> and <code>/home/rweasley/bin/broom</code> exist</li>
+    <li><code>/home/rweasley/bin/broom</code> will be run when you type <code>broom</code> at the command prompt</li>
+    <li>Can run the other one by specifying the path, instead of just the command name</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>17) Common Search Path Entries</h2>
+  <ul>
+  <li><code>/bin</code>, <code>/usr/bin</code>: core tools like <code>ls</code>
+    <ul>
+    <li>Note: the word &quot;bin&quot; comes from &quot;binary&quot;, which is geekspeak for &quot;a compiled program&quot;</li>
+    </ul>
+  </li>
+  <li><code>/usr/local/bin</code>: optional (but common) tools, like the <code>gcc</code> C compiler</li>
+  <li><code>$HOME/bin</code>: tools you have built for yourself
+    <ul>
+    <li>Remember, <code>$HOME</code> is your home directory</li>
+    </ul>
+  </li>
+  <li>It is also common to include <code>.</code> (the current working directory) in your path
+    <ul>
+    <li>Allows you to run a program in the current directory using <code>whatever</code>, instead of <code>./whatever</code></li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>18) Basic Tools</h2>
+  <div id="tbl:shell01-basic">
+    <table>
+      <tr>
+        <td><code>man</code></td>
+        <td>Documentation for commands.</td>
+      </tr>
+      <tr>
+        <td><code>cat</code></td>
+        <td>Concatenate and display text files.</td>
+      </tr>
+      <tr>
+        <td><code>cd</code></td>
+        <td>Change working directory.</td>
+      </tr>
+      <tr>
+        <td><code>clear</code></td>
+        <td>Clear the screen.</td>
+      </tr>
+      <tr>
+        <td><code>cp</code></td>
+        <td>Copy files and directories.</td>
+      </tr>
+      <tr>
+        <td><code>date</code></td>
+        <td>Display the current date and time.</td>
+      </tr>
+      <tr>
+        <td><code>diff</code></td>
+        <td>Show differences between two text files.</td>
+      </tr>
+      <tr>
+        <td><code>echo</code></td>
+        <td>Print arguments.</td>
+      </tr>
+      <tr>
+        <td><code>head</code></td>
+        <td>Display the first few lines of a file.</td>
+      </tr>
+      <tr>
+        <td><code>ls</code></td>
+        <td>List files and directories.</td>
+      </tr>
+      <tr>
+        <td><code>mkdir</code></td>
+        <td>Make directories.</td>
+      </tr>
+      <tr>
+        <td><code>more</code></td>
+        <td>Page through a text file.</td>
+      </tr>
+      <tr>
+        <td><code>mv</code></td>
+        <td>Move (rename) files and directories.</td>
+      </tr>
+      <tr>
+        <td><code>od</code></td>
+        <td>Display the bytes in a file.</td>
+      </tr>
+      <tr>
+        <td><code>passwd</code></td>
+        <td>Change your password.</td>
+      </tr>
+      <tr>
+        <td><code>pwd</code></td>
+        <td>Print current working directory.</td>
+      </tr>
+      <tr>
+        <td><code>rm</code></td>
+        <td>Remove files.</td>
+      </tr>
+      <tr>
+        <td><code>rmdir</code></td>
+        <td>Remove directories.</td>
+      </tr>
+      <tr>
+        <td><code>sort</code></td>
+        <td>Sort lines.</td>
+      </tr>
+      <tr>
+        <td><code>tail</code></td>
+        <td>Display the last few lines of a file.</td>
+      </tr>
+      <tr>
+        <td><code>uniq</code></td>
+        <td>Remove adjacent duplicate lines.</td>
+      </tr>
+      <tr>
+        <td><code>wc</code></td>
+        <td>Count lines, words, and characters in a file.</td>
+      </tr>
+    </table>
+    <p>Table 9.2: Basic Command-Line Tools</p>
+  </div>
+  <ul>
+  <li>Exercise: what are the native Windows equivalents of each of these?</li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>19) Summary</h2>
+  <ul>
+  <li>Files
+    <ul>
+    <li>File system structure</li>
+    <li>File name conventions</li>
+    <li>Absolute vs relative path</li>
+    <li>Current working directory</li>
+    <li>Navigating the file system</li>
+    </ul>
+  </li>
+  <li>Processes
+    <ul>
+    <li>Executing a command</li>
+    <li>Arguments and options</li>
+    <li>Environment variables</li>
+    <li>PATH</li>
+    </ul>
+  </li>
+  <li>Command-line tools will be with us for a long time
+    <ul>
+    <li>Easiest way to do many simple tasks</li>
+    <li>Easiest way to see what the computer is actually doing</li>
+    </ul>
+  </li>
+  <li>Often the only thing you can rely on having on a new machine
+    <ul>
+    <li>A handful of basic commands will get you a long way</li>
+    </ul>
+  </li>
+  </ul>
+</div>

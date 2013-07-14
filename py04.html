@@ -1,0 +1,814 @@
+---
+layout: v3_slideshow
+title: Python Sets and Dictionaries
+prev: v3/version.html
+uplink: v3/index.html
+next: v3/imgproc.html
+---
+<div class="topic">
+  <h2>1) Introduction</h2>
+  <ul>
+  <li>The world is <em>not</em> made of lists
+    <ul>
+    <li>Just because it's the first data structure you meet, doesn't make it the right one for every task</li>
+    </ul>
+  </li>
+  <li>This lecture introduces two other fundamental data structures
+    <ul>
+    <li>Allow you to create programs that are simpler and more efficient</li>
+    </ul>
+  </li>
+  <li>Also look at what &quot;efficient&quot; really means</li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>2) You Can Skip This Lecture If...</h2>
+  <ul>
+  <li>You know what a set is</li>
+  <li>You understand why a set's elements must be immutable</li>
+  <li>You know what O-notation is</li>
+  <li>You know what a dictionary is</li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>3) Sets</h2>
+  <ul>
+  <li>A set is an unordered collection of distinct items
+    <ul>
+    <li>Unordered: items are looked up by value, rather than location</li>
+    <li>Distinct: any value appears at most once</li>
+    </ul>
+  </li>
+  <li>Fundamental in mathematics, but an afterthought in most programming languages</li>
+  <li>The <code>set</code> type is built in to Python 2.4 and higher
+    <ul>
+    <li>Create a new set by calling <code>set()</code></li>
+    <li>Then insert and remove values, test for membership, etc.</li>
+    </ul>
+  </li>
+  </ul>
+  <pre file="py04/simple-set.py">vowels = set()
+for char in 'aieoeiaoaaeieou':
+    vowels.add(char)
+print vowels
+</pre>
+  <pre class="out" file="py04/simple-set.out">Set(['a', 'i', 'e', 'u', 'o'])
+</pre>
+</div>
+
+<div class="topic">
+  <h2>4) Set Operations</h2>
+  <ul>
+  <li>Like other objects, sets have methods
+    <ul>
+    <li>Many of which can be expressed using operators as well</li>
+    </ul>
+  </li>
+    <div id="tbl:py04-setops">
+      <dl>
+
+        <dt>Example values:</dt>
+        <dd><code>ten = set(range(10))</code>
+        <br/><code>lows = set([0, 1, 2, 3, 4])</code>
+        <br/><code>odds = set([1, 3, 5, 7, 9])</code>
+        </dd>
+
+        <dt><code>add</code>: add an element to a set</dt>
+        <dd><code>lows.add(9)</code> =&gt; <code>None</code>
+        <br/><code>lows</code> is now <code>set([0, 1, 2, 3, 4, 9]])</code>
+        </dd>
+
+
+        <dt><code>clear</code>: remove all elements from the set</dt>
+        <dd><code>lows.clear()</code> =&gt; <code>None</code>
+        <br/><code>lows</code> is now <code>set()</code>
+        </dd>
+
+
+        <dt><code>difference</code>: create a set with elements that are in one set, but not the other</dt>
+        <dd><code>lows.difference(odds)</code> =&gt; <code>set([0, 2, 4]])</code>
+        <br/>Also written <code>lows - odds</code>
+        </dd>
+
+
+        <dt><code>intersection</code>: create a set with elements that are in both arguments</dt>
+        <dd><code>lows.intersection(odds)</code> =&gt; <code>set([1, 3]])</code>
+        <br/>Also written <code>lows &amp; odds</code>
+        </dd>
+
+
+        <dt><code>issubset</code>: are all of one set's elements contained in another?</dt>
+        <dd><code>lows.issubset(ten)</code> =&gt; <code>True</code>
+        <br/>Also written <code>lows &lt;= ten</code>
+        </dd>
+
+
+        <dt><code>issuperset</code>: does one set contain all of another's elements?</dt>
+        <dd><code>lows.issuperset(odds)</code> =&gt; <code>False</code>
+        <br/>Also written <code>lows &gt;= odds</code>
+        </dd>
+
+
+        <dt><code>remove</code>: remove an element from a set</dt>
+        <dd><code>lows.remove(0)</code> =&gt; <code>None</code>
+        <br/>Also written <code>lows</code> is now <code>set([1, 2, 3, 4]])</code>
+        </dd>
+
+
+        <dt><code>symmetric_difference</code>: create a set with elements that are in exactly one set</dt>
+        <dd><code>lows.symmetric_difference(odds)</code> =&gt; <code>set([0, 2, 4, 5, 7, 9]])</code>
+        <br/>Also written <code>lows ^ odds</code>
+        </dd>
+
+
+        <dt><code>union</code>: create a set with elements that are in either argument</dt>
+        <dd><code>lows.union(odds)</code> =&gt; <code>set([0, 1, 2, 3, 4, 5, 7, 9]])</code>
+        <br/>Also written <code>lows | odds</code>
+        </dd>
+
+      </dl>
+      <p>Table 7.1: Set Methods and Operators</p>
+    </div>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>5) Set Example</h2>
+  <ul>
+  <li>Have several files with observations of birds</li>
+  <li>Want to find out which species have been seen</li>
+  <li>Program:</li>
+  </ul>
+  <pre file="py04/birdwatching.py">lines = [
+    'canada goose',  'canada goose',  'long-tailed jaeger',  'canada goose',
+    'snow goose',    'canada goose',  'canada goose',        'northern fulmar'
+]
+
+seen = set()
+for line in lines:
+    seen.add(line.strip())
+
+for bird in seen:
+    print bird
+</pre>
+  <pre class="out" file="py04/birdwatching.out">northern fulmar
+snow goose
+long-tailed jaeger
+canada goose
+</pre>
+  <ul>
+  <li>Note: <code>for</code> loops over the values in the set</li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>6) How Set Values Are Stored</h2>
+  <ul>
+  <li>Implementation goal is to make lookup as quick as possible
+    <ul>
+    <li>Without making insertion and removal expensive</li>
+    </ul>
+  </li>
+  <li>Use a <a href="{{page.root}}/book/glossary.html#hash-table" target="glo:hash-table">hash table</a></li>
+    <figure id="fig:py04-hashing">
+      <img alt="Hashing" src="py04/hashing.png"/>
+      <p>Figure 7.1: Hashing</p>
+    </figure>
+    <ul>
+    <li>Calculate a <a href="{{page.root}}/book/glossary.html#hash-code" target="glo:hash-code">hash code</a> for the object being inserted</li>
+    <li>Store the value at that location in an array</li>
+    <li>If the <a href="{{page.root}}/book/glossary.html#hash-function" target="glo:hash-function">hash function</a> is good, <a href="{{page.root}}/book/glossary.html#collision" target="glo:collision">collisions</a> will be rare</li>
+    <li>When they occur, chain values together in a sub-list</li>
+    </ul>
+  <li>Result: looking up a value takes constant time, regardless of how many values are being stored</li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>7) Immutability</h2>
+  <ul>
+  <li>This only works if a value's hash code never changes after it is inserted
+    <ul>
+    <li>If it does, the value will be in the wrong place</li>
+      <figure id="fig:py04-misplaced-values">
+        <img alt="Misplaced Values" src="py04/misplaced-values.png"/>
+        <p>Figure 7.2: Misplaced Values</p>
+      </figure>
+    </ul>
+  </li>
+  <li>Python therefore only allows sets to contain immutable values
+    <ul>
+    <li>Booleans, numbers, strings, tuples...</li>
+    <li>...but not lists</li>
+    </ul>
+  </li>
+  </ul>
+  <pre file="py04/mutable-in-set.py">values = set()
+values.add('birds')
+print values
+values.add(('Canada', 'goose'))
+print values
+values.add(['snow', 'goose'])
+print values
+</pre>
+  <pre class="out" file="py04/mutable-in-set.out"></pre>
+  <pre class="err" file="py04/mutable-in-set.err">Traceback (most recent call last):
+  File &quot;mutable_in_set.py&quot;, line 8, in ?
+    values.add(['snow', 'goose'])
+  File &quot;/usr/lib/python2.3/sets.py&quot;, line 521, in add
+    self._data[element] = True
+TypeError: list objects are unhashable
+</pre>
+  <ul>
+  <li>This is one of the reasons tuples were invented
+    <ul>
+    <li>Allow you to store multi-part values like <code>(&quot;snow&quot;, &quot;goose&quot;)</code></li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>8) Frozen Sets</h2>
+  <ul>
+  <li>What about sets of sets?
+    <ul>
+    <li>Sets themselves have to be mutable, so that values can be inserted and removed</li>
+    </ul>
+  </li>
+  <li>Python also provides &quot;frozen&quot; sets
+    <ul>
+    <li>No changes allowed after creation</li>
+    <li>So they're almost always initialized from a collection of some kind</li>
+    </ul>
+  </li>
+  </ul>
+  <pre class="in" file="py04/freeze-set-1.cmd">&gt;&gt;&gt; birds = set()
+&gt;&gt;&gt; arctic = frozenset(['goose', 'tern'])
+&gt;&gt;&gt; birds.add(arctic)
+&gt;&gt;&gt; print birds
+</pre>
+  <pre class="out" file="py04/freeze-set-2.out">set([frozenset(['goose', 'tern'])])
+</pre>
+  <pre class="in" file="py04/freeze-set-3.cmd">&gt;&gt;&gt; arctic.add('eider')
+</pre>
+  <pre class="err" file="py04/freeze-set-4.err">AttributeError: 'frozenset' object has no attribute 'add'
+</pre>
+</div>
+
+<div class="topic">
+  <h2>9) A Note on Language Design</h2>
+  <ul>
+  <li>Many languages allow mutable elements in sets, and trust users not to modify them after insertion
+    <ul>
+    <li>Which is a rich source of hard-to-find bugs</li>
+    </ul>
+  </li>
+  <li>Could also have values keep track of which sets they're in
+    <ul>
+    <li>&quot;Move&quot; them when their values change</li>
+    <li>Would make all programs slow for the benefit of a few</li>
+    </ul>
+  </li>
+  <li>Every software system contains tradeoffs like this</li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>10) Efficiency</h2>
+  <ul>
+  <li>So is using sets worthwhile?</li>
+  <li>Imagine storing species names in a list instead of a set
+    <ul>
+    <li>Each <code>if name in seen</code> check requires $N/2$ comparisons on average</li>
+    <li>So building up those $N$ values requires $N(N+1)/4$ comparisons</li>
+    </ul>
+  </li>
+  <li>Only requires $N$ for a set
+    <ul>
+    <li>Difference is dramatic</li>
+      <figure id="fig:py04-list-vs-set">
+        <img alt="List vs. Set Performance" src="py04/list-vs-set.png"/>
+        <p>Figure 7.3: List vs. Set Performance</p>
+      </figure>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>11) Complexity Curves</h2>
+  <ul>
+  <li>Can get better performance out of the list if we keep it sorted
+    <ul>
+    <li>Use <a href="{{page.root}}/book/glossary.html#binary-search" target="glo:binary-search">binary search</a> to look for values</li>
+      <figure id="fig:py04-binary-search">
+        <img alt="Binary Search" src="py04/binary-search.png"/>
+        <p>Figure 7.4: Binary Search</p>
+      </figure>
+    </ul>
+  </li>
+  <li>$K$ checks is enough to find a value in a list of length $2^{K}$
+    <ul>
+    <li>So a list containing $N$ values can be searched in $log_{2}N$ computational steps</li>
+    <li>Building a list of $N$ values therefore requires roughly $N log_{2} N$ steps</li>
+      <figure id="fig:py04-logarithmic">
+        <img alt="List vs. Set Performance Revisited" src="py04/logarithmic.png"/>
+        <p>Figure 7.5: List vs. Set Performance Revisited</p>
+      </figure>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>12) Algorithmic Complexity</h2>
+  <ul>
+  <li>The relationship between problem size and running time is called <a href="{{page.root}}/book/glossary.html#algorithmic-complexity" target="glo:algorithmic-complexity">algorithmic complexity</a>
+    <ul>
+    <li>Usually described in terms of upper bounds</li>
+    <li>If <em>f(x) &lt; kg(x)</em> for large <em>x</em> and some constant <em>k</em>, then <em>f(x)</em> is <em>O(g(x))</em></li>
+    </ul>
+  </li>
+  <li>For example:
+    <ul>
+    <li>Something that takes the same time, regardless of data size, is <em>O(1)</em></li>
+    <li>If the time grows as the logarithm of the data size, it is <em>O(log N)</em></li>
+    <li>If the time is proportional to the number of values, it is <em>O(N)</em></li>
+    <li>Storing species names in a list is <em>O(N<sup>2</sup>)</em>
+      <ul>
+      <li>Because if you throw away the constant 4, the difference between <em>N(N+1)/4 = (N<sup>2</sup> + N)/4</em> and <em>N<sup>2</sup></em> becomes insignificant as <em>N</em> grows large</li>
+      </ul>
+    </li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>13) Motivating Dictionaries</h2>
+  <ul>
+  <li>Suppose you want to count how often each species of bird is seen
+    <ul>
+    <li>Can't store <code>(name, count)</code> in set...</li>
+    <li>...because then you couldn't look up a species' count unless you already knew what it was</li>
+    </ul>
+  </li>
+  <li>Could fall back on lists of pairs...</li>
+  <li>Better solution: store extra data with each element of a set</li>
+  <li>A <a href="{{page.root}}/book/glossary.html#dictionary" target="glo:dictionary">dictionary</a> associates one value with each of its <a href="{{page.root}}/book/glossary.html#key" target="glo:key">keys</a>
+    <ul>
+    <li>An unordered mutable collection</li>
+    <li>Also called maps, hashes, and associative arrays</li>
+    <li>Often visualized as two-column table</li>
+      <figure id="fig:py04-dict-as-table">
+        <img alt="Dictionaries as Tables" src="py04/dict-as-table.png"/>
+        <p>Figure 7.6: Dictionaries as Tables</p>
+      </figure>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>14) Creating and Indexing</h2>
+  <ul>
+  <li>Create a dictionary by putting key/value pairs inside <code>{</code>}
+    <ul>
+    <li><code>{'Newton':1642, 'Darwin':1809</code>}</li>
+    <li>Empty dictionaries are written <code>{</code>}</li>
+    </ul>
+  </li>
+  <li>Look up the value associated with a key using <code>[]</code></li>
+  </ul>
+  <pre file="py04/create-dict.py">birthday = {
+    'Newton' : 1642,
+    'Darwin' : 1809
+}
+print &quot;Darwin's birthday:&quot;, birthday['Darwin']
+print &quot;Newton's birthday:&quot;, birthday['Newton']
+</pre>
+  <pre class="out" file="py04/create-dict.out">Darwin's birthday: 1809
+Newton's birthday: 1642
+</pre>
+  <ul>
+  <li>Can only access keys that are present
+    <ul>
+    <li>Just as you can't index elements of a list that aren't there</li>
+    </ul>
+  </li>
+  </ul>
+  <pre file="py04/key-error.py">birthday = {
+    'Newton' : 1642,
+    'Darwin' : 1809
+}
+print birthday['Turing']
+</pre>
+  <pre class="err" file="py04/key-error.err">Traceback (most recent call last):
+  File &quot;key_error.py&quot;, line 5, in ?
+    print birthday['Turing']
+KeyError: 'Turing'
+</pre>
+</div>
+
+<div class="topic">
+  <h2>15) Updating Dictionaries</h2>
+  <ul>
+  <li>Assigning to a dictionary key:
+    <ul>
+    <li>Creates a new entry if the key is not already in dictionary</li>
+    <li>Overwrites the previous value if the key is already present</li>
+    </ul>
+  </li>
+  </ul>
+  <pre file="py04/dict-fill.py">birthday = {}
+birthday['Darwin'] = 1809
+birthday['Newton'] = 1942  # oops
+birthday['Newton'] = 1642
+print birthday
+</pre>
+  <pre class="out" file="py04/dict-fill.out">{'Darwin': 1809, 'Newton': 1642}
+</pre>
+  <ul>
+  <li>Remove an entry using <code>del d[k]</code>
+    <ul>
+    <li>Can only remove entries that are actually present</li>
+    </ul>
+  </li>
+  </ul>
+  <pre file="py04/dict-del.py">birthday = {
+    'Newton' : 1642,
+    'Darwin' : 1809,
+    'Turing' : 1912
+}
+
+print 'Before deleting Turing:', birthday
+del birthday['Turing']
+print 'After deleting Turing:', birthday
+del birthday['Faraday']
+print 'After deleting Faraday:', birthday
+</pre>
+  <pre class="out" file="py04/dict-del.out">Before deleting Turing: {'Turing': 1912, 'Newton': 1642, 'Darwin': 1809}
+After deleting Turing: {'Newton': 1642, 'Darwin': 1809}
+</pre>
+  <pre class="err" file="py04/dict-del.err">Traceback (most recent call last):
+  File &quot;dict_del.py&quot;, line 10, in ?
+    del birthday['Faraday']
+KeyError: 'Faraday'
+</pre>
+</div>
+
+<div class="topic">
+  <h2>16) Membership and Loops</h2>
+  <ul>
+  <li>Test whether a key <code>k</code> is in a dictionary <code>d</code> using <code>k in d</code>
+    <ul>
+    <li>Once again, inconsistent with behavior of lists, but useful</li>
+    </ul>
+  </li>
+  </ul>
+  <pre file="py04/test-in-dict.py">birthday = {
+    'Newton' : 1642,
+    'Darwin' : 1809
+}
+
+for name in ['Newton', 'Turing']:
+    if name in birthday:
+        print name, birthday[name]
+    else:
+        print 'Who is', name, '?'
+</pre>
+  <pre class="out" file="py04/test-in-dict.out">Newton 1642
+Who is Turing ?
+</pre>
+  <ul>
+  <li><code>for k in d</code> loops over the dictionary's keys (rather than its values)
+    <ul>
+    <li>Different from lists, where <code>for</code> loops over the values, rather than indices</li>
+    </ul>
+  </li>
+  </ul>
+  <pre file="py04/dict-iter.py">birthday = {
+    'Newton' : 1642,
+    'Darwin' : 1809,
+    'Turing' : 1912
+}
+for name in birthday:
+    print name, birthday[name]
+</pre>
+  <pre class="out" file="py04/dict-iter.out">Turing 1912
+Newton 1642
+Darwin 1809
+</pre>
+</div>
+
+<div class="topic">
+  <h2>17) Dictionary Methods</h2>
+  <ul>
+  <li>Yes, dictionaries are objects too...</li>
+  </ul>
+  <div id="tbl:py04-dictops">
+    <table>
+      <tr>
+        <th>Method</th>
+        <th>Purpose</th>
+        <th>Example</th>
+        <th>Result</th>
+      </tr>
+      <tr>
+        <td><code>clear</code></td>
+        <td>Empty the dictionary.</td>
+        <td><code>d.clear()</code></td>
+        <td>Returns <code>None</code>, but <code>d</code> is now empty.</td>
+      </tr>
+      <tr>
+        <td><code>get</code></td>
+        <td>Return the value associated with a key, or a default value if the key is not present.</td>
+        <td><code>d.get('x', 99)</code></td>
+        <td>Returns <code>d['x']</code> if <code>&quot;x&quot;</code> is in <code>d</code>, or 99 if it is not.</td>
+      </tr>
+      <tr>
+        <td><code>keys</code></td>
+        <td>Return the dictionary's keys as a list.  Entries are guaranteed to be unique.</td>
+        <td><code>birthday.keys()</code></td>
+        <td><code>['Turing', 'Newton', 'Darwin']</code></td>
+      </tr>
+      <tr>
+        <td><code>items</code></td>
+        <td>Return a list of (key, value) pairs.</td>
+        <td><code>birthday.items()</code></td>
+        <td><code>[('Turing', 1912), ('Newton', 1642), ('Darwin', 1809)]</code></td>
+      </tr>
+      <tr>
+        <td><code>values</code></td>
+        <td>Return the dictionary's values as a list.  Entries may or may not be unique.</td>
+        <td><code>birthday.values()</code></td>
+        <td><code>[1912, 1642, 1809]</code></td>
+      </tr>
+      <tr>
+        <td><code>update</code></td>
+        <td>Copy keys and values from one dictionary into another.</td>
+        <td>See the example below.</td>
+        <td></td>
+      </tr>
+    </table>
+    <p>Table 7.2: Dictionary Methods in Python</p>
+  </div>
+  <ul>
+  <li>Example:</li>
+  </ul>
+  <pre file="py04/dict-methods.py">birthday = {
+    'Newton' : 1642,
+    'Darwin' : 1809,
+    'Turing' : 1912
+}
+
+print 'keys:', birthday.keys()
+print 'values:', birthday.values()
+print 'items:', birthday.items()
+print 'get:', birthday.get('Curie', 1867)
+
+temp = {
+    'Curie'    : 1867,
+    'Hopper'   : 1906,
+    'Franklin' : 1920
+}
+birthday.update(temp)
+print 'after update:', birthday
+
+birthday.clear()
+print 'after clear:', birthday
+</pre>
+  <pre class="out" file="py04/dict-methods.out">keys: ['Turing', 'Newton', 'Darwin']
+values: [1912, 1642, 1809]
+items: [('Turing', 1912), ('Newton', 1642), ('Darwin', 1809)]
+get: 1867
+after update: {'Curie': 1867, 'Darwin': 1809, 'Franklin': 1920, 'Turing': 1912, 'Newton': 1642, 'Hopper': 1906}
+after clear: {}
+</pre>
+</div>
+
+<div class="topic">
+  <h2>18) Counting Frequency</h2>
+  <ul>
+  <li>So, back to our birds...
+    <ul>
+    <li>Use species names as keys in a dictionary</li>
+    <li>The value associated with each key is the number of times it has been seen so far</li>
+    </ul>
+  </li>
+  </ul>
+  <pre file="py04/simple-dict-counter.py"># Data to count.
+names = ['tern','goose','goose','hawk','tern','goose', 'tern']
+
+# Build a dictionary of frequencies.
+freq = {}
+for name in names:
+
+    # Already seen, so increment count by one.
+    if name in freq:
+        freq[name] = freq[name] + 1
+
+    # Never seen before, so add to dictionary.
+    else:
+        freq[name] = 1
+
+# Display.
+print freq
+</pre>
+  <pre class="out" file="py04/simple-dict-counter.out">{'goose': 3, 'tern': 3, 'hawk': 1}
+</pre>
+</div>
+
+<div class="topic">
+  <h2>19) A Slight Simplification</h2>
+  <ul>
+  <li>Can simplify this code using <code>dict.get</code>
+    <ul>
+    <li>Get either the count associated with the key, or 0, then add one to it</li>
+    </ul>
+  </li>
+  </ul>
+  <pre file="py04/dict-get-key.py" section="body">freq = {}
+for name in names:
+    freq[name] = freq.get(name, 0) + 1
+print freq
+</pre>
+  <pre class="out" file="py04/dict-get-key.out">{'goose': 3, 'tern': 3, 'hawk': 1}
+</pre>
+</div>
+
+<div class="topic">
+  <h2>20) Imposing Order</h2>
+  <ul>
+  <li>A dictionary's keys are unordered (just like the elements in a set)
+    <ul>
+    <li>Remember, we deliberately randomize (hash) in order to make lookup fast</li>
+    </ul>
+  </li>
+  <li>So, to print counts in alphabetic order:
+    <ul>
+    <li>Get the list of keys</li>
+    <li>Sort that list</li>
+    <li>Loop over it</li>
+    </ul>
+  </li>
+  </ul>
+  <pre file="py04/dict-sort-key.py" section="body">keys = freq.keys()
+keys.sort()
+for k in keys:
+    print k, freq[k]
+</pre>
+  <pre class="out" file="py04/dict-sort-key.out">goose 3
+hawk 1
+tern 3
+</pre>
+</div>
+
+<div class="topic">
+  <h2>21) Inverting a Dictionary</h2>
+  <ul>
+  <li>But how to print in order of frequency?
+    <ul>
+    <li>Need to <a href="{{page.root}}/book/glossary.html#invert" target="glo:invert">invert</a> the dictionary</li>
+    <li>I.e., swap the keys and values</li>
+    </ul>
+  </li>
+  <li>But there might be collisions, since values aren't guaranteed to be unique
+    <ul>
+    <li>What is the inverse of <code>{'a':1, 'b':1, 'c':1</code>}?</li>
+    </ul>
+  </li>
+  <li>Solution: store a list of values instead of just a single value
+    <ul>
+    <li>Use <code>dict.get(key, [])</code> instead of <code>dict.get(key, 0)</code></li>
+    </ul>
+  </li>
+  </ul>
+  <pre file="py04/dict-count-invert.py" section="body">inverse = {}
+for (key, value) in freq.items():
+    seen = inverse.get(value, [])
+    seen.append(key)
+    inverse[value] = seen
+
+keys = inverse.keys()
+keys.sort()
+for k in keys:
+    print k, inverse[k]
+</pre>
+  <pre class="out" file="py04/dict-count-invert.out">1 ['hawk']
+3 ['goose', 'tern']
+</pre>
+  <figure id="fig:py04-invert-dict">
+  <img alt="Inverting a Dictionary" src="py04/invert-dict.png"/>
+    <p>Figure 7.7: Inverting a Dictionary</p>
+  </figure>
+</div>
+
+<div class="topic">
+  <h2>22) Another Way to Do It</h2>
+  <ul>
+  <li>The previous example can also be written as:</li>
+  </ul>
+  <pre file="py04/dict-count-invert-2.py" section="body">inverse = {}
+for (key, value) in freq.items():
+    if value not in inverse:
+        inverse[value] = []
+    inverse[value].append(key)
+</pre>
+  <ul>
+  <li>I.e., store an empty list when needed, and always append</li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>23) Formatting Strings with Dictionaries</h2>
+  <ul>
+  <li>Complex string formatting can be hard to understand
+    <ul>
+    <li>Especially if one value needs to be used several times</li>
+    </ul>
+  </li>
+  <li>Instead of a tuple, <code>&quot;%&quot;</code> can take a dictionary as its right argument
+    <ul>
+    <li>Use <code>&quot;%(varname)s&quot;</code> inside the format string to identify what's to be substituted</li>
+    </ul>
+  </li>
+  </ul>
+  <pre file="py04/dict-format.py">birthday = {
+    'Newton' : 1642,
+    'Darwin' : 1809,
+    'Turing' : 1912
+}
+entry = '\%(name)s: \%(year)s'
+for (name, year) in birthday.items():
+    temp = {'name' : name, 'year' : year}
+    print entry \% temp
+</pre>
+  <pre class="out" file="py04/dict-format.out">Turing: 1912
+Newton: 1642
+Darwin: 1809
+</pre>
+</div>
+
+<div class="topic">
+  <h2>24) Extra Keyword Arguments</h2>
+  <ul>
+  <li>Consider this example:</li>
+  </ul>
+  <pre file="py04/keyword-args.py">def settings(title, **kwargs):
+    print 'title:', title
+    for key in kwargs:
+        print '    %s: %s' % (key, kwargs[key])
+
+settings('nothing extra')
+settings('colors', red=0.0, green=0.5, blue=1.0)
+</pre>
+  <pre class="out" file="py04/keyword-args.out">title: nothing extra
+title: colors
+    blue: 1.0
+    green: 0.5
+    red: 0.0
+</pre>
+  <ul>
+  <li>The <code>**</code> in front of <code>kwargs</code> means &quot;Put any extra keyword arguments in a dictionary, and assign it to <code>kwargs</code>&quot;</li>
+  <li>Allows you to create functions that can handle arbitrary arguments</li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>25) Extra Positional Arguments</h2>
+  <ul>
+  <li>Can do something similar with extra positional (unnamed) arguments</li>
+  </ul>
+  <pre file="py04/list-args.py">def sum(*values):
+    result = 0.0
+    for v in values:
+        result += v
+    return result
+
+print &quot;no values:&quot;, sum()
+print &quot;single value:&quot;, sum(3)
+print &quot;five values:&quot;, sum(3, 4, 5, 6, 7)
+</pre>
+  <pre class="out" file="py04/list-args.out">no values: 0.0
+single value: 3.0
+five values: 25.0
+</pre>
+  <ul>
+  <li>The single <code>*</code> in front of <code>values</code> means &quot;Put any extra unnamed arguments in a tuple, and assign it to <code>values</code>&quot;</li>
+  <li>Can have at most one <code>*</code> argument per function</li>
+  <li>Question: what does <code>**</code> mean? How and why would you use it?</li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>26) Summary</h2>
+  <ul>
+  <li>The world isn't made of lists</li>
+  <li>Other basic data structures can make your programs much simpler, and much more efficient</li>
+  <li>And learning a few advanced features of whatever language you're using can do the same</li>
+  </ul>
+</div>

@@ -1,0 +1,6 @@
+before
+str is: rock
+seq is: ['gneiss', 'shale']
+after
+str is: rock
+seq is: ['gneiss', 'shale', 'salt']

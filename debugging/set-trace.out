@@ -1,0 +1,14 @@
+> /home/user/set-trace.py(7)<module>()
+-> acid = "Cl"
+(Pdb) n
+> /home/user/set-trace.py(8)<module>()
+-> salt = base + acid
+(Pdb) n
+> /home/user/set-trace.py(9)<module>()
+-> print salt
+(Pdb) n
+NaCl
+--Return--
+> /home/user/set-trace.py(9)<module>()->None
+-> print salt
+(Pdb) n

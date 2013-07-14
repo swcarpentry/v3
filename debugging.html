@@ -1,0 +1,625 @@
+---
+layout: v3_slideshow
+title: Debugging
+prev: v3/py03.html
+uplink: v3/index.html
+next: v3/version.html
+---
+<div class="topic">
+  <h2>1) Introduction</h2>
+  <ul>
+  <li>You're going to spend half your professional life debugging
+    <ul>
+    <li>So you should learn how to do it systematically</li>
+    </ul>
+  </li>
+  <li>Talk about tools first
+    <ul>
+    <li>They'll make everything else less painful</li>
+    </ul>
+  </li>
+  <li>Then some techniques</li>
+  <li>Assume for now that you built the right thing the wrong way
+    <ul>
+    <li>Requirements errors are actually a major cause of software project failure</li>
+    <li>But out of scope for this course</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>2) You Can Skip This Lecture If...</h2>
+  <ul>
+  <li>You know how to use a symbolic debugger
+    <ul>
+    <li>Just knowing what one is doesn't count</li>
+    </ul>
+  </li>
+  <li>You know what a breakpoint is</li>
+  <li>You know what conditional breakpoints are good for</li>
+  <li>You know what logging is</li>
+  <li>You follow Agans' Rules</li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>3) Key Themes</h2>
+  <ul>
+  <li>A debugger is a must-know tool
+    <ul>
+    <li>Not everything in software should be solved with yet-another-tool</li>
+    </ul>
+    <ul>
+    <li>But, a debugger is definitely one to learn.</li>
+    </ul>
+  </li>
+  <li>A few hours spent learning a debugger will literally save you
+        hundreds of hours of wasted effort later
+    <ul>
+    <li>Learning the top 10 features of a debugger will get you
+        90% of the benefit</li>
+    </ul>
+  </li>
+  <li>A debugger is to a programmer, what a mitre saw is to a modern carpenter
+    <ul>
+    <li>With great(er) effort, you could probably build something without one</li>
+    </ul>
+    <ul>
+    <li>But, with one, you can get a lot more done, and with less grief</li>
+    </ul>
+  </li> 
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>4) What's Wrong with Print Statements</h2>
+  <ul>
+  <li>Many people still debug by adding print statements to their programs</li>
+  <li>It's error-prone
+    <ul>
+    <li>Adding print statements is a good way to add typos</li>
+    <li>Particularly when you have to modify the block structure of your program</li>
+    </ul>
+  </li>
+  <li>And time-consuming
+    <ul>
+    <li>All that typing...</li>
+    <li>And (if you're using Java, C++, or Fortran) all that recompiling...</li>
+    </ul>
+  </li>
+  <li>And can be misleading
+    <ul>
+    <li>Moves things around in memory, changes execution timing, etc.</li>
+    <li>Common for bugs to hide when print statements are added, and reappear when they're removed</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>5) Symbolic Debuggers</h2>
+  <ul>
+  <li>A <a href="{{page.root}}/book/glossary.html#debugger" target="glo:debugger">debugger</a> is a program that runs another program on your behalf
+    <ul>
+    <li>Sometimes called a <em>symbolic</em> debugger because it shows you the source code you wrote, rather than raw machine code</li>
+    </ul>
+  </li>
+  <li>While the <a href="{{page.root}}/book/glossary.html#target-program" target="glo:target-program">target program</a> (or <a href="{{page.root}}/book/glossary.html#debuggee" target="glo:debuggee">debuggee</a>) is running, the debugger can:
+    <ul>
+    <li>Pause, resume, or restart the target</li>
+    <li>Display or change values</li>
+    <li>Watch for calls to particular functions, changes to particular variables, etc.</li>
+    </ul>
+  </li>
+  <li>Do <em>not</em> need to modify the source of the target program!
+    <ul>
+    <li>Depending on your language, you may need to compile it with different flags</li>
+    </ul>
+  </li>
+  <li>And yes, the debugger modifies the target's layout in memory, and execution speed...
+    <ul>
+    <li>...but a lot less than print statements...</li>
+    <li>...with a lot less effort from you</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>6) Debugger Features</h2>
+  <ul>
+  <li>Interactive debuggers typically show:
+    <ul>
+    <li>The source code</li>
+    <li>The call stack</li>
+    <li>The values of variables that are currently in scope
+      <ul>
+      <li>I.e., global variables, parameters to the current function call, and local variables in that function</li>
+      </ul>
+    </li>
+    <li>A panel displaying what your program has printed to standard output and/or standard error</li>
+    </ul>
+  </li>
+  <li>We'll use <a href="bib.html#bib:wingide" target="bib:wingide">[WingIDE]</a> in this lecture</li>
+  </ul>
+</div>
+
+<div class="topic">
+  <figure id="fig:debugging-debugger-in-action">
+    <img alt="A Debugger in Action:  Debug I/O Panel" src="debugging/debugger-in-action.png"/>
+    <p>Figure 45.1: A Debugger in Action:  Debug I/O Panel</p>
+  </figure>
+</div>
+
+<div class="topic">
+  <figure id="fig:debugging-debugger-in-action.2">
+    <img alt="A Debugger in Action (2):  Stack Data Panel" src="debugging/debugger-in-action.2.png"/>
+    <p>Figure 5.2: A Debugger in Action (2): Stack Data Panel</p>
+  </figure>
+</div>
+
+<div class="topic">
+  <h2>7) Kinds of Debuggers</h2>
+  <ul>
+  <li>There may be several ways to get into the debugger
+    <ul>
+    <li>Launch the debugger, load the target program, and start work</li>
+    <li>Run the debugger with the target program as a command-line argument</li>
+    <li>Switch into debugging mode in the middle of an interactive session</li>
+    </ul>
+  </li>
+  <li>Sometimes also do <a href="{{page.root}}/book/glossary.html#post-mortem-debugging" target="glo:post-mortem-debugging">post mortem debugging</a>
+    <ul>
+    <li>When a program fails badly, it creates a <a href="{{page.root}}/book/glossary.html#core-dump" target="glo:core-dump">core dump</a>
+      <ul>
+      <li>Copies all of its internal state to a file on disk</li>
+      </ul>
+    </li>
+    <li>Load that dump into the debugger, and see where the program was when it terminated
+      <ul>
+      <li>Not as good as watching it run...</li>
+      <li>...but sometimes the best you can do</li>
+      </ul>
+    </li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>8) Integrated Development Environments</h2>
+  <ul>
+  <li>Debuggers are usually part of <a href="{{page.root}}/book/glossary.html#integrated-development-environment" target="glo:integrated-development-environment">integrated development environments</a> (IDEs)</li>
+  <li>Tools like this are available for every modern language
+    <ul>
+    <li><a href="bib.html#bib:ms-visual-studio" target="bib:ms-visual-studio">[Microsoft Visual Studio]</a> on Windows</li>
+    <li><a href="bib.html#bib:eclipse" target="bib:eclipse">[Eclipse]</a> for Java (and now C++)</li>
+    </ul>
+  </li>
+  <li>Also usually contain a <a href="{{page.root}}/book/glossary.html#class-browser" target="glo:class-browser">class browser</a> that presents an outline of the project's modules, classes, functions, variables, etc.</li>
+  <li>For example, the WING IDE make it easy to browse functions (open file /usr/share/pyshared/numpy/lib/polynomial.py in the VMware image):</li>
+  </ul>
+  <figure id="fig:debugging-source-browser">
+    <img alt="Source Browser:  Functions" src="debugging/source-browser.png"/>
+    <p>Figure 45.3: Source Browser:  Functions</p>
+  </figure>
+</div>
+
+<div class="topic">
+  <h2>9) Command-Line Debuggers</h2>
+  <ul>
+  <li>Many of today's debuggers are GUIs wrapped around older command-line debuggers</li>
+  <li>Most widely used of these is <a href="bib.html#bib:gdb" target="bib:gdb">[GDB]</a>
+    <ul>
+    <li>Supports many languages, on many platforms</li>
+    <li>But no one ever said it was easy to learn</li>
+    </ul>
+  </li>
+  <li>Python comes with a simple debugger called <code>pdb</code>
+    <ul>
+    <li>Can be invoked by calling <code>pdb.set_trace()</code> inside a program</li>
+    </ul>
+  </li>
+  </ul>
+  <ul>
+    <li>Here's a program in file <code>set-trace.py</code>: </li>
+    <pre file="debugging/set-trace.py">import pdb
+
+base = &quot;Na&quot;
+
+pdb.set_trace()
+
+acid = &quot;Cl&quot;
+salt = base + acid
+print salt
+</pre>
+  </ul>
+
+  <ul>
+    <li>You can run it with the command, then <a href="{{page.root}}/book/glossary.html#single-step" target="glo:single-step">single-step</a> interactively:</li>
+    <pre class="in" file="debugging/set-trace.cmd">user@user-desktop:~$ python set-trace.py
+</pre>
+    <pre class="out" file="debugging/set-trace.out">&gt; /home/user/set-trace.py(7)&lt;module&gt;()
+-&gt; acid = &quot;Cl&quot;
+(Pdb) n
+&gt; /home/user/set-trace.py(8)&lt;module&gt;()
+-&gt; salt = base + acid
+(Pdb) n
+&gt; /home/user/set-trace.py(9)&lt;module&gt;()
+-&gt; print salt
+(Pdb) n
+NaCl
+--Return--
+&gt; /home/user/set-trace.py(9)&lt;module&gt;()-&gt;None
+-&gt; print salt
+(Pdb) n
+</pre>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>10) Inspecting Values</h2>
+  <ul>
+  <li>Use the debugger to set <a href="{{page.root}}/book/glossary.html#breakpoint" target="glo:breakpoint">breakpoints</a> in the target program
+    <ul>
+    <li>Tells the target program to pause when it reaches particular lines of code</li>
+    </ul>
+  </li>
+  <li>When the target program is paused, the debugger can display the contents of its memory</li>
+  <li>Most debuggers can also evaluate expressions using the current values of variables
+    <ul>
+    <li>E.g., type in <code>2*x&lt;0</code>, debugger displays <code>False</code></li>
+    </ul>
+  </li>
+  </ul>
+  <figure id="fig:debugging-inspecting-values">
+    <img alt="Inspecting Values" src="debugging/inspecting-values.png"/>
+    <p>Figure 45.4: Inspecting Values</p>
+  </figure>
+</div>
+
+<div class="topic">
+  <h2>11) Controlling Execution</h2>
+  <ul>
+  <li>The debugger can also:
+    <ul>
+    <li><a href="{{page.root}}/book/glossary.html#single-step" target="glo:single-step">Single-step</a> (i.e., execute one statement at a time)</li>
+    <li><a href="{{page.root}}/book/glossary.html#step-into" target="glo:step-into">Step into</a> function calls</li>
+    <li><a href="{{page.root}}/book/glossary.html#step-over" target="glo:step-over">Step over</a> them, or</li>
+    <li>Run to the end of the current function</li>
+    </ul>
+  </li>
+  <li>Allows you to see:
+    <ul>
+    <li>How values are changing</li>
+    <li>Which branches the program is actually taking</li>
+    <li>Which functions are actually being called</li>
+    </ul>
+  </li>
+  <li>Debuggers really should be called &quot;inspectors&quot;</li>
+  </ul>
+  <figure id="fig:debugging-programs-as-data">
+    <img alt="Programs As Data" src="debugging/programs-as-data.png"/>
+    <p>Figure 45.5: Programs As Data</p>
+  </figure>
+  <ul>
+  <li>Programs are &quot;just&quot; data</li>
+  <li>Some bytes hold values that represent instructions
+    <ul>
+    <li>Each statement in the source program typically corresponds to several instructions</li>
+    <li>The compiler (or interpreter) keeps track of which lines of code produced which instructions</li>
+    </ul>
+  </li>
+  <li>Other bytes hold constants and variables
+    <ul>
+    <li>The <a href="{{page.root}}/book/glossary.html#static-space" target="glo:static-space">static space</a> contains constant strings, magic numbers, etc.</li>
+    <li>The <a href="{{page.root}}/book/glossary.html#call-stack" target="glo:call-stack">call stack</a> holds function parameters</li>
+    <li>The <a href="{{page.root}}/book/glossary.html#heap" target="glo:heap">heap</a> is all dynamically-created objects</li>
+    </ul>
+  </li>
+  <li>Some <a href="{{page.root}}/book/glossary.html#register" target="glo:register">registers</a>
+    <ul>
+    <li>An <a href="{{page.root}}/book/glossary.html#instruction-pointer" target="glo:instruction-pointer">instruction pointer</a> that keeps track of what to execute next</li>
+    <li>A <a href="{{page.root}}/book/glossary.html#stack-pointer" target="glo:stack-pointer">stack pointer</a> to keep track of the call stack</li>
+    <li>Miscellaneous other registers for doing arithmetic, etc.</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>12) Inspecting More Values</h2>
+  <ul>
+  <li>Debugger lets you move up and down the call stack
+    <ul>
+    <li>Allows you to run to the problem, then figure out how you got there</li>
+    </ul>
+  </li>
+  <li>Also lets you modify values
+    <ul>
+    <li>If you have a theory about why a bug is occurring:
+      <ul>
+      <li>Run to that point</li>
+      <li>Set variables' values (e.g., set <code>max_temp</code> to -1)</li>
+      <li>Resume execution</li>
+      </ul>
+    </li>
+    <li>Sometimes used to test error handling code
+      <ul>
+      <li>Easier to change <code>time_spent_waiting</code> to 600 seconds in debugger than to pull out the network cable and wait...</li>
+      </ul>
+    </li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>13) Conditional Breakpoints and Watchpoints</h2>
+  <ul>
+  <li>The program only stops at a <a href="{{page.root}}/book/glossary.html#conditional-breakpoint" target="glo:conditional-breakpoint">conditional breakpoint</a> if some condition is met
+    <ul>
+    <li>E.g., loop index greater than 100, or filename argument is <code>None</code></li>
+    <li>Much more efficient than single-stepping from the start of the program</li>
+    </ul>
+  </li>
+  <li>Some debuggers also support <a href="{{page.root}}/book/glossary.html#watchpoint" target="glo:watchpoint">watchpoints</a>
+    <ul>
+    <li>Have the debugger watch every write to memory</li>
+    <li>Halt when anything, anywhere, modifies a particular variable</li>
+    <li>Slow the program down a lot
+      <ul>
+      <li>Typically a factor of 100 or more</li>
+      </ul>
+    </li>
+    <li>But sometimes the only practical way to find out when a particular list value is being overwritten</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>14) Agans' Rules</h2>
+  <ul>
+  <li>Many people make debugging harder than it needs to be by:
+    <ul>
+    <li>Using inadequate tools</li>
+    <li>Not going about it systematically</li>
+    <li>Becoming impatient</li>
+    </ul>
+  </li>
+  <li>Agans' Rules <a href="bib.html#bib:agans-debugging" target="bib:agans-debugging">[Agans 2002]</a> describe how to apply the scientific method to debugging
+    <ul>
+    <li>Observe a failure</li>
+    <li>Invent a hypothesis explaining the cause</li>
+    <li>Test the hypothesis by running an experiment (i.e., a test)</li>
+    <li>Repeat until the bug has been found</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>15) Rule 0: Get It Right the First Time</h2>
+  <ul>
+  <li>The simplest bugs to fix are the ones that don't exist</li>
+  <li>Design, reflect, discuss, <em>then</em> code
+    <ul>
+    <li>&quot;A week of hard work can sometimes save you an hour of thought.&quot;</li>
+    </ul>
+  </li>
+  <li>Design and build your code with testing and debugging in mind
+    <ul>
+    <li>Minimize the amount of &quot;spooky action at a distance&quot;</li>
+    <li>Minimize the number of things programmers have to keep track of at any one time</li>
+    <li>Train yourself to do things right, so that you'll code well even when you're tired, stressed, and facing a deadline</li>
+    </ul>
+  </li>
+  <li>&quot;Everyone knows that debugging is twice as hard as writing a program in the first place. So if you're as clever as you can be when you write it, how will you ever debug it?&quot; (Brian Kernighan)</li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>16) Rule 1: What Is It Supposed to Do?</h2>
+  <ul>
+  <li>First step is knowing what the problem is
+    <ul>
+    <li>&quot;It doesn't work&quot; isn't good enough</li>
+    <li>What exactly is going wrong?</li>
+    <li>How do you know?</li>
+    <li>You will learn a lot by following execution in a debugger and trying to anticipate what the program is going to do next</li>
+    </ul>
+  </li>
+  <li>Requires you to know how the software is supposed to behave
+    <ul>
+    <li>Is this case covered by the specification?</li>
+    <li>If not:
+      <ul>
+      <li>Do you have enough knowledge to extrapolate?</li>
+      <li>Do you have the right to do so?</li>
+      </ul>
+    </li>
+    </ul>
+  </li>
+  <li>Try not to let what you want to see influence what you actually observe
+    <ul>
+    <li>It's harder than you'd think <a href="bib.html#bib:hock-forty-studies-changed-psychology" target="bib:hock-forty-studies-changed-psychology">[Hock 2004]</a></li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>17) Rule 2: Is It Plugged In?</h2>
+  <ul>
+  <li>Are you actually exercising the problem that you think you are?
+    <ul>
+    <li>Are you giving it the right test data?</li>
+    <li>Is it configured the way you think it is?</li>
+    <li>Is it the version you think it is?</li>
+    <li>Has the feature actually been implemented yet?</li>
+    <li>Why are you sure?
+      <ul>
+      <li>Maybe the reason you can't isolate the problem is that it's not there</li>
+      </ul>
+    </li>
+    </ul>
+  </li>
+  <li>Another argument in favor of automatic regression tests
+    <ul>
+    <li>Guaranteed to rerun the test the same way each time</li>
+    </ul>
+  </li>
+  <li>Also a good argument against automatic regression tests
+    <ul>
+    <li>If the test is wrong, it will generate the same misleading result each time</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>18) Rule 3: Make It Fail</h2>
+  <ul>
+  <li>You can only debug things when they go wrong</li>
+  <li>So find a test case that makes the code fail every time
+    <ul>
+    <li>Then try to find a simpler one</li>
+    <li>Or start with a trivially simple test case that passes, then add complexity until it fails</li>
+    </ul>
+  </li>
+  <li>Each experiment becomes a test case
+    <ul>
+    <li>So that you can re-run all of them with a single command</li>
+    <li>How else are you going to know that the bug has actually been fixed?</li>
+    </ul>
+  </li>
+  <li>Use the scientific method
+    <ul>
+    <li>Formulate a hypothesis, make a prediction, conduct an experiment, repeat</li>
+    <li>Remember, it's computer science, not computer flip-a-coin</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>19) Alternatives</h2>
+  <ul>
+  <li>What if you can't make it fail reliably?
+    <ul>
+    <li>Problem involves timing, network load, etc.</li>
+    <li>Or you just don't know enough about the cause yet</li>
+    </ul>
+  </li>
+  <li>Use post-mortem inspection
+    <ul>
+    <li>But then you have to reason backwards to figure out <em>why</em> the program crashed</li>
+    </ul>
+  </li>
+  <li>Or logging
+    <ul>
+    <li>But this can distort the program's behavior</li>
+    <li>And you'll have to wade through a lot of irrelevant information</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>20) Rule 4: Divide and Conquer</h2>
+  <ul>
+  <li>The smaller the gap between cause and effect, the easier the relationship is to see</li>
+  <li>So once you have a test that makes the system fail, use it isolate the faulty subsystem
+    <ul>
+    <li>Examine the input of the code that's failing</li>
+    <li>If that's wrong, look at the preceding code's input, and so on</li>
+    </ul>
+  </li>
+  <li>Use <code>assert</code> to check things that ought to be right
+    <ul>
+    <li>&quot;Fail early, fail often&quot;</li>
+    <li>A good way to stop yourself from introducing new bugs as you fix old ones</li>
+    </ul>
+  </li>
+  <li>When you do fix the bug, see whether you can add assertions to prevent it reappearing
+    <ul>
+    <li>If you made the mistake once, odds are that you, or someone, will make it again</li>
+    </ul>
+  </li>
+  <li>Another argument against duplicated code
+    <ul>
+    <li>Few things are as frustrating as fixing a bug, only to have it crop up again elsewhere</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>21) Rule 5: Change One Thing at a Time, For a Reason</h2>
+  <ul>
+  <li>Replacing random chunks of code unlikely to do much good
+    <ul>
+    <li>If you got it wrong the first time, what makes you think you'll get it right the second? Or the ninth?</li>
+    <li>So always have a hypothesis before making a change</li>
+    </ul>
+  </li>
+  <li>Every time you make a change, re-run all of your tests immediately
+    <ul>
+    <li>The more things you change at once, the harder it is to know what's responsible for what</li>
+    <li>And the harder it is to keep track of what you've done, and what effect it had</li>
+    <li>Changes can also often uncover (or introduce) new bugs</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>22) Rule 6: Write It Down</h2>
+  <ul>
+  <li>Science works because scientists keep records
+    <ul>
+    <li>&quot;Did left followed by right with an odd number of lines cause the crash? Or was it right followed by left? Or was I using an even number of lines?&quot;</li>
+    </ul>
+  </li>
+  <li>Records particularly useful when getting help
+    <ul>
+    <li>People are more likely to listen when you can explain clearly what you did</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>23) Rule 7: Be Humble</h2>
+  <ul>
+  <li>If you can't find it in 15 minutes, ask for help
+    <ul>
+    <li>Just explaining the problem aloud is often enough</li>
+    <li>&quot;Never debug standing up.&quot; (Gerald Weinberg)</li>
+    </ul>
+  </li>
+  <li>Don't keep telling yourself why it <em>should</em> work: if it doesn't, it doesn't
+    <ul>
+    <li>Never debug while grinding your teeth, either...</li>
+    </ul>
+  </li>
+  <li>Keep track of your mistakes
+    <ul>
+    <li>Just as runners keep track of their time for the 100 meter sprint</li>
+    <li>&quot;You cannot manage what you cannot measure.&quot; (Bill Hewlett)</li>
+    </ul>
+  </li>
+  <li>And read <a href="bib.html#bib:zeller-why-programs-fail" target="bib:zeller-why-programs-fail">[Zeller 2006]</a> to learn more</li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>24) Summary</h2>
+  <ul>
+  <li>Debugging is <em>not</em> a black art</li>
+  <li>Like medical diagnosis, it's a skill that can be studied and improved</li>
+  <li>You're going to spend a lot of time doing it: you might as well learn how to do it well</li>
+  </ul>
+</div>

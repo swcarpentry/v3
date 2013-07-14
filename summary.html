@@ -1,0 +1,529 @@
+---
+layout: v3_slideshow
+title: Summary
+prev: v3/lifecycle.html
+uplink: v3/index.html
+next: v3/license.html
+---
+<div class="topic">
+  <h2>1) Introduction</h2>
+  <ul>
+  <li>This course has introduced you to the skills and tools that differentiate productive programmers from unproductive ones</li>
+  <li>But we've really just scratched the surface</li>
+  <li>This lecture looks at a few of the next steps you might want to take</li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>2) Classic Mistakes</h2>
+  <ul>
+  <li>People
+    <ul>
+    <li>Adding people to a late project (just makes it later <a href="bib.html#bib:brooks-mythical-man-month" target="bib:brooks-mythical-man-month">[Brooks 1995]</a>)</li>
+    <li>Relying on heroics (don't scale <a href="bib.html#bib:robinson-crunch-mode" target="bib:robinson-crunch-mode">[Robinson 2006]</a>)</li>
+    <li>Lack of support from project sponsors</li>
+    <li>Lack of user input</li>
+    <li><a href="{{page.root}}/book/glossary.html#silver-bullet" target="glo:silver-bullet">Silver bullet</a> syndrome</li>
+    </ul>
+  </li>
+  <li>Product
+    <ul>
+    <li><a href="{{page.root}}/book/glossary.html#gold-plating" target="glo:gold-plating">Gold-plating</a></li>
+    <li><a href="{{page.root}}/book/glossary.html#feature-creep" target="glo:feature-creep">Feature creep</a></li>
+    </ul>
+  </li>
+  <li>Process
+    <ul>
+    <li>Overly optimistic schedules
+      <ul>
+      <li>Remember, products take three times longer to create than programs</li>
+      </ul>
+    </li>
+    <li>Short-changing upstream activities
+      <ul>
+      <li>&quot;We have to start coding right away, or we won't have time to fix all our bugs.&quot;</li>
+      </ul>
+    </li>
+    <li>Failure to track progress</li>
+    <li>Abandoning plan under pressure</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>3) Branching, Merging, and Tagging</h2>
+  <ul>
+  <li>Sometimes want to work on several different versions of software at once
+    <ul>
+    <li>Example: need to do bug fixes on Version 3 while making incompatible changes toward Version 4</li>
+    <li>Or want two sets of developers to be able to write and test large changes independently, then put things back together</li>
+    </ul>
+  </li>
+  <li>All modern version control systems allow you to <a href="{{page.root}}/book/glossary.html#branch" target="glo:branch">branch</a> a repository
+    <ul>
+    <li>Create a &quot;parallel universe&quot; which is initially the same as the original, but which evolves independently</li>
+    <li>Can later <a href="{{page.root}}/book/glossary.html#merge" target="glo:merge">merge</a> changes from one branch to another</li>
+      <figure id="fig:summary-branch-and-merge">
+        <img alt="Branching and Merging" src="summary/branch-and-merge.png"/>
+        <p>Figure 28.1: Branching and Merging</p>
+      </figure>
+    </ul>
+  </li>
+  <li>Also common to create <a href="{{page.root}}/book/glossary.html#tag-version" target="glo:tag-version">tags</a>
+    <ul>
+    <li>Symbolic labels that identify particular revisions, such as &quot;Release_2.0&quot;</li>
+    <li>Makes it easy to go back to an important revision later</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>4) Managing Branches</h2>
+  <ul>
+  <li>Much better than just copying all the source files
+    <ul>
+    <li>The version control system remembers where the branch came from, and can trace its history back</li>
+    <li>Example: fix a bug on one branch, merge the changes into other branches that have the same bug</li>
+    </ul>
+  </li>
+  <li>Warning: many people become over-excited about branching when they first start to use it
+    <ul>
+    <li>Keeping track of what's going on where can be a considerable management overhead</li>
+    <li>On a small project, very rare to need more than two active branches</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>5) Patching</h2>
+  <ul>
+  <li>Often need a way to send or archive differences between two versions of a program
+    <ul>
+    <li>E.g., someone finds and fixes a bug in your open source software...</li>
+    <li>...but doesn't have permission to commit the change to your version control repository</li>
+    </ul>
+  </li>
+  <li>Common to use the <code>patch</code> program to do this
+    <ul>
+    <li>Takes the output of <code>diff</code> and applies it to the original file to produce the modified file</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>6) A Better Way to Build</h2>
+  <ul>
+  <li>Said when discussing <a href="build.html" target="lec:build">Automated Builds</a> that <a href="bib.html#bib:make" target="bib:make">[Make]</a> has turned into a clumsy programming language</li>
+  <li>The same thing happens eventually to every other build management tool
+    <ul>
+    <li>So why not start with a real programming language, and embed a build management tool in that?</li>
+    </ul>
+  </li>
+  <li><a href="bib.html#bib:scons" target="bib:scons">[SCons]</a> combines the most useful features of Make with the full power of Python
+    <ul>
+    <li>Instead of a Makefile, you write an SConstruct file</li>
+    <li>Use function calls in that file to tell SCons what you want to build, and how
+      <ul>
+      <li>Like Make, it has a rich set of default rules</li>
+      </ul>
+    </li>
+    <li>But when you want to do something complicated, you can use any feature of Python you want
+      <ul>
+      <li>E.g., build up a list of filenames, fetch a build rule from a database, etc.</li>
+      </ul>
+    </li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>7) SCons Example</h2>
+  <ul>
+  <li>Example: build either a normal or a debugging version of a program, and include an extra source file on Windows</li>
+  </ul>
+  <pre file="summary/SConstruct.txt"># What does the program depend on?
+dependencies = ['file1.c', 'file2.c']
+if os.platform == 'win32':
+    dependencies.append('win32.c')
+
+# Which version are we building?
+if 'debug' in COMMAND_LINE_TARGETS:
+    Program('hello_dbg', dependencies)
+else:
+    Program('hello', dependencies)
+</pre>
+  <ul>
+  <li>Pro:
+    <ul>
+    <li>Don't have to learn a new language
+      <ul>
+      <li>And the authors of the build tool don't have to create and maintain one, either</li>
+      </ul>
+    </li>
+    <li>There's a debugger</li>
+    </ul>
+  </li>
+  <li>Con:
+    <ul>
+    <li>Much less widely used than <a href="bib.html#bib:make" target="bib:make">[Make]</a> or <a href="bib.html#bib:ant" target="bib:ant">[Ant]</a></li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>8) Persistence</h2>
+  <ul>
+  <li>Often want to save the state of a running program
+    <ul>
+    <li>E.g., <a href="{{page.root}}/book/glossary.html#checkpoint" target="glo:checkpoint">checkpoint</a> a long-running program so that it can be restarted in case of a crash</li>
+    </ul>
+  </li>
+  <li>Don't want to have to rewrite this code every time the program changes</li>
+  <li>Use a <a href="{{page.root}}/book/glossary.html#persistence" target="glo:persistence">persistence</a> framework like Python's <code>pickle</code> module
+    <ul>
+    <li>Walk through the objects in the program</li>
+    <li>Save the atomic values (integers, strings, etc.) as they are</li>
+    <li>Write lists, dictionaries, and other collections in a standard way</li>
+    </ul>
+  </li>
+  <li>Classes can define special methods to tell the framework what values to save</li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>9) Pickling Example</h2>
+  <figure id="fig:summary-pickle">
+    <img alt="Pickling" src="summary/pickle.png"/>
+    <p>Figure 28.2: Pickling</p>
+  </figure>
+</div>
+
+<div class="topic">
+  <h2>10) Object-Relational Mapping</h2>
+  <ul>
+  <li>Increasingly popular alternative is to use an <a href="{{page.root}}/book/glossary.html#object-relational-mapping" target="glo:object-relational-mapping">object/relational mapping</a> framework like <a href="bib.html#bib:sqlobject" target="bib:sqlobject">[SQLObject]</a>
+    <ul>
+    <li>Define mapping between classes and database tables</li>
+    <li>Framework then creates code to translate objects to rows and back</li>
+    <li>Usually keeps a <a href="{{page.root}}/book/glossary.html#cache" target="glo:cache">cache</a> of recently-used objects to improve performance</li>
+      <figure id="fig:summary-orm">
+        <img alt="Object-Relational Mapping" src="summary/orm.png"/>
+        <p>Figure 28.3: Object-Relational Mapping</p>
+      </figure>
+    </ul>
+  </li>
+  <li>Pro:
+    <ul>
+    <li>Takes advantage of databases' strengths (high performance, concurrency control, etc.)</li>
+    </ul>
+  </li>
+  <li>Con:
+    <ul>
+    <li>Objects don't naturally fit into tables
+      <ul>
+      <li>E.g., how to represent many-to-many relationships?</li>
+      </ul>
+    </li>
+    <li>Can be very hard to debug when things go wrong
+      <ul>
+      <li>I.e., when the generated code is doing what you said, but you asked it to do the wrong thing</li>
+      </ul>
+    </li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>11) Web Development Frameworks</h2>
+  <ul>
+  <li>Handwritten CGI applications are going out of style
+    <ul>
+    <li>We've learned enough since the 1990s to write code at a higher level</li>
+    </ul>
+  </li>
+  <li>One widely used alternative is Java <a href="{{page.root}}/book/glossary.html#servlet" target="glo:servlet">servlets</a>
+    <ul>
+    <li>User writes a class whose methods do application-specific work</li>
+    <li>The <a href="{{page.root}}/book/glossary.html#servlet-container" target="glo:servlet-container">servlet container</a> loads the class, and calls those methods</li>
+    </ul>
+  </li>
+  <li><a href="bib.html#bib:rubyonrails" target="bib:rubyonrails">[Ruby on Rails]</a> is another popular choice
+    <ul>
+    <li><a href="bib.html#bib:ruby" target="bib:ruby">[Ruby]</a> is a scripting language with similarities to both Python and Perl</li>
+    <li><a href="bib.html#bib:rubyonrails" target="bib:rubyonrails">[Ruby on Rails]</a> automatically handles <a href="{{page.root}}/book/glossary.html#object-relational-mapping" target="glo:object-relational-mapping">object/relational mapping</a>, constructs stubs of unit tests, etc.</li>
+    </ul>
+  </li>
+  <li>Python has several similar frameworks, such as <a href="bib.html#bib:django" target="bib:django">[Django]</a> and <a href="bib.html#bib:turbogears" target="bib:turbogears">[TurboGears]</a>
+    <ul>
+    <li>But none are as widely used or as well documented</li>
+    <li>Competition isn't <em>always</em> healthy...</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>12) Refactoring</h2>
+  <ul>
+  <li><a href="{{page.root}}/book/glossary.html#refactor" target="glo:refactor">Refactoring</a> is the process of cleaning up code
+    <ul>
+    <li>Often described in terms of &quot;code smells&quot; and corresponding cures</li>
+    <li>See <a href="bib.html#bib:fowler-refactoring" target="bib:fowler-refactoring">[Fowler 1999]</a> for a comprehensive catalog</li>
+    </ul>
+  </li>
+  <li>Very important to have unit tests in place <em>before</em> starting to refactor
+    <ul>
+    <li>Without this, you have no way of knowing what else your refactoring might have broken</li>
+    <li><a href="bib.html#bib:feathers-legacy-code" target="bib:feathers-legacy-code">[Feathers 2005]</a> is an excellent guide to how to fit useful tests back onto inherited applications</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>13) Refactoring Examples</h2>
+  <ul>
+  <li>Smell: method or function body runs to several pages
+    <ul>
+    <li>Cure: use Extract Method to break the method into smaller meaningful pieces</li>
+    <li>But do <em>not</em> break up arbitrarily, just to satisfy coding conventions
+      <ul>
+      <li>Each new method should make sense on its own</li>
+      </ul>
+    </li>
+    </ul>
+  </li>
+  <li>Smell: function or method with many parameters
+    <ul>
+    <li>If a method takes eleven strings as parameters, sooner or later you'll pass them in the wrong order</li>
+    <li>Cure: store values as members of the object, rather than passing them as parameters
+      <ul>
+      <li>But it's bad to introduce members called <code>param1</code> and <code>param2</code></li>
+      </ul>
+    </li>
+    <li>Alternative cure: introduce a new object that combines parameters into one value</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>14) More Refactoring Examples</h2>
+  <ul>
+  <li>Smell: duplicated code
+    <ul>
+    <li>Cure: use Extract Method once again</li>
+    <li>But what if code is only <em>almost</em> duplicated?</li>
+    <li>Use Introduce Parameter to give callers a way to signal exactly what they want...</li>
+    <li>...or use Pull Up Method to move shared code into parent...</li>
+    <li>...and Form Template Method to have that shared code call something that each child class defines</li>
+    </ul>
+  </li>
+  <li>Smell: complex Boolean expressions in conditionals
+    <ul>
+    <li>Cure: Introduce Explaining Variable to give sub-expressions meaningful names</li>
+    <li>Particularly effective when it's used to turn nested if-then-elses into a lookup table</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>15) Refactoring Tools</h2>
+  <ul>
+  <li>Refactoring complements design patterns</li>
+  <li>Both provide a shorthand for communication, and make education easier</li>
+  <li>Design patterns describe code at rest; refactorings describe code in motion</li>
+  <li>But there's a difference: modern IDEs can do refactoring for you
+    <ul>
+    <li>Highlight a method, say &quot;Rename&quot;, and the IDE finds and changes all the calls
+      <ul>
+      <li>Able to do this because it continuously re-parses source code as you type</li>
+      </ul>
+    </li>
+    <li>Move methods up into parent class, split classes in two, and much, much more</li>
+    <li>If this doesn't convince you to upgrade from a dumb editor, I don't know what will...</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>16) Code Reviews</h2>
+  <ul>
+  <li><a href="{{page.root}}/book/glossary.html#code-review" target="glo:code-review">Code reviews</a> are more effective at finding bugs than testing <a href="bib.html#bib:fagan-inspections" target="bib:fagan-inspections">[Fagan 1986]</a>
+    <ul>
+    <li>A consequence of Boehm's Law: the earlier you find a problem, the cheaper it is to fix</li>
+    </ul>
+  </li>
+  <li>Unfortunately, very little has been written about how to read code
+    <ul>
+    <li>Which makes <a href="bib.html#bib:spinellis-code-reading" target="bib:spinellis-code-reading">[Spinellis 2003]</a> and <a href="bib.html#bib:spinellis-code-quality" target="bib:spinellis-code-quality">[Spinellis 2006]</a> all the more valuable</li>
+    </ul>
+  </li>
+  <li>Many open source projects require that changes be reviewed before being committed
+    <ul>
+    <li>See <a href="bib.html#bib:seamonkey-reviews" target="bib:seamonkey-reviews">[Seamonkey]</a> for example guidelines</li>
+    </ul>
+  </li>
+  <li>Not just for finding bugs: want to make sure that:
+    <ul>
+    <li>Team members are following style guidelines</li>
+    <li>They've implemented what they're supposed to</li>
+    <li>You understand how it works well enough to maintain it when they're gone</li>
+    </ul>
+  </li>
+  <li>Diminishing returns as programmers become more experienced, and more familiar with a project's idioms
+    <ul>
+    <li>But they're a great way for new team members to learn their way around</li>
+    <li>And an equally great way for experienced members to catch newcomers' mistakes early</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>17) Reading Code</h2>
+  <ul>
+  <li>Print it out: paper has 4-10 times the resolution of even the best screen
+    <ul>
+    <li>And print out the <a href="{{page.root}}/book/glossary.html#ticket" target="glo:ticket">ticket</a> the work was done to resolve</li>
+    </ul>
+  </li>
+  <li>Sit somewhere comfortable
+    <ul>
+    <li><em>Away</em> from email, the web, your pager, and other distractions</li>
+    </ul>
+  </li>
+  <li>Trace execution
+    <ul>
+    <li>Find an entry point (like <code>main</code>)</li>
+    <li>Skip over argument parsing, file I/O, etc.</li>
+    <li>Put a question mark beside everything that doesn't immediately make sense</li>
+    <li>Draw pictures of data structures, data flow, etc.</li>
+    </ul>
+  </li>
+  <li>Once you're done, go back and try to answer your questions
+    <ul>
+    <li>But don't cross them off: if you didn't understand it when you first read it, it needs to be clarified</li>
+    </ul>
+  </li>
+  <li>Finally, jot down overall comments</li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>18) Code Review Checklist</h2>
+  <ul>
+  <li>Is the code documented in a consistent and readable way?</li>
+  <li>Are file, class, method, parameter, and variable names descriptive?</li>
+  <li>Are all function inputs used? Are all required function outputs produced?</li>
+  <li>Is the flow of control easy to follow?  What about the class structure?</li>
+  <li>Do conditionals cover all cases?  Do all loops have an exit condition?  Do they handle the zero-pass case?</li>
+  <li>Do functions check that their inputs are valid?</li>
+  <li>Do callers check return values for errors, or handle exceptions that might be thrown?</li>
+  <li>Are errors handled in a standard manner? Are error messages descriptive and helpful?</li>
+  <li>Are there any magic numbers or machine-specific filenames?</li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>19) User Interface Design</h2>
+  <ul>
+  <li>Doesn't matter what your software does if no one can use it</li>
+  <li>Usability and user interface design are <em>not</em> black arts
+    <ul>
+    <li>Need a certain amount of natural talent to be a great UI designer</li>
+    <li>But anyone who can learn to program can learn to avoid basic mistakes</li>
+    </ul>
+  </li>
+  <li>Basic rules from <a href="bib.html#bib:johnson-gui-bloopers" target="bib:johnson-gui-bloopers">[Johnson 2000]</a>:
+    <ul>
+    <li>Focus on the users and their tasks, not the technology</li>
+    <li>Consider function first, presentation later</li>
+    <li>Conform to the users' view of the task</li>
+    <li>Don't make anything more complicated than it already is</li>
+    <li>Make it easy for users to learn new things</li>
+    <li>Deliver information, not just data</li>
+    <li>Design the interface to be responsive</li>
+    <li>Try it out on users, then fix it!</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>20) Paper Prototyping</h2>
+  <ul>
+  <li><a href="{{page.root}}/book/glossary.html#paper-prototyping" target="glo:paper-prototyping">Paper prototyping</a> is the fastest and cheapest way to design an interface</li>
+  <li>Create rough sketches showing menus, buttons, etc.
+    <ul>
+    <li>Use Post-It notes for pulldowns</li>
+    <li>Keep it rough: the more polished it is, the less likely people are to give you critical feedback</li>
+    </ul>
+  </li>
+  <li>Find a volunteer, then play computer
+    <ul>
+    <li>Set them a task</li>
+    <li>Show them what happens when they click, type, etc.</li>
+    <li>Do <em>not</em> answer questions or provide hints, or get into a discussion of how to fix things</li>
+    </ul>
+  </li>
+  <li>Two or three sessions will be enough to tell you what you need to fix</li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>21) Where To Go Next</h2>
+  <ul>
+  <li><a href="bib.html#bib:brand-how-buildings-learn" target="bib:brand-how-buildings-learn">[Brand 1995]</a> looks at how buildings can be designed to change and grow gracefully over time
+    <ul>
+    <li>Everything he says is directly applicable to large programs</li>
+    </ul>
+  </li>
+  <li><a href="bib.html#bib:steele-growing-language" target="bib:steele-growing-language">[Steele 1999]</a> shows you how a great computer scientist thinks about a particularly hard problem</li>
+  <li><a href="bib.html#bib:margolis-fisher-unlocking-clubhouse" target="bib:margolis-fisher-unlocking-clubhouse">[Margolis &amp; Fisher 2002]</a> describes a project at Carnegie-Mellon University aimed at making Computer Science a more congenial environment for women and other underrepresented groups
+    <ul>
+    <li>Note: while the gender ratio in computing as a whole is about six to one, the ratio in open source is closer to 200:1</li>
+    </ul>
+  </li>
+  <li><a href="bib.html#bib:udell-scientific-groupware" target="bib:udell-scientific-groupware">[Udell XXX]</a> talks about how much more the web could do for scientists</li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>22) The Rules</h2>
+  <ul>
+  <li>A week of hard work can sometimes save you an hour of thought.</li>
+  <li>Anything worth repeating is worth automating.</li>
+  <li>Anything repeated in two or more places will eventually be wrong in at least one.</li>
+  <li>The three chief virtues of a programmer are laziness, impatience, and hubris.</li>
+  <li>It's not what you know, it's what you can.</li>
+  <li>The deadline isn't when you're supposed to finish; the deadline is when it starts to be late.</li>
+  <li>Never debug standing up.</li>
+  <li>Tools are signposts, not destinations.</li>
+  <li>Not everything worth doing is worth doing well.</li>
+  <li>Code unto others as you would have others code unto you.</li>
+  <li>Every complex file format eventually turns into a badly-designed programming language.</li>
+  <li>Tools are amplifiers: they allow good programmers to be better, and bad ones to be worse.</li>
+  <li>They call it computer science because it's experimental.</li>
+  <li>Programs come and go; data is forever.</li>
+  <li>There's no such thing as one program.</li>
+  <li>Discipline matters more than genius; reality matters more than rulebooks.</li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>23) Conclusion</h2>
+  <ul>
+  <li>&quot;A good teacher has a value above pearls, but a good student has a value above rubies.&quot;</li>
+  <li>Thank you, and good luck</li>
+  </ul>
+</div>

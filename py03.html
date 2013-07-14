@@ -1,0 +1,1160 @@
+---
+layout: v3_slideshow
+title: Python Functions and Modules
+prev: v3/py02.html
+uplink: v3/index.html
+next: v3/debugging.html
+---
+<div class="topic">
+  <h2>1) Introduction</h2>
+  <ul>
+  <li>A language should <em>not</em> include everything anyone could ever want
+    <ul>
+    <li>Instead, it should allow developers to express every abstraction they want <a href="bib.html#bib:steele-growing-language" target="bib:steele-growing-language">[Steele 1999]</a></li>
+    </ul>
+  </li>
+  <li>Define functions to create higher-level operations</li>
+  <li>Group them in libraries to keep them manageable</li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>2) You Can Skip This Lecture If...</h2>
+  <ul>
+  <li>You know how to define a function in Python</li>
+  <li>You know what default parameter values are</li>
+  <li>You know what <code>import</code> does</li>
+  <li>You are familiar with the <code>sys</code>, <code>math</code>, and <code>os</code> libraries</li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>3) Defining Functions</h2>
+  <ul>
+  <li>Define a new function using <code>def</code>
+    <ul>
+    <li>Parameter names follow in parentheses</li>
+    </ul>
+  </li>
+  </ul>
+  <pre file="py03/simple-func.py">def double(x):
+    return x * 2
+
+print double(5)
+print double(['basalt', 'granite'])
+</pre>
+  <pre class="out" file="py03/simple-func.out">10
+['basalt', 'granite', 'basalt', 'granite']
+</pre>
+  <ul>
+  <li>Cannot declare types for parameters</li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>4) Returning Values</h2>
+  <ul>
+  <li>Finish the function at any time using <code>return</code></li>
+  </ul>
+  <pre file="py03/early-return.py">def sign(x):
+    if x &lt; 0:
+        return -1
+    if x == 0:
+        return 0
+    return 1
+</pre>
+  <ul>
+  <li>Functions with <code>return</code> statements scattered through them are hard to understand
+    <ul>
+    <li>Have to read the function line by line to figure out what it might do</li>
+    </ul>
+  </li>
+  <li>In general:
+    <ul>
+    <li>Use early returns at the start of the function to handle special cases</li>
+    <li>And then one return at the end to handle the general case</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>5) Everything Returns Something</h2>
+  <ul>
+  <li>Functions without explicit <code>return</code> statements return <code>None</code></li>
+  <li>And <code>return</code> on its own is the same as <code>return None</code></li>
+  </ul>
+  <pre file="py03/return-none.py">def hello():
+    print 'HELLO'
+
+def world():
+    print 'WORLD'
+    return
+
+print hello()
+print world()
+</pre>
+  <pre class="out" file="py03/return-none.out">HELLO
+None
+WORLD
+None
+</pre>
+  <ul>
+  <li>The more consistent functions are about the types of the things they return, the better
+    <ul>
+    <li>If a function can return <code>None</code>, an integer, or a list, the caller will have to write an <code>if</code> statement</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>6) Scope</h2>
+  <ul>
+  <li>Python manages variables using a <a href="{{page.root}}/book/glossary.html#call-stack" target="glo:call-stack">call stack</a></li>
+  </ul>
+  <pre file="py03/call-stack.py"># Global variable.
+rock_type = 'unknown'
+
+# Function that creates local variable.
+def classify(rock_name):
+    if rock_name in ['basalt', 'granite']:
+        rock_type = 'igneous'
+    elif rock_name in ['sandstone', 'shale']:
+        rock_type = 'sedimentary'
+    else:
+        rock_type = 'metamorphic'
+    print 'in function, rock_type is', rock_type
+
+# Call the function to prove that it uses its local 'x'.
+print &quot;before function, rock_type is&quot;, rock_type
+classify('sandstone')
+print &quot;after function, rock_type is&quot;, rock_type
+</pre>
+  <pre class="out" file="py03/call-stack.out">before function, rock_type is unknown
+in function, rock_type is sedimentary
+after function, rock_type is unknown
+</pre>
+  <figure id="fig:py03-call-stack">
+    <img alt="Call Stack" src="py03/call-stack.png"/>
+    <p>Figure 4.1: Call Stack</p>
+  </figure>
+  <ul>
+  <li>When a function is called, Python creates a new <a href="{{page.root}}/book/glossary.html#stack-frame" target="glo:stack-frame">stack frame</a>
+    <ul>
+    <li>A table of name/value pairs</li>
+    <li>Parameters are just local variables that are automatically initialized</li>
+    </ul>
+  </li>
+  <li>When a variable is referenced, Python looks for it in:
+    <ul>
+    <li>The top stack frame, then</li>
+    <li>The global variables</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>7) Parameter Passing Rules</h2>
+  <ul>
+  <li>Python copies variables' values when passing them to functions</li>
+  <li>But remember: variables hold <em>references</em> to lists
+    <ul>
+    <li>So the parameters are <a href="{{page.root}}/book/glossary.html#alias" target="glo:alias">aliases</a></li>
+    <li>Not an issue for strings, numbers, and Booleans, since they are immutable</li>
+    </ul>
+  </li>
+  </ul>
+  <pre file="py03/arg-ref.py">def add_salt(first, second):
+    first += &quot;salt&quot;
+    second += [&quot;salt&quot;]
+
+str = &quot;rock&quot;
+seq = [&quot;gneiss&quot;, &quot;shale&quot;]
+
+print &quot;before&quot;
+print &quot;str is:&quot;, str
+print &quot;seq is:&quot;, seq
+
+add_salt(str, seq)
+
+print &quot;after&quot;
+print &quot;str is:&quot;, str
+print &quot;seq is:&quot;, seq
+
+</pre>
+  <pre class="out" file="py03/arg-ref.out">before
+str is: rock
+seq is: ['gneiss', 'shale']
+after
+str is: rock
+seq is: ['gneiss', 'shale', 'salt']
+</pre>
+  <figure id="fig:py03-parameter-passing">
+    <img alt="Parameter Passing" src="py03/parameter-passing.png"/>
+    <p>Figure 4.2: Parameter Passing</p>
+  </figure>
+</div>
+
+<div class="topic">
+  <h2>8) Making Copies</h2>
+  <ul>
+  <li>To pass a copy of a list into a function, slice it</li>
+  <li><code>values[:]</code> is the same as <code>values[0:len(values)]</code>...
+    <ul>
+    <li>...which is a slice of <code>values</code> that includes the entire list...</li>
+    <li>...and slicing creates a new list</li>
+    </ul>
+  </li>
+  </ul>
+  <pre file="py03/pass-slice.py">def add_salt(first, second):
+    first += &quot;salt&quot;
+    second += [&quot;salt&quot;]
+
+str = &quot;rock&quot;
+seq = [&quot;gneiss&quot;, &quot;shale&quot;]
+
+print &quot;before&quot;
+print &quot;str is:&quot;, str
+print &quot;seq is:&quot;, seq
+
+add_salt(str, seq[:])
+
+print &quot;after&quot;
+print &quot;str is:&quot;, str
+print &quot;seq is:&quot;, seq
+
+</pre>
+  <pre class="out" file="py03/pass-slice.out">before
+str is: rock
+seq is: ['gneiss', 'shale']
+after
+str is: rock
+seq is: ['gneiss', 'shale']
+</pre>
+  <figure id="fig:py03-passing-slices">
+    <img alt="Passing Slices" src="py03/passing-slices.png"/>
+    <p>Figure 4.3: Passing Slices</p>
+  </figure>
+</div>
+
+<div class="topic">
+  <h2>9) Default Parameter Values</h2>
+  <ul>
+  <li>You can specify default values for parameters when defining a function
+    <ul>
+    <li>Just &quot;assign&quot; some value to the parameter in the definition</li>
+    </ul>
+  </li>
+  </ul>
+  <pre file="py03/default-param-vals.py" section="func">def total(values, start=0, end=None):
+
+    # If no values given, total is zero.
+    if not values:
+        return 0
+
+    # If no end specified, use the entire sequence.
+    if end is None:
+        end = len(values)
+
+    # Calculate.
+    result = 0
+    for i in range(start, end):
+        result += values[i]
+    return result
+</pre>
+  <ul>
+  <li>The parameters actually passed when the function is called are matched up left to right</li>
+  </ul>
+  <pre file="py03/default-param-vals.py" section="call">numbers = [10, 20, 30]
+print &quot;numbers being added:&quot;, numbers
+print &quot;total(numbers, 0, 3):&quot;, total(numbers, 0, 3)
+print &quot;total(numbers, 2):&quot;, total(numbers, 2)
+print &quot;total(numbers):&quot;, total(numbers)
+</pre>
+  <pre class="out" file="py03/default-param-vals.out">numbers being added: [10, 20, 30]
+total(numbers, 0, 3): 60
+total(numbers, 2): 30
+total(numbers): 60
+</pre>
+  <ul>
+  <li>All parameters with defaults must come <em>after</em> all parameters without them
+    <ul>
+    <li>Otherwise, matching values to parameters would be ambiguous</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>10) Functions Are Objects</h2>
+  <ul>
+  <li>A function is just another object
+    <ul>
+    <li>Happens to be an object you can call, just as strings and lists happens to be objects you can index</li>
+    <li><code>def</code> is just a shorthand for &quot;create a function, and assign it to a variable&quot;</li>
+    </ul>
+  </li>
+  </ul>
+  <pre file="py03/function-object.py">def circumference(r):
+    return 2 * 3.14159 * r
+
+circ = circumference
+
+print 'circumference(1.0):', circumference(1.0)
+print 'circ(2.0):', circ(2.0)
+</pre>
+  <pre class="out" file="py03/function-object.out">circumference(1.0): 6.28318
+circ(2.0): 12.56636
+</pre>
+  <figure id="fig:py03-function-objects">
+    <img alt="Functions As Objects" src="py03/function-objects.png"/>
+    <p>Figure 4.4: Functions As Objects</p>
+  </figure>
+  <ul>
+  <li>This means you can:
+    <ul>
+    <li>Redefine functions (just as you can reassign values to variables)</li>
+    <li>Create aliases for functions</li>
+    <li>Pass functions as parameters</li>
+    <li>Store functions in lists</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>11) Function Object Examples</h2>
+  <ul>
+  <li>Example: apply a function to each value in a list</li>
+  </ul>
+  <pre file="py03/apply-func-to-list.py" section="main">def apply_to_list(function, values):
+    result = []
+    for v in values:
+        temp = function(v)
+        result.append(temp)
+    return result
+
+radii = [0.1, 1.0, 10.0]
+print apply_to_list(circumference, radii)
+</pre>
+  <pre class="out" file="py03/apply-func-to-list.out">[0.62831800000000004, 6.2831799999999998, 62.831800000000001]
+</pre>
+  <ul>
+  <li>Example: apply several functions to a single value</li>
+  </ul>
+  <pre file="py03/list-of-funcs.py" section="main">def area(r):
+    return 3.14159 * r * r
+
+def color(r):
+    return &quot;unknown&quot;
+
+def apply_each(functions, value):
+    result = []
+    for f in functions:
+        temp = f(value)
+        result.append(temp)
+    return result
+
+functions = [circumference, area, color]
+print apply_each(functions, 1.0)
+</pre>
+  <pre class="out" file="py03/list-of-funcs.out">[6.2831799999999998, 3.1415899999999999, 'unknown']
+</pre>
+</div>
+
+<div class="topic">
+  <h2>12) Function Attributes</h2>
+  <ul>
+  <li>Every function has an attribute called <code>__name__</code>
+    <ul>
+    <li>The name it was originally defined with</li>
+    <li>Handy when debugging</li>
+    </ul>
+  </li>
+  </ul>
+  <pre file="py03/func-name-aliasing.py">def sedimentary(rock_name):
+    return rock_name in ['sandstone', 'shale']
+
+sed = sedimentary
+
+print 'original name:', sedimentary.__name__
+print 'name of alias:', sed.__name__
+</pre>
+  <pre class="out" file="py03/func-name-aliasing.out">original name: sedimentary
+name of alias: sedimentary
+</pre>
+  <ul>
+  <li>Python uses double underscores to mark reserved names
+    <ul>
+    <li>See many more <a href="oop02.html" target="lec:oop02">Python Advanced Object-Oriented Programming</a></li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>13) Creating Modules</h2>
+  <ul>
+  <li>Every Python file is automatically also a <a href="{{page.root}}/book/glossary.html#module" target="glo:module">module</a> (or library)
+    <ul>
+    <li>If the file is called <code>geology.py</code>, load it using <code>import geology</code></li>
+    <li>Refer to its contents as <code>geology.thing</code></li>
+    <li>Just like the methods and attributes of an object</li>
+    </ul>
+  </li>
+  <li>Put this in <code>geology.py</code></li>
+  </ul>
+  <pre file="py03/geology.py">def rock_type(rock_name):
+    if rock_name in ['basalt', 'granite']:
+        return 'igneous'
+    elif rock_name in ['sandstone', 'shale']:
+        return 'sedimentary'
+    else:
+        return 'metamorphic'
+</pre>
+  <ul>
+  <li>And this in <code>analysis.py</code></li>
+  </ul>
+  <pre file="py03/analysis.py">import geology
+
+for r in ['granite', 'gneiss']:
+    print r, 'is', geology.rock_type(r)
+</pre>
+  <ul>
+  <li>When <code>analysis.py</code> runs, it prints this</li>
+  </ul>
+  <pre class="out" file="py03/analysis.out">granite is igneous
+gneiss is metamorphic
+</pre>
+</div>
+
+<div class="topic">
+  <h2>14) Module Scope</h2>
+  <ul>
+  <li>Each module is its own scope
+    <ul>
+    <li>Functions search their module after looking at the call stack, but before searching the globals</li>
+    </ul>
+  </li>
+  <li>Put this in <code>outer.py</code></li>
+  </ul>
+  <pre file="py03/outer.py">manager = &quot;Albus Dumbledore&quot;
+import inner
+print &quot;outer:&quot;, manager
+print &quot;inner:&quot;, inner.get_manager()
+</pre>
+  <ul>
+  <li>And this in <code>inner.py</code></li>
+  </ul>
+  <pre file="py03/inner.py">manager = &quot;Lucius Malfoy&quot;
+def get_manager():
+    return manager
+</pre>
+  <ul>
+  <li>Running <code>outer.py</code> produces this:</li>
+  </ul>
+  <pre class="out" file="py03/outer.out">outer: Albus Dumbledore
+inner: Lucius Malfoy
+</pre>
+</div>
+
+<div class="topic">
+  <h2>15) Other Ways to Import</h2>
+  <ul>
+  <li><code>import geology as g</code>, then call <code>g.print_version()</code></li>
+  <li><code>from geology import print_version</code>, then call <code>print_version()</code></li>
+  <li><code>from geology import *</code> imports everything from <code>geology</code>
+    <ul>
+    <li>Almost always a bad idea</li>
+    <li>The next version of the module might add a function with the same name as something you're importing from elsewhere</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>16) Import Executes Statements</h2>
+  <ul>
+  <li><code>import</code> is a statement
+    <ul>
+    <li>Executed when Python encounters it, just like any other statement</li>
+    </ul>
+  </li>
+  <li>The statements in a module are executed as it is loaded
+    <ul>
+    <li>Assignment and <code>def</code> are statements</li>
+    <li>You can use conditionals, loops, and anything else, too</li>
+    </ul>
+  </li>
+  <li>Put this in <code>geology.py</code></li>
+  </ul>
+  <pre file="py03/geology-debug.py">print 'loading geology module'
+
+def rock_type(rock_name):
+    if rock_name in ['basalt', 'granite']:
+        return 'igneous'
+    elif rock_name in ['sandstone', 'shale']:
+        return 'sedimentary'
+    else:
+        return 'metamorphic'
+
+print 'geology module loaded'
+</pre>
+  <ul>
+  <li>Then run <code>analysis.py</code>:</li>
+  </ul>
+  <pre file="py03/analysis-debug.py">import geology_debug as geology
+
+for r in ['granite', 'gneiss']:
+    print r, 'is', geology.rock_type(r)
+</pre>
+  <pre class="out" file="py03/analysis-debug.out">loading geology module
+geology module loaded
+granite is igneous
+gneiss is metamorphic
+</pre>
+</div>
+
+<div class="topic">
+  <h2>17) Knowing Who You Are</h2>
+  <ul>
+  <li>Inside a module, <code>__name__</code> is set to:
+    <ul>
+    <li>The module's name, if it is being imported</li>
+    <li>Or the string <code>&quot;__main__&quot;</code>, if it is the main program</li>
+    </ul>
+  </li>
+  <li>Often used to include self-tests in the module
+    <ul>
+    <li>When the module is run from the command line, the self-tests are executed</li>
+    <li>When it's loaded by other code, the tests are skipped</li>
+    </ul>
+  </li>
+  </ul>
+  <pre file="py03/self-test.py">def is_rock(name):
+    return name in ['basalt', 'granite', 'sandstone', 'shale']
+
+if __name__ == '__main__':
+    tests = [['basalt', True],  ['gingerale', False],
+             [12345678, False], ['sandstone', True]]
+    for (value, expected) in tests:
+        actual = is_rock(value)
+        if actual == expected:
+            print 'pass'
+        else:
+            print 'fail'
+</pre>
+  <pre class="in" file="py03/self-test-1.cmd">$ python self_test.py
+</pre>
+  <pre class="out" file="py03/self-test-2.out">pass
+pass
+pass
+pass
+</pre>
+  <pre class="in" file="py03/self-test-3.cmd">$ python
+&gt;&gt;&gt; import self_test
+&gt;&gt;&gt; self_test.is_rock('sugar')
+</pre>
+  <pre class="out" file="py03/self-test-4.out">False
+</pre>
+</div>
+
+<div class="topic">
+  <h2>18) The System Library</h2>
+  <ul>
+  <li>Most commonly used library in Python is the system library <code>sys</code>
+    <ul>
+    <li>Information about the Python interpreter (e.g., version number and copyright notice)</li>
+    <li>Information about the environment (e.g., what operating system the program is running on)</li>
+    <li>Advanced features that mere mortals should never meddle with</li>
+    </ul>
+  </li>
+    <div id="tbl:py03-sys">
+      <table>
+        <tr>
+          <th>Type</th>
+          <th>Name</th>
+          <th>Purpose</th>
+          <th>Example</th>
+          <th>Result</th>
+        </tr>
+        <tr>
+          <td>Data</td>
+          <td><code>argv</code></td>
+          <td>The program's command line arguments</td>
+          <td><code>sys.argv[0]</code></td>
+          <td><code>&quot;myscript.py&quot;</code> (or whatever your program is called)</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td><code>maxint</code></td>
+          <td>Largest positive value that can be represented by Python's basic integer type</td>
+          <td><code>sys.maxint</code></td>
+          <td><code>2147483647</code></td>
+        </tr>
+        <tr>
+          <td></td>
+          <td><code>path</code></td>
+          <td>List of directories that Python searches when importing modules</td>
+          <td><code>sys.path</code></td>
+          <td><code>['/home/greg/pylib', '/Python24/lib', '/Python24/lib/site-packages']</code></td>
+        </tr>
+        <tr>
+          <td></td>
+          <td><code>platform</code></td>
+          <td>What type of operating system Python is running on</td>
+          <td><code>sys.platform</code></td>
+          <td><code>&quot;win32&quot;</code></td>
+        </tr>
+        <tr>
+          <td></td>
+          <td><code>stdin</code></td>
+          <td>Standard input</td>
+          <td><code>sys.stdin.readline()</code></td>
+          <td>(Typically) the next line of input from the keyboard</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td><code>stdout</code></td>
+          <td>Standard output</td>
+          <td><code>sys.stdout.write('****')</code></td>
+          <td>(Typically) print four stars to the screen</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td><code>stderr</code></td>
+          <td>Standard error</td>
+          <td><code>sys.stderr.write('Program crashing!\n')</code></td>
+          <td>Print an error message to the screen</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td><code>version</code></td>
+          <td>What version of Python this is</td>
+          <td><code>sys.version</code></td>
+          <td><code>&quot;2.4 (#60, Feb  9 2005, 19:03:27) [MSC v.1310 32 bit (Intel)]&quot;</code></td>
+        </tr>
+        <tr>
+          <td>Function</td>
+          <td><code>exit</code></td>
+          <td>Exit from Python, returning a status code to the operating system</td>
+          <td><code>sys.exit(0)</code></td>
+          <td>Terminates program with status 0</td>
+        </tr>
+      </table>
+      <p>Table 4.1: The Python Runtime System Library</p>
+    </div>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>19) Command-Line Arguments</h2>
+  <ul>
+  <li><code>sys.argv</code> contains the program's command-line arguments
+    <ul>
+    <li>Program's name is always <code>sys.argv[0]</code></li>
+    </ul>
+  </li>
+  </ul>
+  <pre file="py03/command-line.py">import sys
+
+for i in range(len(sys.argv)):
+    print i, sys.argv[i]
+</pre>
+  <pre class="in" file="py03/command-line-1.cmd">$ python command_line.py
+</pre>
+  <pre class="out" file="py03/command-line-2.out">0 command_line.py
+</pre>
+  <pre class="in" file="py03/command-line-3.cmd">$ python command_line.py first second
+</pre>
+  <pre class="out" file="py03/command-line-4.out">0 command_line.py
+1 first
+2 second
+</pre>
+</div>
+
+<div class="topic">
+  <h2>20) Standard I/O</h2>
+  <ul>
+  <li><code>sys.stdin</code> and <code>sys.stdout</code> are standard input and output
+    <ul>
+    <li>Normally connected to the keyboard and screen</li>
+    <li>If you redirect, or use a pipe, the operating system connects them to files or other programs</li>
+    </ul>
+  </li>
+  <li><code>sys.stderr</code> is connected to standard error</li>
+  </ul>
+  <pre file="py03/standard-io.py">import sys
+
+count = 0
+for line in sys.stdin.readlines():
+    count += 1
+
+sys.stdout.write('read ' + str(count) + ' lines')
+</pre>
+  <pre class="in" file="py03/standard-io.cmd">$ python standard_io.py &lt; standard_io.py
+</pre>
+  <pre class="out" file="py03/standard-io.out">$ read 7 lines
+</pre>
+</div>
+
+<div class="topic">
+  <h2>21) The Python Search Path</h2>
+  <ul>
+  <li><code>sys.path</code> is the list of places Python is allowed to look to find modules for import
+    <ul>
+    <li>Initialized from the <code>PYTHONPATH</code> environment variable</li>
+    <li>Directory containing the program being run is automatically put at the start of this list</li>
+    </ul>
+  </li>
+  <li>If <code>sys.path</code> is <code>['/home/swc/lib', '/Python24/lib']</code>, then <code>import geology</code> will try:
+    <ul>
+    <li><code>./geology.py</code></li>
+    <li><code>/home/swc/lib/geology.py</code></li>
+    <li><code>/Python24/lib/geology.py</code></li>
+    <li>Then fail</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>22) Exiting</h2>
+  <ul>
+  <li><code>sys.exit</code> terminates the program</li>
+  <li>Returns an integer <a href="{{page.root}}/book/glossary.html#status-code" target="glo:status-code">status code</a> to the operating system
+    <ul>
+    <li>0 indicates successful execution (&quot;zero errors&quot;)</li>
+    <li>Non-zero is an error code</li>
+    <li>Yes, it's the opposite of what you'd expect...</li>
+    </ul>
+  </li>
+  <li>If you don't exit explicitly, Python returns 0
+    <ul>
+    <li>So please use <code>sys.exit(1)</code> or something similar so that the operating system knows something has gone wrong</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>23) The Math Library</h2>
+  <ul>
+  <li>Much of Python's standard library is just wrappers around standard C libraries
+    <ul>
+    <li>See <a href="summary.html" target="lec:summary">Summary</a> how to wrap libraries yourself</li>
+    </ul>
+  </li>
+  <li>Example: the <code>math</code> library</li>
+    <div id="tbl:py03-math">
+      <table>
+        <tr>
+          <th>Type</th>
+          <th>Name</th>
+          <th>Purpose</th>
+          <th>Example</th>
+          <th>Result</th>
+        </tr>
+        <tr>
+          <td>Constant</td>
+          <td><code>e</code></td>
+          <td>Constant</td>
+          <td><code>e</code></td>
+          <td><code>2.71828...</code></td>
+        </tr>
+        <tr>
+          <td></td>
+          <td><code>pi</code></td>
+          <td>Constant</td>
+          <td><code>pi</code></td>
+          <td><code>3.14159...</code></td>
+        </tr>
+        <tr>
+          <td>Function</td>
+          <td><code>ceil</code></td>
+          <td>Ceiling</td>
+          <td><code>ceil(2.5)</code></td>
+          <td><code>3.0</code></td>
+        </tr>
+        <tr>
+          <td></td>
+          <td><code>floor</code></td>
+          <td>Floor</td>
+          <td><code>floor(-2.5)</code></td>
+          <td><code>-3.0</code></td>
+        </tr>
+        <tr>
+          <td></td>
+          <td><code>exp</code></td>
+          <td>Exponential</td>
+          <td><code>exp(1.0)</code></td>
+          <td><code>2.71828...</code></td>
+        </tr>
+        <tr>
+          <td></td>
+          <td><code>log</code></td>
+          <td>Logarithm</td>
+          <td><code>log(4.0)</code></td>
+          <td><code>1.38629...</code></td>
+        </tr>
+        <tr>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td><code>log(4.0, 2.0)</code></td>
+          <td><code>2.0</code></td>
+        </tr>
+        <tr>
+          <td></td>
+          <td><code>log10</code></td>
+          <td>Base-10 logarithm</td>
+          <td><code>log10(4.0)</code></td>
+          <td><code>0.60205...</code></td>
+        </tr>
+        <tr>
+          <td></td>
+          <td><code>pow</code></td>
+          <td>Power</td>
+          <td><code>pow(2.5, 2.0)</code></td>
+          <td><code>6.25</code></td>
+        </tr>
+        <tr>
+          <td></td>
+          <td><code>sqrt</code></td>
+          <td>Square root</td>
+          <td><code>sqrt(9.0)</code></td>
+          <td><code>3.0</code></td>
+        </tr>
+        <tr>
+          <td></td>
+          <td><code>cos</code></td>
+          <td>Cosine</td>
+          <td><code>cos(pi)</code></td>
+          <td><code>-1.0</code></td>
+        </tr>
+        <tr>
+          <td></td>
+          <td><code>asin</code></td>
+          <td>Arc sine</td>
+          <td><code>asin(-1.0)</code></td>
+          <td><code>-1.5707...</code></td>
+        </tr>
+        <tr>
+          <td></td>
+          <td><code>hypot</code></td>
+          <td>Euclidean norm <em>x<sup>2</sup> + y<sup>2</sup></em></td>
+          <td><code>hypot(2, 3)</code></td>
+          <td><code>3.60555...</code></td>
+        </tr>
+        <tr>
+          <td></td>
+          <td><code>degrees</code></td>
+          <td>Convert from radians to degrees</td>
+          <td><code>degrees(pi)</code></td>
+          <td><code>180</code></td>
+        </tr>
+        <tr>
+          <td></td>
+          <td><code>radians</code></td>
+          <td>Convert from degrees to radians</td>
+          <td><code>radians(45)</code></td>
+          <td><code>0.78539...</code></td>
+        </tr>
+      </table>
+      <p>Table 4.2: The Python Math Library</p>
+    </div>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>24) Working with the File System</h2>
+  <ul>
+  <li>The <code>os</code> module is an interface between Python and the operating system
+    <ul>
+    <li>Tries to hide the differences between different operating systems</li>
+    <li>But there's only so much it can do</li>
+    </ul>
+  </li>
+  </ul>
+  <div id="tbl:py03-os">
+    <table>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Purpose</th>
+        <th>Example</th>
+        <th>Result</th>
+      </tr>
+      <tr>
+        <td>Constant</td>
+        <td><code>curdir</code></td>
+        <td>The symbolic name for the current directory.</td>
+        <td><code>os.curdir</code></td>
+        <td><code>.</code> on Linux or Windows.</td>
+      </tr>
+      <tr>
+        <td></td>
+        <td><code>pardir</code></td>
+        <td>The symbolic name for the parent directory.</td>
+        <td><code>os.pardir</code></td>
+        <td><code>..</code> on Linux or Windows.</td>
+      </tr>
+      <tr>
+        <td></td>
+        <td><code>sep</code></td>
+        <td>The separator character used in paths.</td>
+        <td><code>os.sep</code></td>
+        <td><code>/</code> on Linux, <code>\</code> on Windows.</td>
+      </tr>
+      <tr>
+        <td></td>
+        <td><code>linesep</code></td>
+        <td>The end-of-line marker used in text files.</td>
+        <td><code>os.linesep</code></td>
+        <td><code>\n</code> on Linux, <code>\r\n</code> on Windows.</td>
+      </tr>
+      <tr>
+        <td>Function</td>
+        <td><code>listdir</code></td>
+        <td>List the contents of a directory.</td>
+        <td><code>os.listdir('/tmp')</code></td>
+        <td>The names of all the files and directories in <code>/tmp</code> (except <code>.</code> and <code>..</code>).</td>
+      </tr>
+      <tr>
+        <td></td>
+        <td><code>mkdir</code></td>
+        <td>Create a new directory.</td>
+        <td><code>os.mkdir('/tmp/scratch')</code></td>
+        <td>Make the directory <code>/tmp/scratch</code>.  Use <code>os.makedirs</code> to make several directories at once.</td>
+      </tr>
+      <tr>
+        <td></td>
+        <td><code>remove</code></td>
+        <td>Delete a file.</td>
+        <td><code>os.remove('/tmp/workingfile.txt')</code></td>
+        <td>Delete the file <code>/tmp/workingfile.txt</code>.</td>
+      </tr>
+      <tr>
+        <td></td>
+        <td><code>rename</code></td>
+        <td>Rename (or move) a file or directory.</td>
+        <td><code>os.rename('/tmp/scratch.txt', '/home/swc/data/important.txt')</code></td>
+        <td>Move the file <code>/tmp/scratch.txt</code> to <code>/home/swc/data/important.txt</code>.</td>
+      </tr>
+      <tr>
+        <td></td>
+        <td><code>rmdir</code></td>
+        <td>Remove a directory.</td>
+        <td><code>os.rmdir('/home/swc')</code></td>
+        <td>Probably not something you want to do.  Use <code>os.removedirs</code> to remove several directories at once.</td>
+      </tr>
+      <tr>
+        <td></td>
+        <td><code>stat</code></td>
+        <td>Get information about a file or directory.</td>
+        <td><code>os.stat('/home/swc/data/important.txt')</code></td>
+        <td>Find out when <code>important.txt</code> was created, how large it is, etc.</td>
+      </tr>
+    </table>
+    <p>Table 4.3: The Python Operating System Library</p>
+  </div>
+  <pre file="py03/os-example.py">import sys, os
+
+print 'initial working directory:', os.getcwd()
+os.chdir(sys.argv[1])
+print 'moved to:', os.getcwd()
+print 'contents:', os.listdir(os.curdir)
+</pre>
+  <pre class="in" file="py03/os-example.cmd">$ python os_example.py ~/swc
+</pre>
+  <pre class="out" file="py03/os-example.out">initial working directory: /home/dmalfoy/swc/lec/inc/py03
+moved to: /home/dmalfoy/swc
+contents: ['.svn', 'conf', 'config.mk', 'data', 'depend.mk', 'thesis']
+</pre>
+</div>
+
+<div class="topic">
+  <h2>25) File and Directory Status</h2>
+  <ul>
+  <li><code>os.stat</code> returns an object whose members have information about a file or directory, including:
+    <ul>
+    <li><code>st_size</code>: size in bytes</li>
+    <li><code>st_atime</code>: time of most recent access</li>
+    <li><code>st_mtime</code>: time of most recent modification</li>
+    </ul>
+  </li>
+  </ul>
+  <pre file="py03/stat-file.py">import sys
+import os
+
+for filename in sys.argv[1:]:
+    status = os.stat(filename)
+    print filename, status.st_size, status.st_atime
+</pre>
+  <pre class="in" file="py03/stat-file.cmd">$ python stat_file.py . stat_file.py
+</pre>
+  <pre class="out" file="py03/stat-file.out">. 0 1137971715
+stat_file.py 141 1137971715
+</pre>
+  <ul>
+  <li>Times are measured in seconds since the <a href="{{page.root}}/book/glossary.html#epoch" target="glo:epoch">epoch</a>
+    <ul>
+    <li>On Unix, the epoch is midnight, January 1, 1970</li>
+    <li>Quick check: <code>1137971715 / (60 * 60 * 24 * 365)</code> is 36 years</li>
+    </ul>
+  </li>
+  <li>Use the <code>time</code> module to convert to human-readable times
+    <ul>
+    <li>It's more complicated than you might think...</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>26) Manipulating Pathnames</h2>
+  <ul>
+  <li><code>os</code> has a <a href="{{page.root}}/book/glossary.html#submodule" target="glo:submodule">submodule</a> called <code>os.path</code>
+    <ul>
+    <li>Manipulate pathnames correctly and efficiently</li>
+    <li>Do <em>not</em> write your own functions for this---the rules are trickier than you think</li>
+    </ul>
+  </li>
+  </ul>
+  <div id="tbl:py03-os-path">
+    <table>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Purpose</th>
+        <th>Example</th>
+        <th>Result</th>
+      </tr>
+      <tr>
+        <td>Function</td>
+        <td><code>abspath</code></td>
+        <td>Create normalized absolute pathnames.</td>
+        <td><code>os.path.abspath('../jeevan/bin/script.py')</code></td>
+        <td><code>/home/jeevan/bin/script.py</code> (if executed in <code>/home/gvwilson</code>)</td>
+      </tr>
+      <tr>
+        <td></td>
+        <td><code>basename</code></td>
+        <td>Return the last portion of a path (i.e., the filename, or the last directory name).</td>
+        <td><code>os.path.basename('/tmp/scratch/junk.data')</code></td>
+        <td><code>junk.data</code></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td><code>dirname</code></td>
+        <td>Return all but the last portion of a path.</td>
+        <td><code>os.path.dirname('/tmp/scratch/junk.data')</code></td>
+        <td><code>/tmp/scratch</code></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td><code>exists</code></td>
+        <td>Return <code>True</code> if a pathname refers to an existing file or directory.</td>
+        <td><code>os.path.exists('./scribble.txt')</code></td>
+        <td><code>True</code> if there is a file called <code>scribble.txt</code> in the current working directory, <code>False</code> otherwise.</td>
+      </tr>
+      <tr>
+        <td></td>
+        <td><code>getatime</code></td>
+        <td>Get the last access time of a file or directory (like <code>os.stat</code>).</td>
+        <td><code>os.path.getatime('.')</code></td>
+        <td><code>1112109573</code> (which means that the current directory was last read or written at 10:19:33 EST on March 29, 2005).</td>
+      </tr>
+      <tr>
+        <td></td>
+        <td><code>getmtime</code></td>
+        <td>Get the last modification time of a file or directory (like <code>os.stat</code>).</td>
+        <td><code>os.path.getmtime('.')</code></td>
+        <td><code>1112109502</code> (which means that the current directory was last modified 71 seconds before the time shown above).</td>
+      </tr>
+      <tr>
+        <td></td>
+        <td><code>getsize</code></td>
+        <td>Get the size of something in bytes (like <code>os.stat</code>).</td>
+        <td><code>os.path.getsize('py03.swc')</code></td>
+        <td><code>29662</code>.</td>
+      </tr>
+      <tr>
+        <td></td>
+        <td><code>isabs</code></td>
+        <td><code>True</code> if its argument is an absolute pathname.</td>
+        <td><code>os.path.isabs('tmp/data.txt')</code></td>
+        <td><code>False</code></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td><code>isfile</code></td>
+        <td><code>True</code> if its argument identifies an existing file.</td>
+        <td><code>os.path.isfile('tmp/data.txt')</code></td>
+        <td><code>True</code> if a file called <code>./tmp/data.txt</code> exists, and <code>False</code> otherwise.</td>
+      </tr>
+      <tr>
+        <td></td>
+        <td><code>isdir</code></td>
+        <td><code>True</code> if its argument identifies an existing directory..</td>
+        <td><code>os.path.isdir('tmp')</code></td>
+        <td><code>True</code> if the current directory has a subdirectory called <code>tmp</code>.</td>
+      </tr>
+      <tr>
+        <td></td>
+        <td><code>join</code></td>
+        <td>Join pathname fragments to create a full pathname.</td>
+        <td><code>os.path.join('/tmp', 'scratch', 'data.txt')</code></td>
+        <td><code>&quot;/tmp/scratch/data.txt&quot;</code></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td><code>normpath</code></td>
+        <td>Normalize a pathname (i.e., remove redundant slashes, uses of <code>.</code> and <code>..</code>, etc.).</td>
+        <td><code>os.path.normpath('tmp/scratch/../other/file.txt')</code></td>
+        <td><code>&quot;tmp/other/file.txt&quot;</code></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td><code>split</code></td>
+        <td>Return both of the values returned by <code>os.path.dirname</code> and <code>os.path.basename</code>.</td>
+        <td><code>os.path.split('/tmp/scratch.dat')</code></td>
+        <td><code>('/tmp', 'scratch.dat')</code></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td><code>splitext</code></td>
+        <td>Split a path into two pieces <code>root</code> and <code>ext</code>, such that <code>ext</code> is the last piece beginning with a <code>&quot;.&quot;</code>.</td>
+        <td><code>os.path.splitext('/tmp/scratch.dat')</code></td>
+        <td><code>('/tmp/scratch', '.dat')</code></td>
+      </tr>
+    </table>
+    <p>Table 4.4: The Python Pathname Library</p>
+  </div>
+  <pre file="py03/os-path-example.py">import os
+
+print 'does /home/swc exist?', os.path.exists('/home/swc')
+print 'is it a directory?', os.path.isdir('/home/swc')
+print 'what is its configuration directory?', os.path.join('/home/swc', 'conf')
+print 'where is the configuration file?', os.path.split('/home/swc/conf/current.conf')
+</pre>
+  <pre class="out" file="py03/os-path-example.out">does /home/swc exist? True
+is it a directory? True
+what is its configuration directory? /home/swc/conf
+where is the configuration file? ('/home/swc/conf', 'current.conf')
+</pre>
+</div>
+
+<div class="topic">
+  <h2>27) Summary</h2>
+  <ul>
+  <li>The real measure of a programming language is how well it supports modularization</li>
+  <li>Use functions, libraries, and <a href="oop01.html" target="lec:oop01">Python Basic Object-Oriented Programming</a> to keep programs comprehensible
+    <ul>
+    <li>Remember, you're really writing them for other human beings</li>
+    </ul>
+  </li>
+  </ul>
+</div>

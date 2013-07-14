@@ -1,0 +1,1 @@
+$ rm words.tmp

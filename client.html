@@ -1,0 +1,766 @@
+---
+layout: v3_slideshow
+title: Web Client Programming
+prev: v3/gui.html
+uplink: v3/index.html
+next: v3/server.html
+---
+<div class="topic">
+  <h2>1) Introduction</h2>
+  <ul>
+  <li>The Internet is changing everything
+    <ul>
+    <li>Distributed programs are different from unitary ones</li>
+    <li>Distributed teams work differently from collocated ones</li>
+    </ul>
+  </li>
+  <li>This lecture looks at how to build programs that get data from the web
+    <ul>
+    <li>Providing data securely is a much harder topic</li>
+    </ul>
+  </li>
+  <li>If you want to know more, see <a href="bib.html#bib:goerzen-python-network-programming" target="bib:goerzen-python-network-programming">[Goerzen 2004]</a></li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>2) You Can Skip This Lecture If...</h2>
+  <ul>
+  <li>You know what TCP and DNS stand for</li>
+  <li>You know what a socket is</li>
+  <li>You know how HTTP requests and responses are formatted</li>
+  <li>You know how to append parameters to a URL</li>
+  <li>You know what screen scraping is, and why you shouldn't do it</li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>3) Small Pieces, Loosely Joined</h2>
+  <ul>
+  <li>The Unix command line was the world's first <a href="{{page.root}}/book/glossary.html#component-object-model" target="glo:component-object-model">component object model</a>
+    <ul>
+    <li>Programmers build small pieces, then connect them in arbitrary ways</li>
+    </ul>
+  </li>
+  <li>Key features:
+    <ul>
+    <li>Low cost of entry: it's easy to add one more tool to the toolbox</li>
+    <li>Common data format: stream of strings</li>
+    <li>Common communication protocol: <code>stdin</code>, <code>stdout</code>, and zero/nonzero exit codes</li>
+    </ul>
+  </li>
+  <li>The Web grew so quickly because it replicated these strengths
+    <ul>
+    <li>Everything used HTML (data format) over HTTP (communication protocol)</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>4) Distributed Is Different</h2>
+  <ul>
+  <li>Distributed systems are fundamentally different from unitary systems
+    <ul>
+    <li>Small programs (like the ones in this lesson) can ignore these differences...</li>
+    <li>...but every industrial-strength application eventually has to deal with them</li>
+    </ul>
+  </li>
+  <li>Difference #1: concurrency
+    <ul>
+    <li>As in databases, means &quot;several things happening at once&quot;</li>
+    <li>Can lead to:
+      <ul>
+      <li><a href="{{page.root}}/book/glossary.html#deadlock" target="glo:deadlock">Deadlock</a>: A is waiting for B while B is waiting for A</li>
+      <li><a href="{{page.root}}/book/glossary.html#race-condition" target="glo:race-condition">Race condition</a>: final result depends on whether A or B goes last</li>
+      </ul>
+    </li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>5) Partial Failure</h2>
+  <ul>
+  <li>Difference #2: partial failure
+    <ul>
+    <li>One component fails while others are still healthy</li>
+    <li>If you've waited five seconds for a web site to respond, should you assume that it's down, or keep waiting?</li>
+    </ul>
+  </li>
+  <li>Both differences make distributed applications <em>much</em> harder to debug than unitary ones
+    <ul>
+    <li>Often have <a href="{{page.root}}/book/glossary.html#heisenbug" target="glo:heisenbug">heisenbugs</a> (which only appear intermittently)</li>
+    <li>And it's usually impossible to get a complete picture of the system's state</li>
+    </ul>
+  </li>
+  <li>Only way to get a distributed system right is to build it right in the first place</li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>6) Under the Hood</h2>
+  <ul>
+  <li>These days, the Internet runs on a family of standards called <a href="{{page.root}}/book/glossary.html#internet-protocol" target="glo:internet-protocol">Internet Protocol</a> (IP)</li>
+  <li><a href="{{page.root}}/book/glossary.html#udp" target="glo:udp">User Datagram Protocol</a> (UDP) moves <a href="{{page.root}}/book/glossary.html#packet" target="glo:packet">packets</a> across the network
+    <ul>
+    <li>Fast, but no guarantees of delivery or correct ordering</li>
+    </ul>
+  </li>
+  <li><a href="{{page.root}}/book/glossary.html#tcp" target="glo:tcp">Transmission Control Protocol (TCP)</a> is much more commonly used
+    <ul>
+    <li>Guarantees that everything you send is received, in the right order</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>7) Sockets</h2>
+  <ul>
+  <li>Using IP, processes communicate through <a href="{{page.root}}/book/glossary.html#socket" target="glo:socket">sockets</a>
+    <ul>
+    <li>Each socket is one end of a point-to-point communication channel</li>
+    <li>Provides the same kind of read and write operations as files</li>
+    </ul>
+  </li>
+  <li>The socket's <a href="{{page.root}}/book/glossary.html#host-address" target="glo:host-address">host address</a> identifies a machine
+    <ul>
+    <li>Consists of four 8-bit numbers, like <code>&quot;24.153.22.195&quot;</code></li>
+    <li>The <a href="{{page.root}}/book/glossary.html#dns" target="glo:dns">Domain Name System (DNS)</a> gives these symbolic names like <code>&quot;www.third-bit.com&quot;</code></li>
+    <li>Use <code>nslookup</code> to talk to DNS directly</li>
+    </ul>
+  </li>
+  <li>The socket's <a href="{{page.root}}/book/glossary.html#port" target="glo:port">port</a> is just a number in the range 0-65535
+    <ul>
+    <li>0-1023 are reserved for the operating system's use</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <figure id="fig:client-sockets">
+    <img alt="Sockets" src="client/sockets.png"/>
+    <p>Figure 23.1: Sockets</p>
+  </figure>
+</div>
+
+<div class="topic">
+  <h2>8) Client/Server vs. Peer-to-Peer</h2>
+  <ul>
+  <li>A <a href="{{page.root}}/book/glossary.html#client-server-architecture" target="glo:client-server-architecture">client/server architecture</a> is one in which many <a href="{{page.root}}/book/glossary.html#client" target="glo:client">clients</a> communicate with a central <a href="{{page.root}}/book/glossary.html#server" target="glo:server">server</a>
+    <ul>
+    <li>Asymmetric: clients ask for things, servers provide them</li>
+    <li><a href="{{page.root}}/book/glossary.html#web-server" target="glo:web-server">Web servers</a> are the best-known examples</li>
+    <li>But <a href="{{page.root}}/book/glossary.html#dbms" target="glo:dbms">database management systems</a> are also servers</li>
+    </ul>
+  </li>
+  <li>A <a href="{{page.root}}/book/glossary.html#peer-to-peer-architecture" target="glo:peer-to-peer-architecture">peer-to-peer architecture</a> is one in which all processes exchange information equally
+    <ul>
+    <li>Symmetric: every participant both provides and receives data</li>
+    </ul>
+  </li>
+  <li>Client/server architectures are simpler to create
+    <ul>
+    <li>But if the server fails, the whole system fails</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>9) Socket Client</h2>
+  <pre file="client/socket-client.py">import sys, socket
+
+buffer_size = 1024     # bytes
+host = '127.0.0.1'     # local machine
+port = 19073           # hope nobody else is using it...
+message = 'ping!'      # what to send
+
+# AF_INET means 'Internet socket'.
+# SOCK_STREAM means 'TCP'.
+sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+sock.connect((host, port))
+
+# Send the message.
+sock.send(message)
+
+# Receive and display the reply.
+data = sock.recv(buffer_size)
+print 'client received', `data`
+
+# Tidy up.
+sock.close()
+</pre>
+  <pre class="out" file="client/socket-client.out">client received 'pong!'
+</pre>
+</div>
+
+<div class="topic">
+  <h2>10) Socket Server</h2>
+  <pre file="client/socket-server.py">import sys, socket
+
+buffer_size = 1024     # bytes
+host = ''              # empty string means 'this machine'
+port = 19073           # must agree with client
+
+# Create and bind a socket.
+s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+s.bind((host, port))
+
+# Wait for a connection request.
+s.listen(True)
+sock, addr = s.accept()
+print 'Connected by', addr
+
+# Receive and display a message.
+data = sock.recv(buffer_size)
+print 'server saw', str(data)
+
+# Replace vowels in reply.
+data = data.replace('i', 'o')
+sock.send(data)
+
+sock.close()
+</pre>
+  <pre class="out" file="client/socket-server.out">Connected by ('127.0.0.1', 1297)
+server saw ping!
+</pre>
+</div>
+
+<div class="topic">
+  <h2>11) The Hypertext Transfer Protocol</h2>
+  <ul>
+  <li>the <a href="{{page.root}}/book/glossary.html#http" target="glo:http">Hypertext Transfer Protocol (HTTP)</a> specifies how programs exchange documents over the web
+    <ul>
+    <li>Clients are typically browsers, such as <a href="bib.html#bib:firefox" target="bib:firefox">[Firefox]</a></li>
+    <li><a href="bib.html#bib:apache-web-server" target="bib:apache-web-server">[Apache Web Server]</a> is the most widely used server, but many others exist</li>
+    </ul>
+  </li>
+  </ul>
+  <figure id="fig:client-http-cycle">
+    <img alt="HTTP Request Cycle" src="client/http-cycle.png"/>
+    <p>Figure 23.2: HTTP Request Cycle</p>
+  </figure>
+  <ul>
+  <li>The client sends a request specifying what it wants</li>
+  <li>The server sends the contents of the file in reply
+    <ul>
+    <li>Or an error message</li>
+    </ul>
+  </li>
+  <li>HTTP is a <a href="{{page.root}}/book/glossary.html#stateless-protocol" target="glo:stateless-protocol">stateless protocol</a>
+    <ul>
+    <li>Server doesn't remember anything between requests</li>
+    <li>Every image in a web page must be requested and downloaded separately</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>12) HTTP Request Line</h2>
+  <ul>
+  <li>An HTTP request has three parts</li>
+    <figure id="fig:client-http-request">
+      <img alt="HTTP Request" src="client/http-request.png"/>
+      <p>Figure 23.3: HTTP Request</p>
+    </figure>
+  <li>HTTP method is almost always one of:
+    <ul>
+    <li><code>&quot;GET&quot;</code>: to fetch information</li>
+    <li><code>&quot;POST&quot;</code>: to submit form data or upload files</li>
+    </ul>
+  </li>
+  <li>URL identifies the thing the request wants
+    <ul>
+    <li>Typically a path to a file, such as <code>/index.html</code></li>
+    <li>But it's entirely up to the server how to interpret the URL</li>
+    </ul>
+  </li>
+  <li>HTTP version is usually <code>&quot;HTTP/1.0&quot;</code>
+    <ul>
+    <li>Occasionally see <code>&quot;HTTP/1.1&quot;</code></li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>13) Headers</h2>
+  <ul>
+  <li>An <a href="{{page.root}}/book/glossary.html#http-header" target="glo:http-header">HTTP header</a> is a key/value pair
+    <ul>
+    <li><code>&quot;Accept: text/html&quot;</code></li>
+    <li><code>&quot;Accept-Language: en, fr&quot;</code></li>
+    <li><code>&quot;If-Modified-Since: 16-May-2005&quot;</code></li>
+    </ul>
+  </li>
+  <li>Unlike a dictionary, a key may appear any number of times
+    <ul>
+    <li>So a request can specify that it's willing to accept several types of content</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>14) Body</h2>
+  <ul>
+  <li>The body is any extra data associated with the request
+    <ul>
+    <li>Used with web forms, to upload files, etc.</li>
+    </ul>
+  </li>
+  <li>Must be a blank line between the last header and the start of the body
+    <ul>
+    <li>Signals the end of the headers</li>
+    <li>Forgetting it is a common mistake</li>
+    </ul>
+  </li>
+  <li>The <code>&quot;Content-Length&quot;</code> header tells the server how many bytes to read</li>
+  <li>Note: there's no magic in any of this
+    <ul>
+    <li>An HTTP request is just text---any program that wants to can create them or parse them</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>15) HTTP Response</h2>
+  <figure id="fig:client-http-response">
+    <img alt="HTTP Response" src="client/http-response.png"/>
+    <p>Figure 23.4: HTTP Response</p>
+  </figure>
+  <ul>
+  <li>HTTP version, headers, and body have the same form, and mean the same thing</li>
+  <li>Status code is a number indicating what happened
+    <ul>
+    <li>200 for &quot;everything worked&quot;, 404 for &quot;page not found&quot;</li>
+    </ul>
+  </li>
+  <li>Status phrase repeats that information in a human-readable phrase (like &quot;OK&quot; or &quot;not found&quot;)</li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>16) HTTP Response Codes</h2>
+  <div id="tbl:client-http-response">
+    <table>
+      <tr>
+        <th>Code</th>
+        <th>Name</th>
+        <th>Meaning</th>
+      </tr>
+      <tr>
+        <td>100</td>
+        <td>Continue</td>
+        <td>Client should continue sending data</td>
+      </tr>
+      <tr>
+        <td>200</td>
+        <td>OK</td>
+        <td>The request has succeeded</td>
+      </tr>
+      <tr>
+        <td>204</td>
+        <td>No Content</td>
+        <td>The server has completed the request, but doesn't need to return any data</td>
+      </tr>
+      <tr>
+        <td>301</td>
+        <td>Moved Permanently</td>
+        <td>The requested resource has moved to a new permanent location</td>
+      </tr>
+      <tr>
+        <td>307</td>
+        <td>Temporary Redirect</td>
+        <td>The requested resource is temporarily at a different location</td>
+      </tr>
+      <tr>
+        <td>400</td>
+        <td>Bad Request</td>
+        <td>The request is badly formatted</td>
+      </tr>
+      <tr>
+        <td>401</td>
+        <td>Unauthorized</td>
+        <td>The request requires authentication</td>
+      </tr>
+      <tr>
+        <td>404</td>
+        <td>Not Found</td>
+        <td>The requested resource could not be found</td>
+      </tr>
+      <tr>
+        <td>408</td>
+        <td>Timeout</td>
+        <td>The server gave up waiting for the client</td>
+      </tr>
+      <tr>
+        <td>500</td>
+        <td>Internal Server Error</td>
+        <td>An error occurred in the server that prevented it fulfilling the request</td>
+      </tr>
+      <tr>
+        <td>601</td>
+        <td>Connection Timed Out</td>
+        <td>The server did not respond before the connection timed out</td>
+      </tr>
+    </table>
+    <p>Table 23.1: HTTP Response Codes</p>
+  </div>
+</div>
+
+<div class="topic">
+  <h2>17) HTTP Example</h2>
+  <ul>
+  <li>Fetch a page from the course site</li>
+  </ul>
+  <pre file="client/http-client.py">import sys, socket
+
+buffer_size = 1024
+
+HttpRequest = &quot;GET /greeting.html HTTP/1.0\n\n&quot;
+
+sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+sock.connect(('www.third-bit.com', 80))
+
+sock.send(HttpRequest)
+
+response = ''
+while True:
+    data = sock.recv(buffer_size)
+    if not data:
+        break
+    response += data
+sock.close()
+
+print response
+</pre>
+  <pre class="out" file="client/http-client.out">HTTP/1.1 200 OK
+Date: Fri, 03 Mar 2006 18:12:55 GMT
+Server: Apache/2.0.54 (Debian GNU/Linux)
+Last-Modified: Fri, 03 Mar 2006 18:12:23 GMT
+Content-Length: 92
+Content-Type: text/html
+
+&lt;html&gt;
+&lt;head&gt;&lt;title&gt;Greeting Page&lt;/title&gt;&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Greetings!&lt;/h1&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+  <ul>
+  <li>Note: the double parentheses in the call to <code>sock.connect</code> are deliberate
+    <ul>
+    <li>Method's argument is a (host, port) tuple</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>18) Fetching Pages</h2>
+  <ul>
+  <li>Opening sockets, constructing HTTP requests, and parsing responses is tedious
+    <ul>
+    <li>So most languages provide libraries to do the work for you</li>
+    <li>In Python, that library is called <code>urllib</code></li>
+    </ul>
+  </li>
+  <li><code>urllib.urlopen(URL)</code> does what your browser would do if you gave it the URL
+    <ul>
+    <li>Parse it to figure out what server to connect to</li>
+    <li>Connect to that server</li>
+    <li>Send an HTTP request</li>
+    <li>Returns an object that looks like a file, from which to read response data</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>19) urllib Example</h2>
+  <ul>
+  <li>Read a page the easy way</li>
+  </ul>
+  <pre file="client/urllib-client.py">import urllib
+
+instream = urllib.urlopen(&quot;http://www.third-bit.com/greeting.html&quot;)
+lines = instream.readlines()
+instream.close()
+for line in lines:
+    print line,
+</pre>
+  <ul>
+  <li>Note: <code>readlines</code> wouldn't do the right thing if the thing being read was an image
+    <ul>
+    <li>Might try to convert &quot;line endings&quot;</li>
+    <li>Use <code>read</code> to grab the bytes in that case</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>20) Building A Spider</h2>
+  <ul>
+  <li>A <a href="{{page.root}}/book/glossary.html#web-spider" target="glo:web-spider">web spider</a> is a program that can explore the web on its own
+    <ul>
+    <li>Fetch a page, extract all the external links, visit those pages...</li>
+    </ul>
+  </li>
+  </ul>
+  <pre file="client/spider.py">import sys, urllib, re
+
+url = sys.argv[1]
+instream = urllib.urlopen(url)
+page = instream.read()
+instream.close()
+
+links = re.findall(r'href=\&quot;[^\&quot;]+\&quot;', page)
+temp = set()
+for x in links:
+    x = x[6:-1]    # strip off 'href=&quot;' and '&quot;'
+    if x.startswith('http://'):
+        temp.add(x)
+links = list(temp)
+links.sort()
+for x in links:
+    print x
+</pre>
+  <pre class="in" file="client/spider.cmd">$ python spider.py http://www.google.ca
+</pre>
+  <pre class="out" file="client/spider.out">http://groups.google.ca/grphp?hl=en&amp;tab=wg&amp;ie=UTF-8
+http://news.google.ca/nwshp?hl=en&amp;tab=wn&amp;ie=UTF-8
+http://scholar.google.com/schhp?hl=en&amp;tab=ws&amp;ie=UTF-8
+http://www.google.ca/fr
+</pre>
+</div>
+
+<div class="topic">
+  <h2>21) Passing Parameters</h2>
+  <ul>
+  <li>Sometimes want to provide extra information as part of a URL
+    <ul>
+    <li>Example: when searching on Google, have to specify what the search terms are</li>
+    </ul>
+  </li>
+  <li>Could do this as part of the URL
+    <ul>
+    <li>Amazon puts ISBNs in URLs</li>
+    </ul>
+  </li>
+  <li>More flexible to add parameters to the URL
+    <ul>
+    <li><code>http://www.google.ca?q=Python</code> searches for pages related to Python</li>
+    <li><code>&quot;?&quot;</code> separates the parameters from the rest of the URL</li>
+    <li>If there are multiple parameters, they are separated from each other by <code>&quot;&amp;&quot;</code>
+      <ul>
+      <li>E.g., <code>http://www.google.ca/search?q=Python&amp;client=firefox</code></li>
+      </ul>
+    </li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>22) Special Characters</h2>
+  <ul>
+  <li>What if you want to include <code>&quot;?&quot;</code> or <code>&quot;&amp;&quot;</code> in a parameter?
+    <ul>
+    <li>Same problem (and solution) as including a quote in a string, or &lt;&gt; in XML</li>
+    </ul>
+  </li>
+  <li><a href="{{page.root}}/book/glossary.html#url-encoding" target="glo:url-encoding">URL encode</a> special characters using <code>&quot;%&quot;</code> followed by a 2-digit hexadecimal code
+    <ul>
+    <li>And replace spaces with <code>&quot;+&quot;</code></li>
+      <div id="tbl:client-http-escapes">
+        <table>
+          <tr>
+            <th>Character</th>
+            <th>Encoding</th>
+          </tr>
+          <tr>
+            <td><code>&quot;#&quot;</code></td>
+            <td><code>%23</code></td>
+          </tr>
+          <tr>
+            <td><code>&quot;$&quot;</code></td>
+            <td><code>%24</code></td>
+          </tr>
+          <tr>
+            <td><code>&quot;%&quot;</code></td>
+            <td><code>%25</code></td>
+          </tr>
+          <tr>
+            <td><code>&quot;&amp;&quot;</code></td>
+            <td><code>%26</code></td>
+          </tr>
+          <tr>
+            <td><code>&quot;+&quot;</code></td>
+            <td><code>%2B</code></td>
+          </tr>
+          <tr>
+            <td><code>&quot;,&quot;</code></td>
+            <td><code>%2C</code></td>
+          </tr>
+          <tr>
+            <td><code>&quot;/&quot;</code></td>
+            <td><code>%2F</code></td>
+          </tr>
+          <tr>
+            <td><code>&quot;:&quot;</code></td>
+            <td><code>%3A</code></td>
+          </tr>
+          <tr>
+            <td><code>&quot;;&quot;</code></td>
+            <td><code>%3B</code></td>
+          </tr>
+          <tr>
+            <td><code>&quot;=&quot;</code></td>
+            <td><code>%3D</code></td>
+          </tr>
+          <tr>
+            <td><code>&quot;?&quot;</code></td>
+            <td><code>%3F</code></td>
+          </tr>
+          <tr>
+            <td><code>&quot;@&quot;</code></td>
+            <td><code>%40</code></td>
+          </tr>
+        </table>
+        <p>Table 23.2: URL Encoding</p>
+      </div>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>23) Encoding Example</h2>
+  <ul>
+  <li>To search Google for &quot;grade = A+&quot;, use <code>http://www.google.ca/search?q=grade+%3D+A%2B</code></li>
+  <li><code>urllib</code> has functions to make this easy
+    <ul>
+    <li><code>urllib.quote(str)</code> replaces special characters in <code>str</code> with escape sequences</li>
+    <li><code>urllib.unquote(str)</code> replaces escape sequences with characters</li>
+    <li><code>urllib.urlencode(params)</code> takes a dictionary and constructs the entire query parameter string</li>
+    </ul>
+  </li>
+  </ul>
+  <pre file="client/urlencode.py">import urllib
+print urllib.urlencode({'surname' : 'Von Neumann', 'forename' : 'John'})
+</pre>
+  <pre class="out" file="client/urlencode.out">surname=Von+Neumann&amp;forename=John
+</pre>
+</div>
+
+<div class="topic">
+  <h2>24) Screen Scraping (And Why Not)</h2>
+  <ul>
+  <li>Suppose you want to write a script that actually <em>does</em> search Google
+    <ul>
+    <li>Construct a URL: easy</li>
+    <li>Send it and read the response: no problem</li>
+    <li>Parse the response: there's a lot of junk on the page...</li>
+    </ul>
+  </li>
+  <li>Many first-generation web applications relied on <a href="{{page.root}}/book/glossary.html#screen-scraping" target="glo:screen-scraping">screen scraping</a>
+    <ul>
+    <li>&quot;Parse&quot; the HTML with regular expressions</li>
+    </ul>
+  </li>
+  <li>Hard to get right if the page layout is complex
+    <ul>
+    <li>And whenever the layout changes, the application breaks</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>25) Web Services</h2>
+  <ul>
+  <li>Modern <a href="{{page.root}}/book/glossary.html#web-services" target="glo:web-services">web services</a> separate data from presentation
+    <ul>
+    <li>When a client sends a request, it indicates that it wants machine-readable XML, rather than human-readable HTML</li>
+    <li>Much easier to parse</li>
+    <li>Much less likely to change over time</li>
+    </ul>
+  </li>
+  <li>Many web services use the <a href="{{page.root}}/book/glossary.html#soap" target="glo:soap">Simple Object Access Protocol (SOAP)</a> standard
+    <ul>
+    <li>Despite its name, it's anything but simple</li>
+    <li>Luckily, there are libraries to hide the details for most widely-used web services</li>
+    </ul>
+  </li>
+  </ul>
+  <figure id="fig:client-web-services">
+    <img alt="Web Services" src="client/web-services.png"/>
+    <p>Figure 23.5: Web Services</p>
+  </figure>
+</div>
+
+<div class="topic">
+  <h2>26) Example: Amazon</h2>
+  <ul>
+  <li>Amazon has defined an API for web services
+    <ul>
+    <li>You need to get a license key in order to use it</li>
+    <li>They're free</li>
+    <li>But they allow Amazon to throttle requests to one per second per client</li>
+    </ul>
+  </li>
+  <li><a href="bib.html#bib:pyamazon" target="bib:pyamazon">[PyAmazon]</a> turns parameters into URL, and converts the XML reply into Python objects</li>
+  </ul>
+</div>
+
+<div class="topic">
+  <pre file="client/findbook.py">import sys, amazon
+
+# Display author's name nicely.
+def prettyName(arg):
+    if type(arg) in (list, tuple):
+        arg = ', '.join(arg[:-1]) + ' and ' + arg[-1]
+    return arg
+
+if __name__ == '__main__':
+
+    # Get information.
+    key, asin = sys.argv[1], sys.argv[2]
+    amazon.setLicense(key)
+    items = amazon.searchByASIN(asin)
+
+    # Display information.
+    for item in items:
+        productName = item.ProductName
+        ourPrice = item.OurPrice
+        authors = prettyName(item.Authors.Author)
+        print '%s: %s (%s)' % (authors, productName, ourPrice)
+</pre>
+  <pre class="in" file="client/findbook.cmd">$ python findbook.py 123ABCDEFGHIJKL4MN56 0974514071
+</pre>
+  <pre class="out" file="client/findbook.out">Greg Wilson: Data Crunching : Solve Everyday Problems Using Java, Python, and more. ($18.87)
+</pre>
+</div>
+
+<div class="topic">
+  <h2>27) Summary</h2>
+  <ul>
+  <li>Most computers now spend more time communicating than they do calculating</li>
+  <li>Every few years, we put another layer on top of the pile of protocols to make communication easier
+    <ul>
+    <li>TCP to HTTP to web services to...?</li>
+    </ul>
+  </li>
+  <li>Getting information from the web is now (almost) as easy as getting it from a file</li>
+  <li>See in the next lecture how to <em>provide</em> information to others</li>
+  </ul>
+</div>

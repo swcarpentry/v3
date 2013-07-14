@@ -1,0 +1,4 @@
+not raising exception for 0
+caught exception for 1 index is odd
+not raising exception for 2
+caught exception for 3 index is odd

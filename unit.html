@@ -1,0 +1,627 @@
+---
+layout: v3_slideshow
+title: Unit Testing
+prev: v3/qa.html
+uplink: v3/index.html
+next: v3/db.html
+---
+<div class="topic">
+  <h2>1) Introduction</h2>
+  <ul>
+  <li>Unit testing follows a pattern
+    <ul>
+    <li>Setup and teardown</li>
+    <li>Lots of small, independent tests</li>
+    <li>Reporting</li>
+    <li>Combine tests into <a href="{{page.root}}/book/glossary.html#test-suite" target="glo:test-suite">test suites</a>, and test suites into larger suites</li>
+    </ul>
+  </li>
+  <li>See a pattern, build a framework
+    <ul>
+    <li>Write shared code once</li>
+    <li>Encourage people to work a certain way
+      <ul>
+      <li>I.e., make it easy for them to do things right</li>
+      </ul>
+    </li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>2) JUnit and Its Children</h2>
+  <ul>
+  <li><a href="bib.html#bib:junit" target="bib:junit">[JUnit]</a> is a testing framework originally written by Kent Beck and Erich Gamma in 1997
+    <ul>
+    <li>Made testing easy enough that programmers actually started doing it</li>
+    <li>Now integrated into almost all Java IDEs</li>
+    </ul>
+  </li>
+  <li>Widely imitated:
+    <ul>
+    <li>Workalikes are available C++, Perl, .NET, etc.
+      <ul>
+      <li>Once you know one, you can easily learn and use the others</li>
+      </ul>
+    </li>
+    <li>Add-ons for measuring test execution times, recording tests, testing web applications, etc.</li>
+    </ul>
+  </li>
+  <li>This lecture introduces Python's version, called <code>unittest</code></li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>3) You Can Skip This Lecture If...</h2>
+  <ul>
+  <li>You know what a test suite is</li>
+  <li>You know what setup and teardown are</li>
+  <li>You know how to test for exceptions</li>
+  <li>You know how to test I/O</li>
+  <li>You know what stubs and mock objects are</li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>4) The Big Idea</h2>
+  <ul>
+  <li>Define one method for each test
+    <ul>
+    <li>Method name <em>must</em> begin with &quot;test&quot;</li>
+    <li>Method must not take any parameters (other than <code>self</code>)</li>
+    <li>Shouldn't return anything</li>
+    </ul>
+  </li>
+  <li>Group related tests together in classes
+    <ul>
+    <li>Which must be derived from <code>unittest.TestCase</code></li>
+    </ul>
+  </li>
+  <li>Call <code>unittest.main(), which:</code>
+    <ul>
+    <li>Searches the module (i.e., the file) to find all classes derived from <code>unittest.TestCase</code></li>
+    <li>Runs methods whose names begin with &quot;test&quot; in an arbitrary order
+      <ul>
+      <li>Another reason not to make tests dependent on each other</li>
+      </ul>
+    </li>
+    <li>Counts and reports the passes, fails, and errors</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>5) Checking</h2>
+  <ul>
+  <li>Actually check things inside test methods using methods provided by <code>TestCase</code>
+    <ul>
+    <li>Allows the framework to distinguish between test assertions, and normal <code>assert</code> statements
+      <ul>
+      <li>Since the code being tested might use the latter</li>
+      </ul>
+    </li>
+    </ul>
+  </li>
+  <li>Checking methods include:
+    <ul>
+    <li><code>assert_(condition)</code>: check that something is true (note the underscore)</li>
+    <li><code>assertEqual(a, b)</code>: check that two things are equal</li>
+    <li><code>assertNotEqual(a, b)</code>: the reverse of the above</li>
+    <li><code>assertRaises(exception, func, ...args...)</code>: call <code>func</code> with arguments (if provided), and check that it raises the right exception</li>
+    <li><code>fail()</code>: signal an unconditional failure</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>6) Example: Checking Addition</h2>
+<pre file="unit/test-addition.py">import unittest
+
+class TestAddition(unittest.TestCase):
+
+    def test_zeroes(self):
+        self.assertEqual(0 + 0, 0)
+        self.assertEqual(5 + 0, 5)
+        self.assertEqual(0 + 13.2, 13.2)
+
+    def test_positive(self):
+        self.assertEqual(123 + 456, 579)
+        self.assertEqual(1.2e20 + 3.4e20, 3.5e20)
+
+    def test_mixed(self):
+        self.assertEqual(-19 + 20, 1)
+        self.assertEqual(999 + -1, 998)
+        self.assertEqual(-300.1 + -400.2, -700.3)
+
+if __name__ == '__main__':
+    unittest.main()
+</pre>
+<pre class="out" file="unit/test-addition.out">.F.
+======================================================================
+FAIL: test_positive (__main__.TestAddition)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File &quot;test_addition.py&quot;, line 12, in test_positive
+    self.assertEqual(1.2e20 + 3.4e20, 3.5e20)
+AssertionError: 4.6e+20 != 3.5e+20
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.000s
+
+FAILED (failures=1)
+</pre>
+  <ul>
+  <li>The typing mistake is easily fixed</li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>7) Running Sums</h2>
+  <ul>
+  <li>You want to test a function that calculates a running sum of the values in the list
+    <ul>
+    <li>Given <code>[a, b, c, ...]</code>, it produces <code>[a, a+b, a+b+c, ...]</code></li>
+    </ul>
+  </li>
+  <li>Test cases:
+    <ul>
+    <li>Empty list</li>
+    <li>Single value</li>
+    <li>Long list with mix of positive and negative values</li>
+    </ul>
+  </li>
+  <li>Hm...is it supposed to:
+    <ul>
+    <li>Return a new list?</li>
+    <li>Modify its argument in place and return that?</li>
+    <li>Modify its argument and return <code>None</code>?</li>
+    </ul>
+  </li>
+  <li>Your tests can only ever be as good as (your understanding of) the spec
+    <ul>
+    <li>Assume for now that it's supposed to return a new list</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>8) Flawed Implementation</h2>
+  <ul>
+  <li>First implementation</li>
+  </ul>
+  <pre file="unit/running-sum-wrong.py" section="main">def running_sum(seq):
+    result = seq[0:1]
+    for i in range(2, len(seq)):
+        result.append(result[i-1] + seq[i])
+    return result
+
+class SumTests(unittest.TestCase):
+
+    def test_empty(self):
+        self.assertEqual(running_sum([]), [])
+
+    def test_single(self):
+        self.assertEqual(running_sum([3]), [3])
+
+    def test_double(self):
+        self.assertEqual(running_sum([2, 9]), [2, 11])
+
+    def test_long(self):
+        self.assertEqual(running_sum([-3, 0, 3, -2, 5]), [-3, -3, 0, -2, 3])
+</pre>
+  <pre class="out" file="unit/running-sum-wrong.out">F.E.
+======================================================================
+ERROR: test_long (__main__.SumTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File &quot;running_sum_wrong.py&quot;, line 22, in test_long
+    self.assertEqual(running_sum([-3, 0, 3, -2, 5]), [-3, -3, 0, -2, 3])
+  File &quot;running_sum_wrong.py&quot;, line 7, in running_sum
+    result.append(result[i-1] + seq[i])
+IndexError: list index out of range
+
+======================================================================
+FAIL: test_double (__main__.SumTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File &quot;running_sum_wrong.py&quot;, line 19, in test_double
+    self.assertEqual(running_sum([2, 9]), [2, 11])
+AssertionError: [2] != [2, 11]
+
+----------------------------------------------------------------------
+Ran 4 tests in 0.001s
+
+FAILED (failures=1, errors=1)
+</pre>
+  <ul>
+  <li>One failure, one error
+    <ul>
+    <li>Use this information to guide your diagnosis of the problem</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>9) Check and Re-check</h2>
+  <ul>
+  <li>Fix the function and rerun the tests</li>
+  </ul>
+  <pre file="unit/running-sum-right.py" section="func">def running_sum(seq):
+    result = seq[0:1]
+    for i in range(1, len(seq)):
+        result.append(result[i-1] + seq[i])
+    return result
+</pre>
+  <pre class="out" file="unit/running-sum-right.out">....
+----------------------------------------------------------------------
+Ran 4 tests in 0.000s
+
+OK
+</pre>
+  <ul>
+  <li>Most first attempts to fix bugs are wrong, or introduce new bugs <a href="bib.html#bib:mcconnell-code-complete" target="bib:mcconnell-code-complete">[McConnell 2004]</a>
+    <ul>
+    <li>Continuous testing catches these mistakes while they're still fresh</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>10) Is This Cost-Effective?</h2>
+  <ul>
+  <li>Should you really go to this much effort to test a simple function?
+    <ul>
+    <li>Took less than a minute to write the four tests</li>
+    <li>Uncovered one gap in the requirements, and one error in the first implementation</li>
+    <li>Able to verify the fix almost instantly</li>
+    <li>Sounds pretty good to me...</li>
+    </ul>
+  </li>
+  <li>Did you notice that we aren't checking that the input list isn't modified?</li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>11) Eliminating Redundancy</h2>
+  <ul>
+  <li>Setting up a fixture can often be more work than writing the test
+    <ul>
+    <li>The more complex the data structures, the less often you want to have to type them in</li>
+    </ul>
+  </li>
+  <li>If the test class defines a <code>setUp</code> method, <code>unittest</code> calls it before running each test
+    <ul>
+    <li>And if there's a <code>tearDown</code> method, it is run after each test</li>
+    </ul>
+  </li>
+  <li>Example: test a method that removes atoms from molecules</li>
+  </ul>
+  <pre file="unit/setup.py" section="tests">class TestThiamine(unittest.TestCase):
+
+    def setUp(self):
+        self.fixture = Molecule(C=12, H=20, O=1, N=4, S=1)
+
+    def test_erase_nothing(self):
+        nothing = Molecule()
+        self.fixture.erase(nothing)
+        self.assertEqual(self.fixture['C'], 12)
+        self.assertEqual(self.fixture['H'], 20)
+        self.assertEqual(self.fixture['O'], 1)
+        self.assertEqual(self.fixture['N'], 4)
+        self.assertEqual(self.fixture['S'], 1)
+
+    def test_erase_single(self):
+        self.fixture.erase(Molecule(H=1))
+        self.assertEqual(self.fixture, Molecule(C=12, H=19, O=1, N=4, S=1))
+
+    def test_erase_self(self):
+        self.fixture.erase(self.fixture)
+        self.assertEqual(self.fixture, Molecule())
+</pre>
+  <pre class="out" file="unit/setup.out">.E.
+======================================================================
+ERROR: test_erase_self (__main__.TestThiamine)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File &quot;setup.py&quot;, line 49, in test_erase_self
+    self.fixture.erase(self.fixture)
+  File &quot;setup.py&quot;, line 21, in erase
+    for k in other.atoms:
+RuntimeError: dictionary changed size during iteration
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.000s
+
+FAILED (errors=1)
+</pre>
+  <ul>
+  <li>Removing an atom from itself doesn't work</li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>12) Testing Exceptions</h2>
+  <ul>
+  <li>Testing that code fails in the right way is just as important as testing that it does the right thing
+    <ul>
+    <li>Otherwise, someone will do something wrong some day, and the code <em>won't</em> report it</li>
+    </ul>
+  </li>
+  <li>In Python, use <code>TestCase.assertRaises</code> to check that a specific function raises a specific exception</li>
+  <li>In most languages, have to use <code>try</code>/<code>except</code> yourself
+    <ul>
+    <li>Run the test</li>
+    <li>If execution goes on past it, it didn't raise an exception at all (failure)</li>
+    <li>If the right exception is caught, the test passed</li>
+    <li>If any other exception is caught, the test failed</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>13) Manual Exception Testing Example</h2>
+  <ul>
+  <li>Example: manually test error handling in a function that finds all values in a double-ended range
+    <ul>
+    <li>Raises <code>ValueError</code> if the range is empty, or if the set of values is empty</li>
+    </ul>
+  </li>
+  </ul>
+  <pre file="unit/test-exception.py" section="tests">class TestInRange(unittest.TestCase):
+
+    def test_no_values(self):
+        try:
+            in_range([], 0.0, 1.0)
+        except ValueError:
+            pass
+        else:
+            self.fail()
+
+    def test_bad_range(self):
+        try:
+            in_range([0.0], 4.0, -2.0)
+        except ValueError:
+            pass
+        else:
+            self.fail()
+</pre>
+</div>
+
+<div class="topic">
+  <h2>14) Testing I/O</h2>
+  <ul>
+  <li>Input and output often seem hard to test
+    <ul>
+    <li>Store a bunch of input files in a subdirectory?</li>
+    <li>Create temporary files when tests are run?</li>
+    </ul>
+  </li>
+  <li>The best answer is to use I/O using strings
+    <ul>
+    <li>Python's <code>StringIO</code> and <code>cStringIO</code> modules can read and write strings instead of files</li>
+    <li>Similar packages exist for C++, Java, and other languages</li>
+    </ul>
+  </li>
+  <li>This only works if the function being tested takes streams as arguments, rather than filenames
+    <ul>
+    <li>If the function opens and closes the file, no way for you to substitute a fake file</li>
+    <li>You have to design code to make it testable</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>15) I/O Testing Example</h2>
+  <ul>
+  <li>Example: find lines where two files differ
+    <ul>
+    <li>Input: two streams (which might be open files or <code>StringIO</code> wrappers around strings)</li>
+    <li>Output: another stream (i.e., a file, or a <code>StringIO</code>)</li>
+    </ul>
+  </li>
+  </ul>
+  <pre file="unit/test-io.py" section="tests">class TestDiff(unittest.TestCase):
+
+    def wrap_and_run(self, left, right, expected):
+        left = StringIO(left)
+        right = StringIO(right)
+        actual = StringIO()
+        diff(left, right, actual)
+        self.assertEqual(actual.getvalue(), expected)
+
+    def test_empty(self):
+        self.wrap_and_run('', '', '')
+
+    def test_lengthy_match(self):
+        str = '''\
+a
+b
+c
+'''
+        self.wrap_and_run(str, str, '')
+
+    def test_single_line_mismatch(self):
+        self.wrap_and_run('a\n', 'b\n', '1\n')
+
+    def test_middle_mismatch(self):
+        self.wrap_and_run('a\nb\nc\n', 'a\nx\nc\n', '2\n')
+</pre>
+  <ul>
+  <li>As a side effect, we've made the function itself more useful
+    <ul>
+    <li>People can now use it to compare strings to strings, or strings to files</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>16) Stubs and Mock Objects</h2>
+  <ul>
+  <li>A <a href="{{page.root}}/book/glossary.html#stub" target="glo:stub">stub</a> is a placeholder for a function or method you haven't written yet
+    <ul>
+    <li>Always returns the same value (or a random one)</li>
+    <li>Created so that you don't have to wait until your whole program is written before running and testing it</li>
+    <li>Eventually replaced with real code</li>
+    </ul>
+  </li>
+  <li><a href="{{page.root}}/book/glossary.html#mock-object" target="glo:mock-object">Mock objects</a> are more sophisticated
+    <ul>
+    <li>Has the same interface as the object whose place it takes</li>
+    <li>But return values of methods are hard-coded
+      <ul>
+      <li>E.g., use a dictionary of possible argument values to look up the correct response, instead of consulting a database</li>
+      </ul>
+    </li>
+    <li>Used to isolate components during testing
+      <ul>
+      <li>Use a real instance of the object under suspicion, and mock replacements for everything else</li>
+      </ul>
+    </li>
+    <li><em>Not</em> thrown away once the program is working</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>17) Test Performance</h2>
+  <ul>
+  <li>Making tests run fast is another reason to use stubs, mock objects, and other tricks
+    <ul>
+    <li>Reinitializing a database on disk can take 1-2 seconds</li>
+    <li>So 500 tests take 10 minutes to run</li>
+    <li>Makes it impractical for developers can't re-run the tests after every small code change</li>
+    </ul>
+  </li>
+  <li>&quot;Test performance&quot; can also mean &quot;test how fast the target code is&quot;
+    <ul>
+    <li>Record how long it takes to run the test suite</li>
+    <li>Sudden increases or decreases may signal bugs</li>
+    <li>Even if they don't, you probably want to know that your code is four times slower than it used to be <em>before</em> you ship it</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>18) Choosing Test Cases</h2>
+  <ul>
+  <li>Human beings are creatures of habit
+    <ul>
+    <li>Tend to make the same kinds of errors over and over again</li>
+    <li>So test for those first</li>
+    <li>Once you start testing for habitual errors, you become more conscious of them, and make them less often</li>
+    </ul>
+  </li>
+  <li>A catalog of errors
+    <ul>
+    <li>Numbers: zero, largest, smallest magnitude, most negative</li>
+    <li>Structures: empty, exactly one element, maximum number of elements
+      <ul>
+      <li>Duplicate elements (e.g., the letter <code>&quot;J&quot;</code> appears three times in a string)</li>
+      <li>Aliased elements (e.g., a list contains two references to another list)</li>
+      <li>Circular structures (e.g., a list that contains a reference to itself)</li>
+      </ul>
+    </li>
+    <li>Searching: no match found, one match found, multiple matches found, everything matches
+      <ul>
+      <li>Code like <code>x = find_all(structure)[0]</code> is almost always wrong</li>
+      <li>Should also check aliased matches (same thing found multiple times)</li>
+      </ul>
+    </li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>19) Example: Rectangle Overlap</h2>
+  <ul>
+  <li>Want to test a function that calculates the overlap between two rectangles
+    <ul>
+    <li>Each rectangle is represented by an instance of the class <code>Rect</code>
+      <ul>
+      <li>Constructor takes four non-negative integer arguments (low and high XY coordinates)</li>
+      <li>Class has methods <code>get_low_x</code>, <code>get_low_y</code>, <code>get_high_x</code>, and <code>get_high_y</code></li>
+      <li>Rectangle is guaranteed to have non-zero area</li>
+      </ul>
+    </li>
+    <li>Function returns:
+      <ul>
+      <li>A new rectangle representing the overlap of its inputs if they overlap</li>
+      <li><code>None</code> if there's no overlap</li>
+      <li>Note: since rectangles have to have non-zero area, touching on an edge or corner does <em>not</em> count as overlap</li>
+      </ul>
+    </li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>20) Solution</h2>
+  <ul>
+  <li>Assume for the moment that <code>Rect</code> is correct
+    <ul>
+    <li>I.e., that it has been tested elsewhere</li>
+    </ul>
+  </li>
+  <li>Each fixture will be a pair of rectangles
+    <ul>
+    <li>The test will be to pass them to <code>overlap</code>, and see if the output is correct</li>
+    </ul>
+  </li>
+  <li>In this example, &quot;boundary case&quot; and &quot;corner case&quot; can be taken literally</li>
+    <figure id="fig:unit-rectangle-overlap">
+      <img alt="Rectangle Overlap Test Cases" src="unit/rectangle-overlap.png"/>
+      <p>Figure 43.1: Rectangle Overlap Test Cases</p>
+    </figure>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>21) What Tests To Write First</h2>
+  <ul>
+  <li>Tests you expect to succeed
+    <ul>
+    <li>Boundary cases (e.g., sort the empty list, or a list of one value)</li>
+    <li>Simplest interesting case (e.g., sort a list of two values)</li>
+    <li>General case (e.g., sort a list of nine values)</li>
+    <li>If duplicate values are allowed, make sure you test with them</li>
+    </ul>
+  </li>
+  <li>Tests you expect to fail
+    <ul>
+    <li>Invalid input (e.g., passed a dictionary instead of a list)</li>
+    <li>Remember, error handling is part of the interface too</li>
+    </ul>
+  </li>
+  <li>Sanity tests
+    <ul>
+    <li>Make sure data structures remain consistent</li>
+    <li>If there is redundant information, check it against itself</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>22) Summary</h2>
+  <ul>
+  <li>A good framework does more than just cut down on typing
+    <ul>
+    <li>Guides you toward solutions that other developers have already discovered</li>
+    </ul>
+  </li>
+  <li>The better you are at testing (and using testing frameworks), the more productive you will be</li>
+  </ul>
+</div>

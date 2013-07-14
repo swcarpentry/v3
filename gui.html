@@ -1,0 +1,197 @@
+---
+layout: v3_slideshow
+title: GUI Programming
+prev: v3/xml.html
+uplink: v3/index.html
+next: v3/client.html
+---
+<div class="topic">
+  <h2>1) Introduction</h2>
+  <ul>
+  <li>You Don't Want to Type Everything to Use a Computer
+    <ul>
+    <li>Typing everything requires remembering arcane commands without error</li>
+    <li>Some information is hard to present as text</li>
+    </ul>
+  </li>
+  <li>This lecture looks at how to build programs with Graphical User Interfaces (GUIs)</li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>2) You Can Skip This Lecture If...</h2>
+  <ul>
+  <li>The phrase event-driven programming doesn't scare you</li>
+  <li>You can use Tkinter to design a graphical-user interface</li>
+  <li>You know what <em>Fitt's Law</em> and <em>Hick's Law</em> mean</li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>3) Dive In</h2>
+  <pre file="gui/dive-in.py">import Tkinter
+
+window = Tkinter.Tk()
+
+question = Tkinter.Label(window, text=&quot;Are you sure you want to learn?&quot;)
+ok = Tkinter.Button(window, text=&quot;OK&quot;)
+cancel = Tkinter.Button(window, text=&quot;Cancel&quot;)
+
+question.grid(row=0, column=0, columnspan=3)
+ok.grid(row=1, column=1)
+cancel.grid(row=1, column=2)
+
+window.mainloop()
+</pre>
+  <figure id="fig:gui-dive-in">
+    <img alt="Dive In" src="gui/dive-in.png"/>
+    <p>Figure 22.1: Result</p>
+  </figure>
+</div>
+
+<div class="topic">
+  <h2>4) Explaining the Code</h2>
+  <ul>
+    <li>The Tkinter module</li>
+    <li>Windows</li>
+    <li>Labels, Buttons and other components</li>
+    <li>Parent links</li>
+    <li>The Grid</li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>5) A More Advanced Example</h2>
+  <pre file="gui/advanced.py">import Tkinter
+
+window = Tkinter.Tk()
+
+titleLabel = Tkinter.Label(window, text=&quot;Calculator Ultra&quot;, font=(&quot;Helvetica&quot;, 16))
+
+result = Tkinter.StringVar()
+resultLabel = Tkinter.Label(window, textvariable=result)
+
+equation = Tkinter.StringVar()
+
+def evalCommand():
+    result.set(eval(equation.get()))
+
+equationEntry = Tkinter.Entry(window, textvariable=equation, font=(&quot;Futura&quot;,))
+solveButton = Tkinter.Button(window, text=&quot;Enter&quot;, font=(&quot;Helvetica&quot;,), command=evalCommand)
+
+titleLabel.grid(row=0, column=0, columnspan=3)
+equationEntry.grid(row=1, column=0, columnspan=2)
+solveButton.grid(row=1, column=2)
+
+resultLabel.grid(row=3, column=0, columnspan=3)
+
+window.mainloop()
+</pre>
+  <figure id="fig:gui-advanced">
+    <img alt="Advanced Example" src="gui/advanced.png"/>
+    <p>Figure 22.2: Result</p>
+  </figure>
+</div>
+
+<div class="topic">
+  <h2>6) Tkinter Mutable Types and Other Lessons</h2>
+  <ul>
+  <li>You can change the visual appearance of all the components
+    <ul>
+    <li>The font option allows you to change font styles</li>
+    <li>You can change colours, styles and formatting, too</li>
+    <li>But you probably shouldn't...</li>
+    </ul>
+  </li>
+  <li><em>Tkinter Mutable Variables</em>
+    <ul>
+    <li>Examples: StringVar, IntVar, DoubleVar</li>
+    <li>Use as labels for components, use as data storage for input components</li>
+    <li>Use get() and set() methods to operate on the values</li>
+    </ul>
+  </li>
+  <li><em>Commands</em> let you run code in response to events like button clicks</li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>7) Event-Driven Programming</h2>
+  <ul>
+  <li>Your other programs run from start to finish</li>
+  <li>Graphical programs just run, waiting for the user to choose what to do next</li>
+  <li>This inversion of control is called event-driven programming</li>
+  </ul>
+</div>
+        
+<div class="topic">
+  <h2>8) Model-View-Controller</h2>
+  <ul>
+  <li>Much of programming is about separating specialized components</li>
+  <li><em>Models</em> store and validate data</li>
+  <li><em>Views</em> display models</li>
+  <li><em>Controllers</em> handle events and manipulate</li>
+  </ul>
+</div>        
+
+<div class="topic">
+  <h2>9) Design Example</h2>
+  <pre file="gui/design.py">import Tkinter
+
+window = Tkinter.Tk()
+
+big = Tkinter.Button(window, text=&quot;Click me&quot;, font=(&quot;&quot;,60))
+medium = Tkinter.Button(window, text=&quot;Click me&quot;)
+small = Tkinter.Button(window, text=&quot;Click me&quot;, font=(&quot;&quot;,8))
+
+big.pack()
+medium.pack()
+small.pack()
+
+window.mainloop()
+</pre>
+  <figure id="fig:gui-design">
+    <img alt="Design Example" src="gui/design.png"/>
+    <p>Figure 22.3: Result</p>
+  </figure>
+</div>
+
+<div class="topic">
+  <h2>10) Design</h2>
+  <ul>
+  <li>The CRAP laws of graphic design
+    <ul>
+    <li>Contrast</li>
+    <li>Repetition</li>
+    <li>Alignment</li>
+    <li>Proximity</li>
+    </ul>
+  </li>
+  <li>Fitt's Law: Targets are easier to click the closer and bigger they are</li>
+  <li>Hick's Law: Adding choices makes it slower to decide</li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>11) DropBox Signup</h2>
+  <figure id="fig:gui-dropbox">
+    <img alt="DropBox Signup" src="gui/dropbox-signup.png"/>
+    <p>Figure 22.4: DropBox Signup</p>
+  </figure>
+</div>
+
+<div class="topic">
+  <h2>12) LiveDrive Signup</h2>
+  <figure id="fig:gui-livedrive">
+    <img alt="LiveDrive Signup" src="gui/livedrive-signup.png"/>
+    <p>Figure 22.5: LiveDrive Signup</p>
+  </figure>
+</div>
+
+<div class="topic">
+  <h2>13) Summary</h2>
+  <ul>
+  <li>GUIs can make your programs easier to use</li>
+  <li>Tkinter is a library that makes GUIs easy to make</li>
+  <li>A few basic design principles help a lot</li>
+  </ul>
+</div>

@@ -1,0 +1,704 @@
+---
+layout: v3_slideshow
+title: Quality Assurance
+prev: v3/oop02.html
+uplink: v3/index.html
+next: v3/unit.html
+---
+<div class="topic">
+  <h2>1) Introduction</h2>
+  <ul>
+  <li>The more you invest in quality, the less time it takes to develop working software <a href="bib.html#bib:glass-facts-fallacies" target="bib:glass-facts-fallacies">[Glass 2002]</a></li>
+  <li>Quality is <em>not</em> just testing
+    <ul>
+    <li>&quot;Trying to improve the quality of software by doing more testing is like trying to lose weight by weighing yourself more often.&quot; (Steve McConnell)</li>
+    </ul>
+  </li>
+  <li>Quality is:
+    <ul>
+    <li>Designed in</li>
+    <li>Monitored and maintained through the whole software lifecycle</li>
+    </ul>
+  </li>
+  <li>This lecture looks at basic things every developer can do to maintain quality
+    <ul>
+    <li>See <a href="bib.html#bib:whittaker-break-software" target="bib:whittaker-break-software">[Whittaker 2003]</a> for more information</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>2) You Can Skip This Lecture If...</h2>
+  <ul>
+  <li>You know that no amount of testing can prove that software is correct</li>
+  <li>You know what unit testing, integration testing, and regression testing are</li>
+  <li>You know what a fixture is</li>
+  <li>You know what an exception is, and how to raise one</li>
+  <li>You know what test-driven design is</li>
+  <li>You know what defensive programming is</li>
+  <li>You know what design by contract is</li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>3) Limits to Testing</h2>
+  <ul>
+  <li>Suppose you have a function that compares two 7-digit phone numbers, and returns <code>True</code> if the first is greater than the second
+    <ul>
+    <li>10<sup>7<sup>2</sup></sup> possible inputs</li>
+    <li>At ten million tests per second, that's 155 days</li>
+    </ul>
+  </li>
+  <li>If they're 7-character alphabetic strings, it's 254 <em>years</em>
+    <ul>
+    <li>Then you move on to the second function...</li>
+    </ul>
+  </li>
+  <li>And how do you know that your tests are correct?</li>
+  <li>All a test can do is show that there <em>may</em> be a bug</li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>4) Terminology</h2>
+  <ul>
+  <li>A <a href="{{page.root}}/book/glossary.html#unit-test" target="glo:unit-test">unit test</a> exercises one component in isolation
+    <ul>
+    <li>Developer-oriented: tests the program's internals</li>
+    </ul>
+  </li>
+  <li>An <a href="{{page.root}}/book/glossary.html#integration-test" target="glo:integration-test">integration test</a> exercises the whole system
+    <ul>
+    <li>User-oriented: tests the software's overall behavior</li>
+    </ul>
+  </li>
+  <li><a href="{{page.root}}/book/glossary.html#regression-test" target="glo:regression-test">Regression testing</a> is the practice of rerunning tests to check that the code still works
+    <ul>
+    <li>I.e., make sure that today's changes haven't broken things that were working yesterday</li>
+    <li>Programs that don't have regression tests are difficult (sometimes impossible) to maintain <a href="bib.html#bib:feathers-legacy-code" target="bib:feathers-legacy-code">[Feathers 2005]</a></li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>5) Test Results and Specifications</h2>
+  <ul>
+  <li>Any test can have one of three outcomes:
+    <ul>
+    <li>Pass: the <a href="{{page.root}}/book/glossary.html#actual-outcome" target="glo:actual-outcome">actual outcome</a> matches the <a href="{{page.root}}/book/glossary.html#expected-outcome" target="glo:expected-outcome">expected outcome</a></li>
+    <li>Fail: the actual outcome is different from what was expected</li>
+    <li>Error: something went wrong inside the test (i.e., the test contains a bug)
+      <ul>
+      <li>Don't know anything about the system being tested</li>
+      </ul>
+    </li>
+    </ul>
+  </li>
+  <li>A <a href="{{page.root}}/book/glossary.html#specification" target="glo:specification">specification</a> is something that tells you how to classify a test's result
+    <ul>
+    <li>You can't test without some sort of specification</li>
+    <li>Discuss ways of creating specifications below, and in the <a href="lifecycle.html" target="lec:lifecycle">Software Development Lifecycles</a></li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>6) Structuring Tests</h2>
+  <ul>
+  <li>How to write tests so that:
+    <ul>
+    <li>It's easy to add or change tests</li>
+    <li>It's easy to see what's been tested, and what hasn't</li>
+    </ul>
+  </li>
+  <li>A test consists of a fixture, an action, and an expected result
+    <ul>
+    <li>A <a href="{{page.root}}/book/glossary.html#fixture" target="glo:fixture">fixture</a> is something that a test is run on</li>
+    <li>Can be as simple as a single value, or as complex as a networked database</li>
+    </ul>
+  </li>
+  <li>Every test should be independent
+    <ul>
+    <li>I.e., the outcome of one test shouldn't depend on what happened in another test</li>
+    <li>Otherwise, faults in early tests can distort the results of later ones</li>
+    </ul>
+  </li>
+  <li>So each test:
+    <ul>
+    <li>Creates a fresh instance of the fixture</li>
+    <li>Performs the operation</li>
+    <li>Checks and records the result</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>7) A Simple Example</h2>
+  <ul>
+  <li>Test <code>string.startswith</code>
+    <ul>
+    <li>Specification: returns <code>True</code> if the string starts with the given prefix, and <code>False</code> otherwise</li>
+    <li>But what if the prefix is the empty string?</li>
+    </ul>
+  </li>
+  <li>Store the tests in a table
+    <ul>
+    <li>String and prefix are the fixture</li>
+    </ul>
+  </li>
+  </ul>
+  <pre file="qa/test-startswith.py" section="table">Tests = [
+    # String  Prefix  Expected
+    ['a',     'a',    True],
+    ['a',     'b',    False],
+    ['abc',   'a',    True],
+    ['abc',   'ab',   True],
+    ['abc',   'abc',  True],
+    ['abc',   'abcd', False],
+    ['abc',   '',     True]
+]
+</pre>
+  <ul>
+  <li>Now run them</li>
+  </ul>
+  <pre file="qa/test-startswith.py" section="main">passes = 0
+failures = 0
+for (s, p, expected) in Tests:
+    actual = s.startswith(p)
+    if actual == expected:
+        passes += 1
+    else:
+        failures += 1
+print 'passed', passes, 'out of', passes+failures, 'tests'
+</pre>
+  <ul>
+  <li>But where's the code to handle and report errors in the tests themselves?</li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>8) Catching Errors</h2>
+  <ul>
+  <li>Python uses <a href="{{page.root}}/book/glossary.html#exception" target="glo:exception">exceptions</a> for error handling
+    <ul>
+    <li>Separates normal operation from error handling</li>
+    <li>Makes both easier to read</li>
+    </ul>
+  </li>
+  <li>Structured like <code>if</code>/<code>else</code>
+    <ul>
+    <li>Code for healthy case goes in a <code>try</code> block</li>
+    <li>Error handling code goes in a matching <code>except</code> block</li>
+    </ul>
+  </li>
+  <li>When something goes wrong in the <code>try</code> block, Python <a href="{{page.root}}/book/glossary.html#raise-exception" target="glo:raise-exception">raises</a> an exception
+    <ul>
+    <li>This is <a href="{{page.root}}/book/glossary.html#catch-exception" target="glo:catch-exception">caught</a> by the matching <code>except</code></li>
+    <li>Python then executes the code in the <a href="{{page.root}}/book/glossary.html#exception-handler" target="glo:exception-handler">exception handler</a></li>
+    </ul>
+  </li>
+  <li>Can add an optional <code>else</code> block
+    <ul>
+    <li>Executed when things <em>don't</em> go wrong inside the <code>try</code> block</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>9) Simple Exception Example</h2>
+  <pre file="qa/try-except-else.py">for num in [-1, 0, 1]:
+    try:
+        inverse = 1/num
+    except:
+        print 'inverting', num, 'caused error'
+    else:
+        print 'inverse of', num, 'is', inverse
+</pre>
+  <pre class="out" file="qa/try-except-else.out">inverse of -1 is -1
+inverting 0 caused error
+inverse of 1 is 1
+</pre>
+  <figure id="fig:qa-try-except-else">
+    <img alt="Flow of Control in Try/Except/Else" src="qa/try-except-else.png"/>
+    <p>Figure 15.1: Flow of Control in Try/Except/Else</p>
+  </figure>
+</div>
+
+<div class="topic">
+  <h2>10) Exception Objects</h2>
+  <ul>
+  <li>When Python raises an exception, it creates an object to hold information about what went wrong
+    <ul>
+    <li>Typically contains an error message</li>
+    </ul>
+  </li>
+  <li>Can choose which errors to handle by specifying an exception type in the <code>except</code> statement
+    <ul>
+    <li>E.g., handle division by zero, but not out-of-bounds list index</li>
+    </ul>
+  </li>
+  </ul>
+  <pre file="qa/except-with-type.py">values = [0, 1, 'momentum']
+for i in range(4):
+    try:
+        print 'dividing by value', i
+        x = 1.0 / values[i]
+        print 'result is', x
+    except ZeroDivisionError, e:
+        print 'divide by zero:', e
+    except IndexError, e:
+        print 'index error:', e
+    except:
+        print 'some other error:', e
+</pre>
+  <pre class="out" file="qa/except-with-type.out">dividing by value 0
+divide by zero: float division
+dividing by value 1
+result is 1.0
+dividing by value 2
+some other error: float division
+dividing by value 3
+index error: list index out of range
+</pre>
+  <ul>
+  <li>The <code>except</code> blocks are tested in order---whichever matches first, wins
+    <ul>
+    <li>If a &quot;naked&quot; <code>except</code> appears, it must come last (since it catches everything)</li>
+    <li>Generally better to use <code>except Exception, e</code> so that you have the exception object</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>11) Exception Hierarchy</h2>
+  <ul>
+  <li>Exceptions are organized in a hierarchy
+    <ul>
+    <li>E.g., <code>ZeroDivisionError</code>, <code>OverflowError</code>, and <code>FloatingPointError</code> are all types of <code>ArithmeticError</code></li>
+    <li>A handler for the general type catches all its specific sub-types</li>
+    </ul>
+  </li>
+  <li>We'll see <a href="oop01.html" target="lec:oop01">Python Basic Object-Oriented Programming</a> how this hierarchy is implemented
+    <ul>
+    <li>Hint: it has something to do with objects</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <div id="tbl:qa-exceptions">
+    <table>
+      <tr>
+        <th>Name</th>
+        <th></th>
+        <th></th>
+        <th>Purpose</th>
+      </tr>
+      <tr>
+        <td><code>Exception</code></td>
+        <td></td>
+        <td></td>
+        <td>Root of exception hierarchy</td>
+      </tr>
+      <tr>
+        <td></td>
+        <td><code>ArithmeticError</code></td>
+        <td></td>
+        <td>Illegal arithmetic operation</td>
+      </tr>
+      <tr>
+        <td></td>
+        <td></td>
+        <td><code>FloatingPointError</code></td>
+        <td>Generic error in floating point calculation</td>
+      </tr>
+      <tr>
+        <td></td>
+        <td></td>
+        <td><code>OverflowError</code></td>
+        <td>Result too large to represent</td>
+      </tr>
+      <tr>
+        <td></td>
+        <td></td>
+        <td><code>ZeroDivisionError</code></td>
+        <td>Attempt to divide by zero</td>
+      </tr>
+      <tr>
+        <td></td>
+        <td><code>IndexError</code></td>
+        <td></td>
+        <td>Bad index to sequence (out of bounds or illegal type)</td>
+      </tr>
+      <tr>
+        <td></td>
+        <td><code>TypeError</code></td>
+        <td></td>
+        <td>Illegal type (e.g., trying to add integer and string)</td>
+      </tr>
+      <tr>
+        <td></td>
+        <td><code>ValueError</code></td>
+        <td></td>
+        <td>Illegal value (e.g., <code>math.sqrt(-1)</code>)</td>
+      </tr>
+      <tr>
+        <td></td>
+        <td><code>EnvironmentError</code></td>
+        <td></td>
+        <td>Error interacting with the outside world</td>
+      </tr>
+      <tr>
+        <td></td>
+        <td></td>
+        <td><code>IOError</code></td>
+        <td>Unable to create or open file, read data, etc.</td>
+      </tr>
+      <tr>
+        <td></td>
+        <td></td>
+        <td><code>OSError</code></td>
+        <td>No permissions, no such device, etc.</td>
+      </tr>
+    </table>
+    <p>Table 15.1: Common Exception Types in Python</p>
+  </div>
+</div>
+
+<div class="topic">
+  <h2>12) Functions and Exceptions</h2>
+  <ul>
+  <li>Each time Python enters a <code>try</code>/<code>except</code> block, it pushes the <code>except</code> handlers on a stack
+    <ul>
+    <li>Just like the function call stack</li>
+    </ul>
+  </li>
+  <li>When an exception is raised, Python searches this stack for the top-most matching handler
+    <ul>
+    <li>Often means jumping out of the middle of a function</li>
+    </ul>
+  </li>
+  </ul>
+  <figure id="fig:qa-exception-stack">
+    <img alt="Stacking Exception Handlers" src="qa/exception-stack.png"/>
+    <p>Figure 15.2: Stacking Exception Handlers</p>
+  </figure>
+  <pre file="qa/exception-stack.py">def invert(vals, index):
+    try:
+        vals[index] = 10.0/vals[index]
+    except ArithmeticError, e:
+        print 'inner exception handler:', e
+
+def each(vals, indices):
+    try:
+        for i in indices:
+            invert(vals, i)
+    except IndexError, e:
+        print 'outer exception handler:', e
+
+# Once again, the top index will be out of bounds.
+values = [-1, 0, 1]
+print 'values before:', values
+each(values, range(4))
+print 'values after:', values
+</pre>
+  <pre class="out" file="qa/exception-stack.out">values before: [-1, 0, 1]
+inner exception handler: float division
+outer exception handler: list index out of range
+values after: [-10.0, 0, 10.0]
+</pre>
+</div>
+
+<div class="topic">
+  <h2>13) Raising Exceptions</h2>
+  <ul>
+  <li>Use <code>raise</code> to trigger exception processing
+    <ul>
+    <li>Specify the type of exception you're raising using <code>raise Exception('this is an error message')</code></li>
+    <li>Please make your error messages more informative...</li>
+    </ul>
+  </li>
+  </ul>
+  <pre file="qa/raise-exception.py">for i in range(4):
+    try:
+        if (i % 2) == 1:
+            raise ValueError('index is odd')
+        else:
+            print 'not raising exception for %d' % i
+    except ValueError, e:
+        print 'caught exception for %d' % i, e
+</pre>
+  <pre class="out" file="qa/raise-exception.out">not raising exception for 0
+caught exception for 1 index is odd
+not raising exception for 2
+caught exception for 3 index is odd
+</pre>
+</div>
+
+<div class="topic">
+  <h2>14) Exceptional Style</h2>
+  <ul>
+  <li>Always use exceptions to report errors instead of returning <code>None</code>, -1, <code>False</code>, or some other value
+    <ul>
+    <li>Allows callers to separate normal code from error handling</li>
+    <li>And sooner or later, your function will probably actually <em>want</em> to return that &quot;special&quot; value</li>
+    <li>Note: Python's own <code>list.find</code> breaks this rule
+      <ul>
+      <li>Returns -1 if something can't be found</li>
+      </ul>
+    </li>
+    </ul>
+  </li>
+  <li>Throw low, catch high
+    <ul>
+    <li>I.e., throw lots of very specific exceptions...</li>
+    <li>...but only catch them where you can actually take corrective action</li>
+    <li>Because every application handles errors differently
+      <ul>
+      <li>If someone is using your library in a GUI, you don't want to be printing to <code>stderr</code></li>
+      </ul>
+    </li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>15) Handling Errors in Tests</h2>
+  <ul>
+  <li>Now know how to check for errors in tests: wrap the test in <code>try</code>/<code>except</code></li>
+  </ul>
+  <pre file="qa/test-exceptions.py">Tests = [
+    ['a',     'a',    False],    # wrong expected value
+    ['a',     1,      False],    # wrong type
+    ['abc',   'a',    True]      # everything legal
+]
+
+passes = failures = errors = 0
+for (s, p, expected) in Tests:
+    try:
+        actual = s.startswith(p)
+        if actual == expected:
+            passes += 1
+        else:
+            failures += 1
+    except:
+        errors += 1
+
+print 'tests:', passes + failures + errors
+print 'passes:', passes
+print 'failures:', failures
+print 'errors:', errors
+</pre>
+  <pre class="out" file="qa/test-exceptions.out">tests: 3
+passes: 1
+failures: 1
+errors: 1
+</pre>
+  <ul>
+  <li>Note the deliberate errors in the test cases to exercise the testing code</li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>16) Test-Driven Design</h2>
+  <ul>
+  <li>Tests are actually specifications
+    <ul>
+    <li>&quot;Given these inputs, this code should behave the following way&quot;</li>
+    </ul>
+  </li>
+  <li>So write the tests first, <em>then</em> the application code
+    <ul>
+    <li><a href="{{page.root}}/book/glossary.html#test-driven-development" target="glo:test-driven-development">Test-driven development</a> (TDD)</li>
+    </ul>
+  </li>
+  <li>Sounds backward, but...</li>
+  <li>A great way to clarify specifications
+    <ul>
+    <li>I write the tests</li>
+    <li>&quot;All&quot; you have to do is write code that passes those tests</li>
+    </ul>
+  </li>
+  <li>Gives programmers a definite goal
+    <ul>
+    <li>Coding is finished when all tests run</li>
+    <li>Particularly useful when trying to fix bugs in old code, as it forces you to figure out how to re-create the bug</li>
+    <li>Helps prevent the &quot;one more feature&quot; syndrome</li>
+    </ul>
+  </li>
+  <li>Ensures that tests actually get written
+    <ul>
+    <li>People are often too tired, or too rushed, to test after coding</li>
+    </ul>
+  </li>
+  <li>Helps clarify the <a href="{{page.root}}/book/glossary.html#api" target="glo:api">Application Programming Interface (API)</a> before it is set in stone
+    <ul>
+    <li>If something is awkward to test, it can be redesigned before it's written</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>17) TDD Example</h2>
+  <ul>
+  <li>&quot;I want you to write a function that calculates a running sum of the values in a list&quot;
+    <ul>
+    <li>Doesn't specify whether to create a new list, or overwrite the input</li>
+    <li>Doesn't specify how to handle errors</li>
+    </ul>
+  </li>
+  <li>Compare that with this:</li>
+  </ul>
+  <pre file="qa/running-sum-tdd.py" section="tests">Tests = [
+    [[],        [],          'empty list'],
+    [[1],       [1],         'single value'],
+    [[1, 3],    [1, 4],      'two values'],
+    [[1, 3, 7], [1, 4, 11],  'three values'],
+    [[-1, 1],   [-1, 0],     'negative values'],
+    [[1, 3.0],  [1, 4.0],    'mixed types'],
+    [&quot;string&quot;,  ValueError,  'non-list input'],
+    [['a'],     ValueError,  'non-numeric value']
+]
+</pre>
+  <ul>
+  <li>If the expected result is an exception, pass only if that exception is raised</li>
+  <li>If the test doesn't pass, print the comment so that the programmer knows what to look at</li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>18) Design by Contract</h2>
+  <ul>
+  <li>Functions ought to carry their specifications around with them
+    <ul>
+    <li>Keeping specification and implementation together makes both easier to understand</li>
+    <li>And improves the odds that programmers will keep them in sync</li>
+    </ul>
+  </li>
+  <li>A function is defined by:
+    <ul>
+    <li>Its <a href="{{page.root}}/book/glossary.html#pre-condition" target="glo:pre-condition">pre-conditions</a>: what must be true in order for the function to work correctly</li>
+    <li>Its <a href="{{page.root}}/book/glossary.html#post-condition" target="glo:post-condition">post-conditions</a>: what the function guarantees will be true if its pre-conditions are met</li>
+    <li>May also have <a href="{{page.root}}/book/glossary.html#invariant" target="glo:invariant">invariants</a>: things that are true throughout the execution of the function</li>
+    </ul>
+  </li>
+  <li>Leads to a style of programming called <a href="{{page.root}}/book/glossary.html#design-by-contract" target="glo:design-by-contract">design by contract</a></li>
+  <li>Pre- and post-conditions constrain how the function can evolve
+    <ul>
+    <li>Can only ever relax pre-conditions (i.e., take a wider range of input)...</li>
+    <li>...or tighten post-conditions (i.e., produce a narrower range of output)</li>
+    <li>Tightening pre-conditions, or relaxing post-conditions, would violate the function's contract with its callers</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>19) Assertions</h2>
+  <ul>
+  <li>Normally specify pre- and post-conditions using <a href="{{page.root}}/book/glossary.html#assertion" target="glo:assertion">assertions</a>
+    <ul>
+    <li>A statement that something is true at a particular point in a program</li>
+    <li>If the assertion's condition is not met, Python raises an <code>AssertionError</code> exception</li>
+    </ul>
+  </li>
+  <li>For example:
+    <ul>
+    <li>Pre-condition: input argument is a non-empty list</li>
+    <li>Post-condition: two values from the list such that the first is less than the second</li>
+    </ul>
+  </li>
+  </ul>
+  <pre file="qa/simple-assert.py">def find_range(values):
+    '''Find the non-empty range of values in the input sequence.'''
+    assert (type(values) is list) and (len(values) &gt; 0)
+    left = min(values)
+    right = max(values)
+    assert (left in values) and (right in values) and (left &lt;= right)
+    return left, right
+</pre>
+  <ul>
+  <li>Note that the post-condition isn't as exacting as it should be
+    <ul>
+    <li>Doesn't check that <code>left</code> is less than or equal to all other values, or that right is greater than or equal to</li>
+    <li>The code to check the condition exactly is as likely to contain errors as the function itself</li>
+    <li>Which is one of the reasons design by contract isn't as popular as it might be</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>20) Defensive Programming</h2>
+  <ul>
+  <li>You can (and should) use <code>assert</code> liberally
+    <ul>
+    <li>Even if you don't practice design by contract</li>
+    </ul>
+  </li>
+  <li><a href="{{page.root}}/book/glossary.html#defensive-programming" target="glo:defensive-programming">Defensive programming</a> is like defensive driving
+    <ul>
+    <li>Program as if the rest of the world is out to get you</li>
+    <li>&quot;Fail early, fail often&quot;
+      <ul>
+      <li>The less distance there is between the error and you detecting it, the easier it will be to find and fix</li>
+      </ul>
+    </li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>21) It's Never Too Late to Do It Right</h2>
+  <ul>
+  <li>Good practice: every time you fix a bug, put in an assertion and a comment
+    <ul>
+    <li>Because if you made the error, the right code can't be obvious</li>
+    <li>And you should protect yourself against someone &quot;simplifying&quot; the bug back in</li>
+    </ul>
+  </li>
+  </ul>
+  <pre file="qa/bugs-become-assertions.py">def can_transmute(element):
+    '''Can this element be turned into gold?'''
+
+    # Bug #172: make sure the input is actually an element.
+    assert is_valid_element(element)
+
+    # Gold is trivial.
+    if element is Gold:
+        return True
+
+    # Trans-uranic metals and halogens are impossible.
+    if (element.atomic_number &gt; Uranium.atomic_number) or \
+       (element in Halogens):
+        return False
+
+    # Look for a sequence of steps that leads to gold.
+    steps = search_transmutations(element, Gold)
+    if steps == []:
+        return False
+    else:
+        # Bug #201: must be at least two elements in sequence.
+        assert len(steps) &gt;= 2
+        return True
+</pre>
+</div>
+
+<div class="topic">
+  <h2>22) Summary</h2>
+  <ul>
+  <li>The real goal of quality assurance isn't to find bugs: it's to figure out where they're coming from, so that they can be prevented</li>
+  <li>But without testing, no one (including you) has any right to rely on the program's output</li>
+  <li>Only way to ensure quality is to design it in</li>
+  </ul>
+</div>

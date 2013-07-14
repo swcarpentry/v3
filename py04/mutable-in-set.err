@@ -1,0 +1,6 @@
+Traceback (most recent call last):
+  File "mutable_in_set.py", line 8, in ?
+    values.add(['snow', 'goose'])
+  File "/usr/lib/python2.3/sets.py", line 521, in add
+    self._data[element] = True
+TypeError: list objects are unhashable

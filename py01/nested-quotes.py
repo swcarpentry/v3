@@ -1,0 +1,1 @@
+print "He said, \"It ain't what you know, it's what you can.\""

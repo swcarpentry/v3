@@ -1,0 +1,2 @@
+linux
+'import sys\nprint sys.platform\nfor mode in '

@@ -1,0 +1,3 @@
+original: ['H', 'C', 'O', 'N']
+after deleting item 2: ['H', 'C', 'N']
+after deleting the last two remaining items: ['H']

@@ -1,0 +1,13 @@
+HTTP/1.1 200 OK
+Date: Fri, 03 Mar 2006 18:12:55 GMT
+Server: Apache/2.0.54 (Debian GNU/Linux)
+Last-Modified: Fri, 03 Mar 2006 18:12:23 GMT
+Content-Length: 92
+Content-Type: text/html
+
+<html>
+<head><title>Greeting Page</title></head>
+<body>
+<h1>Greetings!</h1>
+</body>
+</html>

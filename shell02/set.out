@@ -1,0 +1,17 @@
+BASH=/usr/bin/bash
+BASH_VERSION='2.05b.0(1)-release'
+COLUMNS=120
+HISTFILE=/home/.bash_history
+HISTFILESIZE=500
+HISTSIZE=500
+HOME=/home/rweasley
+HOSTNAME=hogwarts
+HOSTTYPE=i686
+LINES=60
+NUMBER_OF_PROCESSORS=1
+OSTYPE=cygwin
+PATH='/usr/local/bin:/usr/bin:/bin:/Python24:/home/rweasley/bin'
+PWD=/home/rweasley
+SHELL=/bin/bash
+UID=1003
+USER=rweasley

@@ -1,0 +1,4 @@
+Traceback (most recent call last):
+  File "lec/inc/py01/undefined_var.py", line 2, in ?
+    print plant      # note the misspelling
+NameError: name 'plant' is not defined

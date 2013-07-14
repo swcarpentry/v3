@@ -1,0 +1,15 @@
+.E.
+======================================================================
+ERROR: test_erase_self (__main__.TestThiamine)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "setup.py", line 49, in test_erase_self
+    self.fixture.erase(self.fixture)
+  File "setup.py", line 21, in erase
+    for k in other.atoms:
+RuntimeError: dictionary changed size during iteration
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.000s
+
+FAILED (errors=1)

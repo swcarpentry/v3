@@ -1,0 +1,644 @@
+---
+layout: v3_slideshow
+title: Python Basic Object-Oriented Programming
+prev: v3/build.html
+uplink: v3/index.html
+next: v3/oop02.html
+---
+<div class="topic">
+  <h2>1) Introduction</h2>
+  <ul>
+  <li>Suppose you want to simulate a small ecosystem, such as a tidal pool, that contains many different kinds of things
+    <ul>
+    <li>Plants (don't move)</li>
+    <li>Fish (swim in three dimensions)</li>
+    <li>Crawly things (cling to the surface most of the time)</li>
+    </ul>
+  </li>
+  <li>The <a href="{{page.root}}/book/glossary.html#procedural-programming" target="glo:procedural-programming">procedural</a> way to do it uses a <a href="{{page.root}}/book/glossary.html#type-switch" target="glo:type-switch">type-switch</a></li>
+  </ul>
+  <pre file="oop01/type-switch.py" section="main">for time in simulation_period:
+    for thing in world:
+        if type(thing) is plant:
+            update_plant(thing, time)
+        elif type(thing) is fish:
+            update_fish(thing, time)
+        elif type(thing) is creepy_crawly:
+            update_creepy_crawly(thing, time)
+</pre>
+  <ul>
+  <li>But:
+    <ul>
+    <li>Every time you add a new type of thing, you have to find and update all the type-switches</li>
+    <li>It's very easy to make a cut-and-paste mistake</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>2) Objects to the Rescue</h2>
+  <ul>
+  <li><a href="{{page.root}}/book/glossary.html#object-oriented-programming" target="glo:object-oriented-programming">Object-oriented programming</a> (OOP) solves both problems
+    <ul>
+    <li>Each object knows how to update itself</li>
+    </ul>
+  </li>
+  </ul>
+  <pre file="oop01/oop.py">for time in simulation_period:
+    for thing in world:
+        thing.update(time)
+</pre>
+  <ul>
+  <li>Don't have to change old code when adding new types of things</li>
+  <li>No chance of calling the wrong function</li>
+  <li>Seems like a small change, but it allows programmers to think and design at a higher level
+    <ul>
+    <li>Also allows them to make more powerful mistakes...</li>
+    </ul>
+  </li>
+  <li>Take two lectures to introduce OOP
+    <ul>
+    <li>Ideas apply to all modern languages</li>
+    <li>But there's more variation in form than there is with loops, conditionals, and functions</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>3) You Can Skip This Lecture If...</h2>
+  <ul>
+  <li>You know what a class is</li>
+  <li>You know what methods and member variables are</li>
+  <li>You know what encapsulation, inheritance, and polymorphism are</li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>4) Abstract Data Types</h2>
+  <ul>
+  <li>Modern languages encourage programmers to define <a href="{{page.root}}/book/glossary.html#abstract-data-type" target="glo:abstract-data-type">abstract data types</a> (ADTs)
+    <ul>
+    <li>&quot;Abstract&quot; because they hide the details of their implementation</li>
+    </ul>
+  </li>
+  <li>Programmers interact with them through a limited set of operations, rather than by manipulating data directly
+    <ul>
+    <li>Fewer things can go wrong</li>
+    <li>Easier to read resulting code</li>
+    <li>Makes code easier to maintain, since internals can be changed without changing calling code</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>5) Classes and Instances</h2>
+  <ul>
+  <li>An ADT is usually created by defining a <a href="{{page.root}}/book/glossary.html#class" target="glo:class">class</a> that specifies:
+    <ul>
+    <li>How the ADT stores state (its <a href="{{page.root}}/book/glossary.html#member" target="glo:member">member</a> variables)</li>
+    <li>What it can do (its <a href="{{page.root}}/book/glossary.html#method" target="glo:method">methods</a>)</li>
+    <li>And yes, classes are also objects, just like functions</li>
+    </ul>
+  </li>
+  <li>Programmers then create objects that are <a href="{{page.root}}/book/glossary.html#instance" target="glo:instance">instances</a> of that class
+    <ul>
+    <li>Each object of a particular ADT shares the class's methods, but has its own members</li>
+    <li>So changes to one object do not affect the state of others</li>
+    </ul>
+  </li>
+    <figure id="fig:oop01-classes-and-objects">
+      <img alt="Memory Model for Classes and Objects" src="oop01/classes-and-objects.png"/>
+      <p>Figure 13.1: Memory Model for Classes and Objects</p>
+    </figure>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>6) Defining a Class</h2>
+  <ul>
+  <li>Define a class in Python using the <code>class</code> keyword
+    <ul>
+    <li>Name of the new class is usually followed by <code>object</code> in parentheses</li>
+    <li>We'll see other options later</li>
+    </ul>
+  </li>
+  <li>Then <code>&quot;:&quot;</code> and an indented block containing the class's contents</li>
+  </ul>
+  <pre file="oop01/empty-class.py" section="define">class Empty(object):
+    pass
+</pre>
+  <ul>
+  <li><code>pass</code> means &quot;do nothing&quot;, i.e., create an empty class
+    <ul>
+    <li>Not particularly useful, but you have to start somewhere</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>7) Creating an Instance</h2>
+  <ul>
+  <li>Create a new instance of the class by calling the class name as if it were a function</li>
+  </ul>
+  <pre file="oop01/empty-class.py" section="main">if __name__ == '__main__':
+    first = Empty()
+    second = Empty()
+    print 'first has id', id(first)
+    print 'second has id', id(second)
+</pre>
+  <pre class="out" file="oop01/empty-class.out">first has id 5086860
+second has id 5086892
+</pre>
+  <ul>
+  <li><code>id</code> returns the object's <a href="{{page.root}}/book/glossary.html#hash-code" target="glo:hash-code">hash code</a>
+    <ul>
+    <li>Doesn't mean anything: just distinguishes objects</li>
+    </ul>
+  </li>
+  <li>Note how main body of program is put in a block under <code>if __name__ == '__main__':</code>
+    <ul>
+    <li>Otherwise, it will be executed when other programs import the class</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>8) Methods</h2>
+  <ul>
+  <li>Give the class methods by defining functions inside it</li>
+  <li>The object itself is always passed to the method as its first argument
+    <ul>
+    <li>Universally called <code>self</code></li>
+    <li>Unlike <code>this</code> in C++ and Java, the name is just a convention</li>
+    <li>But everyone uses it, and you should too</li>
+    </ul>
+  </li>
+  <li><code>object.method(argument)</code> is equivalent to:
+    <ul>
+    <li>Find the class <code>C</code> that <code>object</code> is an instance of</li>
+    <li>Call <code>C.method(object, argument)</code></li>
+    </ul>
+  </li>
+  </ul>
+  <pre file="oop01/simple-methods.py">class Greeting(object):
+    def say(self, name):
+        print 'Hello, %s!' % name
+
+if __name__ == '__main__':
+    greet = Greeting()
+    greet.say('object')
+</pre>
+  <pre class="out" file="oop01/simple-methods.out">Hello, object!
+</pre>
+</div>
+
+<div class="topic">
+  <h2>9) Creating Members</h2>
+  <ul>
+  <li>Every object is a new scope for variable names
+    <ul>
+    <li>Just like a module, or a function call</li>
+    </ul>
+  </li>
+  <li>The values in an object's scope are its members
+    <ul>
+    <li>Create members use dotted notation: <code>self.x = 3</code></li>
+    <li>Gives the current object a new member <code>x</code> with the value 3</li>
+    <li>Or overwrites the existing member <code>x</code> with the value 3</li>
+    </ul>
+  </li>
+  </ul>
+  <pre file="oop01/simple-point.py" section="main">class Point(object):
+
+    def set_values(self, x, y):
+        self.x = x
+        self.y = y
+
+    def get_values(self):
+        return (self.x, self.y)
+
+    def norm(self):
+        return math.sqrt(self.x ** 2 + self.y ** 2)
+
+if __name__ == '__main__':
+    p = Point()
+    p.set_values(1.2, 3.5)
+    print 'p is', p.get_values()
+    print 'norm is', p.norm()
+</pre>
+  <pre class="out" file="oop01/simple-point.out">p is (1.2, 3.5)
+norm is 3.7
+</pre>
+  <figure id="fig:oop01-simple-point">
+    <img alt="Creating a Simple Point" src="oop01/simple-point.png"/>
+    <p>Figure 13.2: Creating a Simple Point</p>
+  </figure>
+</div>
+
+<div class="topic">
+  <h2>10) Encapsulation</h2>
+  <ul>
+  <li><a href="{{page.root}}/book/glossary.html#encapsulation" target="glo:encapsulation">Encapsulation</a> is one of the three defining principles of OOP
+    <ul>
+    <li>Programs are much easier to write, read, and maintain if object members are only ever accessed by methods</li>
+    </ul>
+  </li>
+  <li>But unlike C++, Java, and C#, Python doesn't allow programmers to hide methods or data members</li>
+  </ul>
+  <pre file="oop01/no-hiding.py" section="main">p = Point()
+p.x = 3.5
+p.y = 4.25
+print 'point is', p.get_values()
+</pre>
+  <pre class="out" file="oop01/no-hiding.out">point is (3.5, 4.25)
+</pre>
+  <ul>
+  <li>Any function or method can see and modify any object's internals
+    <ul>
+    <li>Resist the temptation to program this way!</li>
+    <li>If you manipulate an object's internals directly, you have to change your program when you change the object's implementation</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>11) Constructors</h2>
+  <ul>
+  <li>If a class has a method called <code>__init__</code>, Python will call it when building new instances
+    <ul>
+    <li>Hence the name <a href="{{page.root}}/book/glossary.html#constructor" target="glo:constructor">constructor</a></li>
+    <li>Simpler than creating a blank object, then initializing its members</li>
+    <li>And there's less chance the programmer will forget to do the initialization</li>
+    </ul>
+  </li>
+  </ul>
+  <pre file="oop01/constructor.py" section="main">class Point(object):
+
+    def __init__(self, x=0, y=0):
+        self.reset(x, y)
+
+    def reset(self, x, y):
+        assert (type(x) is int) and (x &gt;= 0), 'x is not non-negative integer'
+        assert (type(y) is int) and (y &gt;= 0), 'y is not non-negative integer'
+        self.x = x
+        self.y = y
+
+    def get(self):
+        return (self.x, self.y)
+
+    def norm(self):
+        return math.sqrt(self.x ** 2 + self.y ** 2)
+
+if __name__ == '__main__':
+    p = Point(1, 1)
+    print 'point is initially', p.get()
+    p.reset(1, 1)
+    print 'p moved to', p.get()
+</pre>
+  <pre class="out" file="oop01/constructor.out">point is initially (1, 1)
+p moved to (1, 1)
+</pre>
+</div>
+
+<div class="topic">
+  <h2>12) Constructor Style</h2>
+  <ul>
+  <li>A class can only have one constructor
+    <ul>
+    <li>Some languages allow classes to have several, distinguished by argument types</li>
+    <li>But since Python doesn't use type declarations, this wouldn't work</li>
+    </ul>
+  </li>
+  <li>It's good style to create all of the object's members in the constructor
+    <ul>
+    <li>So that people only have to look in one place to find what members exist</li>
+    </ul>
+  </li>
+  <li>Note how the class checks values before changing the object's state
+    <ul>
+    <li>Remember: fail early, fail often</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>13) Special Methods</h2>
+  <ul>
+  <li><code>__init__</code> is just one example of a <a href="{{page.root}}/book/glossary.html#special-method" target="glo:special-method">special method</a>
+    <ul>
+    <li>All have names beginning and ending with double underscore</li>
+    <li>Give programmers a way to make their data types look like those built into Python</li>
+    </ul>
+  </li>
+  <li>Most widely used is <code>__str__</code>
+    <ul>
+    <li>When Python needs a text representation of an object, it:</li>
+    <li>Calls <code>__str__</code> if it exists, or</li>
+    <li>Creates a default representation that shows the object's location in memory</li>
+    </ul>
+  </li>
+  </ul>
+  <pre file="oop01/str-method.py" section="main">class Point(object):
+
+    def __init__(self, x=0, y=0):
+        self.x = x
+        self.y = y
+
+    def __str__(self):
+        return '(%4.2f, %4.2f)' % (self.x, self.y)
+
+if __name__ == '__main__':
+    p = Point(3, 4)
+    print 'point is', p
+</pre>
+  <pre class="out" file="oop01/str-method.out">point is (3, 4)
+</pre>
+</div>
+
+<div class="topic">
+  <h2>14) New Classes from Old</h2>
+  <ul>
+  <li>Suppose we have a class <code>Organism</code> that represents living things
+    <ul>
+    <li>Common name, scientific name, ...</li>
+    </ul>
+  </li>
+  <li>Want to create a class <code>Mammal</code>
+    <ul>
+    <li>Body temperature, gestation period, ...</li>
+    </ul>
+  </li>
+  <li>Wrong: copy <code>Organism</code>'s definition and add more members and methods
+    <ul>
+    <li>&quot;Anything repeated in two or more places will eventually be wrong in at least one.&quot;</li>
+    </ul>
+  </li>
+  <li>Right: use <a href="{{page.root}}/book/glossary.html#inheritance" target="glo:inheritance">inheritance</a>
+    <ul>
+    <li>The second defining principle of OOP</li>
+    <li><a href="{{page.root}}/book/glossary.html#derive" target="glo:derive">Derive</a> a <a href="{{page.root}}/book/glossary.html#child-class" target="glo:child-class">child class</a> from a <a href="{{page.root}}/book/glossary.html#parent-class" target="glo:parent-class">parent</a></li>
+    <li>The child has all the members and methods of its parents, plus whatever else we give it</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>15) Inheritance Example</h2>
+<pre file="oop01/inheritance.py">class Organism(object):
+
+    def __init__(self, common_name, sci_name):
+        self.common_name = common_name
+        self.sci_name = sci_name
+
+    def get_common_name(self):
+        return self.common_name
+
+    def get_sci_name(self):
+        return self.sci_name
+
+    def __str__(self):
+        return '%s (%s)' % (self.common_name, self.sci_name)
+
+class Mammal(Organism):
+
+    def __init__(self, common_name, sci_name, body_temp, gest_period):
+        Organism.__init__(self, common_name, sci_name)
+        self.body_temp = body_temp
+        self.gest_period = gest_period
+
+    def get_body_temp(self):
+        return self.body_temp
+
+    def get_gest_period(self):
+        return self.gest_period
+
+    def __str__(self):
+        extra = ' %4.2f degrees / %d days' % (self.body_temp, self.gest_period)
+        return Organism.__str__(self) + extra
+
+if __name__ == '__main__':
+    creature = Mammal('wolf', 'canis lupus', 38.7, 63)
+    print creature
+</pre>
+<pre class="out" file="oop01/inheritance.out">wolf (canis lupus) 38.70 degrees / 63 days
+</pre>
+  <figure id="fig:oop01-inheritance">
+    <img alt="Memory Model for Inheritance" src="oop01/inheritance.png"/>
+    <p>Figure 13.3: Memory Model for Inheritance</p>
+  </figure>
+</div>
+
+<div class="topic">
+  <h2>16) Overriding Methods</h2>
+  <ul>
+  <li><code>Mammal</code>'s constructor calls <code>Organism</code>'s to initialize the organism-ish bits of the object</li>
+  <li>And <code>Mammal</code> defines its own <code>__str__</code> method
+    <ul>
+    <li><a href="{{page.root}}/book/glossary.html#override" target="glo:override">Overrides</a> the one defined by <code>Organism</code></li>
+    <li><code>Mammal.__str__</code> calls <code>Organism.__str__</code> for the same reason that <code>Mammal.__init__</code> calls <code>Organism.__init__</code></li>
+    </ul>
+  </li>
+  <li>Python always calls the most specific method
+    <ul>
+    <li>Keep the memory model in mind when figuring out what this will be</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>17) Polymorphism</h2>
+  <ul>
+  <li><a href="{{page.root}}/book/glossary.html#polymorphism" target="glo:polymorphism">Polymorphism</a> means &quot;having more than one form&quot;
+    <ul>
+    <li>In object-oriented programming, it means handling specific objects in generic ways</li>
+    <li>The third and final defining principle of OOP</li>
+    </ul>
+  </li>
+  <li>Derive a new class <code>Bird</code> from <code>Organism</code>
+    <ul>
+    <li>As long as it only uses common methods, a single piece of code can work with both mammals and birds</li>
+    </ul>
+  </li>
+  </ul>
+  <pre file="oop01/polymorphism.py" section="main">class Bird(Organism):
+
+    def __init__(self, common_name, sci_name, incubate_period):
+        Organism.__init__(self, common_name, sci_name)
+        self.incubate_period = incubate_period
+
+    def get_incubate_period(self):
+        return self.incubate_period
+
+    def __str__(self):
+        extra = ' %d days' % self.incubate_period
+        return Organism.__str__(self) + extra
+
+if __name__ == '__main__':
+    creatures = [
+        Bird('loon', 'gavia immer', 27),
+        Mammal('grizzly bear', 'ursus arctos horribilis', 38.0, 210)
+    ]
+    for c in creatures:
+        print c
+</pre>
+  <pre class="out" file="oop01/polymorphism.out">loon (gavia immer) 27 days
+grizzly bear (ursus arctos horribilis) 38.00 degrees / 210 days
+</pre>
+</div>
+
+<div class="topic">
+  <h2>18) Duck Typing</h2>
+  <ul>
+  <li>Most languages only permit polymorphism via inheritance
+    <ul>
+    <li>Lowest common ancestor of two classes defines how interchangeable they are</li>
+    </ul>
+  </li>
+  <li>In Python, any two classes that define the same set of methods can be used interchangeably
+    <ul>
+    <li><a href="{{page.root}}/book/glossary.html#duck-typing" target="glo:duck-typing">Duck typing</a>: &quot;If it walks like a duck, and quacks like a duck, it might as well be a duck.&quot;</li>
+    </ul>
+  </li>
+  </ul>
+  <pre file="oop01/duck-typing.py" section="main">class Mineral(object):
+
+    def __init__(self, common_name, sci_name, formula):
+        self.common_name = common_name
+        self.sci_name = sci_name
+        self.formula = formula
+
+    def get_common_name(self):
+        return self.common_name
+
+    def get_sci_name(self):
+        return self.sci_name
+
+    def __str__(self):
+        return '%s/%s: %s' % (self.common_name, self.sci_name, self.formula)
+
+if __name__ == '__main__':
+    things = [
+        Mammal('arctic hare', 'Lepus arcticus', 40.1, 50),
+        Mineral(&quot;fool's gold&quot;, 'iron pyrite', 'FeS2')
+    ]
+    for t in things:
+        print t.get_common_name(), 'is', t.get_sci_name()
+</pre>
+  <pre class="out" file="oop01/duck-typing.out">arctic hare is Lepus arcticus
+fool's gold is iron pyrite
+</pre>
+  <ul>
+  <li>Allows you to create plug-in replacements for files, strings, and other classes after the fact</li>
+  <li>But makes it harder to figure out exactly what can be used in place of what</li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>19) The Liskov Substitution Principle</h2>
+  <ul>
+  <li>The <a href="{{page.root}}/book/glossary.html#liskov-substitution-principle" target="glo:liskov-substitution-principle">Liskov Substitution Principle</a> states that it must always be possible to use an instance of a child class in place of an instance of its parent</li>
+  <li>Means that <code>Child.meth</code> may ignore some of <code>Parent.meth</code>'s pre-conditions, but may not impose more
+    <ul>
+    <li>Equivalently, <code>Child.meth</code> accepts everything that<code>Parent.meth</code> did, and possibly more</li>
+    <li>So any code that could call <code>Parent.meth</code> correctly is guaranteed to call <code>Child.meth</code> correctly too</li>
+    </ul>
+  </li>
+  <li>And <code>Child.meth</code> must satisfy all the post-conditions of <code>Parent.meth</code>, and may impose more
+    <ul>
+    <li>So <code>Child.meth</code>'s possible output is a subset of <code>Parent.meth</code>'s</li>
+    <li>And any code that works correctly on the output of <code>Parent.meth</code> will still work if given an instance of <code>Child</code> instead</li>
+    </ul>
+  </li>
+  <li>The same constraint applies when a class evolves over time</li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>20) Tidal Pools Revisited</h2>
+  <ul>
+  <li>How to represent the creatures in a tidal pool?
+    <ul>
+    <li>Each species is a class</li>
+    <li>Use inheritance to separate plants from animals</li>
+    <li>Derive both <code>Plant</code> and <code>Animal</code> from <code>Organism</code></li>
+    </ul>
+  </li>
+  <li>How to handle movement?
+    <ul>
+    <li>Give <code>Organism</code> two methods: <code>can_move</code> and <code>move</code>
+      <ul>
+      <li><code>Plant.can_move()</code> returns <code>False</code></li>
+      <li><code>Plant.move()</code> raises an exception</li>
+      </ul>
+    </li>
+    <li>Give <code>Organism</code> one method: <code>move</code>
+      <ul>
+      <li><code>Plant.move()</code> does nothing</li>
+      </ul>
+    </li>
+    </ul>
+  </li>
+  <li>Second simplifies code
+    <ul>
+    <li>Uses polymorphism instead of a conditional</li>
+    </ul>
+  </li>
+  <li>On the other hand, the existence of <code>Plant.move</code> implies that plants can do something they can't
+    <ul>
+    <li>Can't really choose between them without knowing what the rest of the code needs</li>
+    </ul>
+  </li>
+  <li>Usually doesn't make sense to design one class on its own</li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>21) Class, Responsibility, Collaborator</h2>
+  <ul>
+  <li>Many programmers use <a href="{{page.root}}/book/glossary.html#crc-cards" target="glo:crc-cards">CRC cards</a> when designing OO systems
+    <ul>
+    <li>Stands for &quot;class, responsibility, collaborator&quot;</li>
+    </ul>
+  </li>
+  <li>Standard 3x5 index cards
+    <ul>
+    <li>Top is the class name</li>
+    <li>Left side is point-form description of what the class can do</li>
+    <li>Right side lists other classes that this one interacts with</li>
+    </ul>
+  </li>
+    <figure id="fig:oop01-crc">
+      <img alt="CRC Cards" src="oop01/crc.png"/>
+      <p>Figure 13.4: CRC Cards</p>
+    </figure>
+  <li>Designed so that you <em>won't</em> take them too seriously
+    <ul>
+    <li>Lay them out on a table</li>
+    <li>Talk through your program's execution</li>
+    <li>Move cards around, scribble new responsibilities and collaborators on them</li>
+    <li>Create new cards as needed</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>22) Summary</h2>
+  <ul>
+  <li>Classes and objects are just another way to modularize programs
+    <ul>
+    <li>But used well, they can make programs much simpler, and much more adaptable</li>
+    </ul>
+  </li>
+  <li>Remember: the goal is to simplify, not to dazzle</li>
+  </ul>
+</div>

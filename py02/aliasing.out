@@ -1,0 +1,5 @@
+before
+elements: [['H', 'Li'], ['F', 'Cl']]
+gases: ['F', 'Cl']
+after
+elements: [['H', 'Li'], ['F', 'Br']]

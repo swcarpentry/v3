@@ -1,0 +1,879 @@
+---
+layout: v3_slideshow
+title: Software Development Lifecycles
+prev: v3/empirical.html
+uplink: v3/index.html
+next: v3/summary.html
+---
+<div class="topic">
+  <h2>1) Introduction</h2>
+  <ul>
+  <li>There's more to building a house than nailing boards together
+    <ul>
+    <li>Have to make sure the pipes are put in before the drywall goes up</li>
+    <li>Satisfy building code regulations</li>
+    <li>Make sure everyone on the team is productive (not just busy)</li>
+    </ul>
+  </li>
+  <li>This lecture covers the equivalent topics for small-team software development
+    <ul>
+    <li>12x12: up to a dozen people, working for up to a year</li>
+    <li>All of these ideas apply to people working on their own for two weeks or more</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>2) You Can Skip This Lecture If...</h2>
+  <ul>
+  <li>You don't care if anyone else can ever use your software</li>
+  <li>You enjoy being frustrated and unproductive</li>
+  <li>You're sure that people you've never met will be able to use and modify your software two years from now</li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>3) Sturdy vs. Agile</h2>
+  <ul>
+  <li>Two camps currently dominate the debate about software development</li>
+  <li>Sturdy: measure twice, cut once
+    <ul>
+    <li>Think through users' needs, design, and possible problems before starting to code</li>
+    <li>Inspired by traditional engineering (in which late changes are very expensive)</li>
+    </ul>
+  </li>
+  <li>Agile: lots of small steps, with continuous testing and refactoring
+    <ul>
+    <li>&quot;No battle plan ever survives contact with the enemy.&quot; (Helmuth von Moltke)</li>
+    <li>They refer to the sturdy camp (disparagingly) as <a href="{{page.root}}/book/glossary.html#bduf" target="glo:bduf">Big Design Up Front</a> (BDUF)</li>
+    <li>Inspired by open source and 1990s web development</li>
+    </ul>
+  </li>
+  <li>Differences in practice are much less than the differences in rhetoric</li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>4) Boehm's Curve</h2>
+  <ul>
+  <li>Both methodologies are responses to <a href="{{page.root}}/book/glossary.html#boehms-curve" target="glo:boehms-curve">Boehm's Curve</a></li>
+  </ul>
+  <figure id="fig:lifecycle-boehm-curve">
+    <img alt="Boehm's Curve" src="lifecycle/boehm-curve.png"/>
+    <p>Figure 27.1: Boehm's Curve</p>
+  </figure>
+  <ul>
+  <li>Sturdy: aim carefully so that problems don't arise
+    <ul>
+    <li>The cheapest bug to fix is one that doesn't exist</li>
+    </ul>
+  </li>
+  <li>Agile: continuously correct course
+    <ul>
+    <li>No point trying to aim at a moving target, and real-world targets always move</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>5) Which One Is Better for Scientists?</h2>
+  <ul>
+  <li>Customers and funding agencies are (understandably) reluctant to fund &quot;we'll make it up as we go along&quot;
+    <ul>
+    <li>But on the other hand, this is a good description of research</li>
+    </ul>
+  </li>
+  <li>Factors affecting choice:
+    <ul>
+    <li>How well the team understands the problem domain, tools, etc.</li>
+    <li>How stable the goals are</li>
+    <li>How many people are involved</li>
+    </ul>
+  </li>
+  <li>If you don't know enough to make long-term predictions with confidence, use agile
+    <ul>
+    <li>This means every genuinely new project ought to start agile</li>
+    </ul>
+  </li>
+  <li>If hundreds of people are involved, frequent course corrections will be painful
+    <ul>
+    <li>Though many agile advocates disagree</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>6) Vision</h2>
+  <ul>
+  <li>First step in <em>any</em> project is answering &quot;what?&quot; and &quot;why?&quot;</li>
+  <li>A <a href="{{page.root}}/book/glossary.html#vision-statement" target="glo:vision-statement">vision statement</a> is a one- or two-sentence summary of the project
+    <ul>
+    <li>Also called an <a href="{{page.root}}/book/glossary.html#elevator-pitch" target="glo:elevator-pitch">elevator pitch</a></li>
+    <li>Helps keep everyone pointed in the same direction</li>
+    <li>A good way for project members to introduce themselves at conferences and trade shows</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>7) Making Up an Elevator Pitch</h2>
+  <ul>
+  <li>Exercise: have everyone on the team replace the bits in italics with words of their own
+    <ul>
+    <li>Do this independently, then compare answers</li>
+    </ul>
+  </li>
+  <li>Just as important for solo projects!</li>
+  </ul>
+  <div id="tbl:lifecycle-elevator-pitch">
+    <table>
+      <tr>
+        <th>Part</th>
+        <th>Boilerplate</th>
+        <th>Example</th>
+      </tr>
+      <tr>
+        <td>Problem statement</td>
+        <td>The problem of</td>
+        <td><em>only being able to simulate invasion percolation on regular 2D grids</em></td>
+      </tr>
+      <tr>
+        <td>Target market</td>
+        <td>affects</td>
+        <td><em>scientists who work with composite materials,</em></td>
+      </tr>
+      <tr>
+        <td>Impact</td>
+        <td>who currently</td>
+        <td><em>have to extrapolate from regular models.</em></td>
+      </tr>
+      <tr>
+        <td>Solution</td>
+        <td>Our solution,</td>
+        <td><em>a set of enhancements to InvPerc,</em></td>
+      </tr>
+      <tr>
+        <td>Key technical feature</td>
+        <td></td>
+        <td><em>handles any structure that can be represented as non-overlapping regions.</em></td>
+      </tr>
+      <tr>
+        <td>Competition</td>
+        <td>Unlike</td>
+        <td><em>PI2D and other simulators,</em></td>
+      </tr>
+      <tr>
+        <td>Differentiator</td>
+        <td>it</td>
+        <td><em>can read standard CAD files as well as IP2-format grid files.</em></td>
+      </tr>
+    </table>
+    <p>Table 27.1: Vision Statement Template</p>
+  </div>
+</div>
+
+<div class="topic">
+  <h2>8) Agile Development</h2>
+  <ul>
+  <li>Start with agile because it's a closer fit to conventional research practices</li>
+  <li>Arose in the 1990s to cope with:
+    <ul>
+    <li>Ever-changing requirements
+      <ul>
+      <li>Six-month iterations were longer than the lifespan of the average dot-com</li>
+      </ul>
+    </li>
+    <li>Internet time
+      <ul>
+      <li>Web-based delivery makes it possible to &quot;ship&quot; a new version whenever you want</li>
+      </ul>
+    </li>
+    </ul>
+  </li>
+  <li>Based on very short development cycles (a minutes to a month, but no longer)
+    <ul>
+    <li>Because that's as far out as most people can reliably predict effort or needs</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>9) Extreme Programming</h2>
+  <ul>
+  <li>Best known form of agile in the early days was <a href="{{page.root}}/book/glossary.html#extreme-programming" target="glo:extreme-programming">Extreme Programming</a> (XP)</li>
+  <li>Took all the key ideas of agile to the limit:
+    <ul>
+    <li>Stand-up meeting at the start of every day</li>
+    <li>Customer always available for consultation</li>
+    <li><a href="{{page.root}}/book/glossary.html#test-driven-development" target="glo:test-driven-development">Test-driven development</a></li>
+    <li><a href="{{page.root}}/book/glossary.html#pair-programming" target="glo:pair-programming">Pair programming</a>
+      <ul>
+      <li>Two people at each workstation</li>
+      <li>One typing, the other reviewing (and learning) in real time</li>
+      </ul>
+    </li>
+    <li>Constant <a href="{{page.root}}/book/glossary.html#refactor" target="glo:refactor">refactoring</a></li>
+    <li>No functionality is added until it's needed
+      <ul>
+      <li><a href="{{page.root}}/book/glossary.html#yagni" target="glo:yagni">You Ain't Gonna Need It</a> (YAGNI)</li>
+      </ul>
+    </li>
+    </ul>
+  </li>
+  <li>Development cycle:
+    <ul>
+    <li>Choose the next small feature to add
+      <ul>
+      <li>More properly &quot;micro-feature&quot;</li>
+      </ul>
+    </li>
+    <li>Write some tests to make sure it's working
+      <ul>
+      <li>Yes, these are supposed to fail</li>
+      </ul>
+    </li>
+    <li>Write enough code to make all tests pass
+      <ul>
+      <li>Not just the newly-created tests</li>
+      </ul>
+    </li>
+    <li>Refactor</li>
+    <li>Check in to version control</li>
+    </ul>
+  </li>
+  <li>Pitfalls:
+    <ul>
+    <li>Customer often <em>isn't</em> always available</li>
+    <li>Many people prefer not to pair program
+      <ul>
+      <li>Except when faced with a hard bug, or when bringing a new team member up to speed</li>
+      </ul>
+    </li>
+    <li>&quot;A week of refactoring can sometimes save you an hour of thought&quot;</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>10) Scrum</h2>
+  <ul>
+  <li>Less extreme, but more workable (and now more popular)</li>
+  <li>Doesn't specify detailed working practices
+    <ul>
+    <li>Though some are found in almost all teams</li>
+    </ul>
+  </li>
+  </ul>
+  <figure id="fig:lifecycle-scrum-lifecycle">
+    <img alt="Scrum Lifecycle" src="lifecycle/scrum-lifecycle.png"/>
+    <p>Figure 27.2: Scrum Lifecycle</p>
+  </figure>
+</div>
+
+<div class="topic">
+  <h2>11) Scrum Roles</h2>
+  <ul>
+  <li>Product owner
+    <ul>
+    <li>Defines <em>and prioritizes</em> features</li>
+    <li>Sets release dates</li>
+    <li>Accepts or rejects work</li>
+    </ul>
+  </li>
+  <li>Scrum master
+    <ul>
+    <li>Shield the team from external interruptions</li>
+    <li>Makes sure development practices are being followed</li>
+    <li>Makes sure individual team members are being productive</li>
+    </ul>
+  </li>
+  <li>Team member
+    <ul>
+    <li>Half a dozen developers (plus or minus half a dozen)</li>
+    <li>Cross-functional: programmers, testers, UI designers (or all the same people)</li>
+    <li>Membership changes only between sprints</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>12) Scrum Key Practices</h2>
+  <ul>
+  <li>Sprint planning meeting held at the beginning of each iteration
+    <ul>
+    <li>Analyze and prioritize current product backlog</li>
+    <li>Select overall goal for sprint</li>
+    <li>Decide how to achieve the goal (design)</li>
+    <li>Create a sprint backlog from the product backlog (more about this below)</li>
+    <li>Estimate backlog in hours
+      <ul>
+      <li>Nothing should be longer than a couple of working days</li>
+      <li>Anything that is should be broken into smaller testable/deliverable chunks</li>
+      </ul>
+    </li>
+    </ul>
+  </li>
+  <li>Daily scrum meeting
+    <ul>
+    <li>Every morning, 15 minutes long, standing up (to make sure it stays 15 minutes long)</li>
+    <li>Everyone says:
+      <ul>
+      <li>What they did yesterday</li>
+      <li>What they are going to do today</li>
+      <li>What stands in their way</li>
+      </ul>
+    </li>
+    <li><em>Not</em> a status update, but rather making commitments to colleagues</li>
+    </ul>
+  </li>
+  <li>Sprint review held at the end of the iteration
+    <ul>
+    <li>Team presents what it accomplished
+      <ul>
+      <li>Demo, not slides</li>
+      <li>And yes, everything <em>can</em> be demo'd</li>
+      </ul>
+    </li>
+    </ul>
+  </li>
+  <li>Sprint retrospective also held at the end of the iteration
+    <ul>
+    <li>What do we want to start doing?</li>
+    <li>What do we want to stop doing?</li>
+    <li>What do we want to keep doing?</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>13) Scrum Artifacts</h2>
+  <ul>
+  <li>Product backlog
+    <ul>
+    <li>A list of all the things the customer wants the product to be able to do</li>
+    <li>Phrased in the user's terms, not the developer's
+      <ul>
+      <li>E.g., &quot;visualize the similarity between the specified protein and the best 10 matches in the database&quot;</li>
+      </ul>
+    </li>
+    <li>Updated and re-prioritized by product owner at the start of each sprint</li>
+    </ul>
+  </li>
+  <li>Sprint goal
+    <ul>
+    <li>(Very) brief description of what value this sprint is going to deliver</li>
+    <li>E.g., &quot;Extend the program's visualization capabilities&quot;</li>
+    <li>Every activity is measured against this</li>
+    </ul>
+  </li>
+  <li>Sprint backlog
+    <ul>
+    <li>The subset of the product backlog to be done in this sprint</li>
+    <li>Estimates for work remaining on each task are updated daily</li>
+    <li>&quot;What should be in the backlog for the next sprint?&quot; is often an item</li>
+    </ul>
+  </li>
+  <li>Burndown chart
+    <ul>
+    <li>Shows work remaining per item vs. elapsed time</li>
+    <li>Not necessarily monotonically decreasing: sometimes work will uncover more work</li>
+    <li>The best predictor of when something will actually be finished</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>14) A Sturdy Alternative</h2>
+  <ul>
+    <li>Longer interactions (typically several months)</li>
+    <li>A better fit for large teams and well-understood problem domains and tools</li>
+  </ul>
+  <figure id="fig:lifecycle-sturdy-lifecycle">
+    <img alt="Sturdy Lifecycle" src="lifecycle/sturdy-lifecycle.png"/>
+    <p>Figure 27.3: Sturdy Lifecycle</p>
+  </figure>
+</div>
+
+<div class="topic">
+  <h2>15) Step 1: Gathering Requirements</h2>
+  <ul>
+  <li>Single biggest cause of project failure is failing to get the requirements right
+    <ul>
+    <li>Boehm's Curve again: building the wrong thing is the most expensive mistake you can make</li>
+    </ul>
+  </li>
+  <li>Start by asking what problem the software is supposed to solve
+    <ul>
+    <li>What do you want to be able to do that you can't right now?</li>
+    <li>What does the existing software do that you don't want it to?</li>
+    <li>What does it make you do that you don't want to?</li>
+    </ul>
+  </li>
+  <li>Organize requirements as point-form list
+    <ul>
+    <li>Give each one a unique name</li>
+    <li>And keep the list under version control</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>16) What Requirements Are and Aren't</h2>
+  <ul>
+  <li>Good requirements are complete and unambiguous
+    <ul>
+    <li>&quot;The system will reformat data files as they are submitted&quot; is neither</li>
+    </ul>
+  </li>
+  <li>Instead:
+    <ul>
+    <li>Only users who have logged in by providing a valid user name and password can upload files</li>
+    <li>The system must allow users to upload files via a secure web form</li>
+    <li>The system must accept files up to 16MB in size</li>
+    <li>The system must accept files in PDB and RJCS-1 format</li>
+    <li>The system must convert files to RJCS-2 format before storing them</li>
+    <li>The system must present users with an error message page if an uploaded file cannot be parsed</li>
+    <li>Etc.</li>
+    </ul>
+  </li>
+  <li>A contract amongst the various stakeholders
+    <ul>
+    <li>Overly formal for two-person research prototypes</li>
+    <li>But essential for large, long-lived, distributed teams</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>17) Step 2: From Requirements to Features</h2>
+  <ul>
+  <li>Figure out what features you need
+    <ul>
+    <li>What do you have to build in order to accomplish XYZ?</li>
+    <li>How will you tell that it's working?</li>
+    <li>Yet another point-form list...</li>
+    </ul>
+  </li>
+  <li>Relationship between requirements and features can be very complex
+    <ul>
+    <li>One feature can (help) satisfy many requirements</li>
+    <li>One requirement may require many features</li>
+    </ul>
+  </li>
+  <li><a href="{{page.root}}/book/glossary.html#traceability" target="glo:traceability">Traceability</a> once again:
+    <ul>
+    <li>Why does each feature exist?</li>
+    <li>How is each requirement being satisfied?</li>
+    <li>Who said so?  When?</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>18) Waterfalls...</h2>
+  <ul>
+  <li>Pause for a moment...</li>
+  <li>This looks like the start of the <a href="{{page.root}}/book/glossary.html#waterfall-model" target="glo:waterfall-model">waterfall model</a> <a href="bib.html#bib:royce-waterfall" target="bib:royce-waterfall">[Royce 1970]</a>
+    <ul>
+    <li>Describes development as flowing through several distinct phases</li>
+    <li>Requirements analysis to design to implementation to testing to maintenance</li>
+    </ul>
+  </li>
+  </ul>
+  <figure id="fig:lifecycle-waterfall-model">
+    <img alt="The Waterfall Model" src="lifecycle/waterfall-model.png"/>
+    <p>Figure 27.4: The Waterfall Model</p>
+  </figure>
+  <ul>
+  <li>If different people are responsible for different phases, then no one has to deal with the consequences of their mistakes</li>
+  <li>Whoever is responsible for testing has to make up all the lost time from the previous phases</li>
+  <li>Time lag: it can take a long time for changes in requirements to filter through to the finished product</li>
+  <li>No one actually ever works this way in real life anyway</li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>19) The Spiral Model</h2>
+  <ul>
+  <li>The <a href="{{page.root}}/book/glossary.html#spiral-model" target="glo:spiral-model">spiral model</a> <a href="bib.html#bib:boehm-spiral" target="bib:boehm-spiral">[Boehm 1988]</a> wraps the waterfall around itself</li>
+  </ul>
+  <figure id="fig:lifecycle-spiral-model">
+    <img alt="The Spiral Model" src="lifecycle/spiral-model.png"/>
+    <p>Figure 27.5: The Spiral Model</p>
+  </figure>
+  <ul>
+  <li>Go through the waterfall cycle over and over again, each time on a larger scale
+    <ul>
+    <li>Royce actually advocated doing this, but most people have forgotten that</li>
+    </ul>
+  </li>
+  <li>Key ideas:
+    <ul>
+    <li>The code teaches you about the problem</li>
+    <li>Customers can only find out what they actually want by playing with a working system</li>
+    <li>If (when) you run out of time, you'll have <em>something</em> ready to deliver</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>20) Step 3: Analysis &amp; Estimation</h2>
+  <ul>
+  <li>Next step is <a href="{{page.root}}/book/glossary.html#analysis-and-estimation" target="glo:analysis-and-estimation">analysis &amp; estimation (A&amp;E)</a>
+    <ul>
+    <li>How can each feature be implemented?</li>
+    <li>And how long will it take?</li>
+    </ul>
+  </li>
+  <li>Where possible, investigate two or more options
+    <ul>
+    <li>Plan A: only solve three quarters of the problem, but can be implemented in a week</li>
+    <li>Plan B: does everything and more, but will take three months</li>
+    </ul>
+  </li>
+  <li>Write throw-away code to become familiar with new libraries and tools
+    <ul>
+    <li>Keep it under version control</li>
+    <li>But do <em>not</em> let it find its way into the application</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>21) Where Estimates Come From</h2>
+  <ul>
+  <li>Time estimates come from experience
+    <ul>
+    <li>You should be able to guess how much code you'll have to write to implement something</li>
+    <li>If you can't, you should think it through in more detail, or write some more throwaway code</li>
+    </ul>
+  </li>
+  <li>Keep track of how long it takes your team to build things
+    <ul>
+    <li>Just as athletes track their times for the 1000 meters, or how much they can bench press</li>
+    <li>The most extreme version of this is Humphrey's <a href="{{page.root}}/book/glossary.html#personal-software-process" target="glo:personal-software-process">Personal Software Process (PSP)</a> <a href="bib.html#bib:humphrey-psp" target="bib:humphrey-psp">[Humphrey 1996]</a></li>
+    </ul>
+  </li>
+  <li>Remember to include time for testing, debugging, and documenting
+    <ul>
+    <li>Based on average developers and average days, not the best and their best</li>
+    </ul>
+  </li>
+  <li>Your first estimates will be far too optimistic
+    <ul>
+    <li>But the more you estimate, the better your estimates will become</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>22) What Goes Into An A&amp;E</h2>
+  <ul>
+  <li>Title page, with feature name and document revision history</li>
+  <li>Abstract: two or three sentences that will tell someone browsing dozens of A&amp;Es whether this is one they should read</li>
+  <li>Background: summarize the problem for a reasonably knowledgeable developer
+    <ul>
+    <li>Write for who you were when you started the project</li>
+    </ul>
+  </li>
+  <li>For each alternative:
+    <ul>
+    <li>What is it, and how will it work?</li>
+    <li>How long will it take to create? To test? To document? To add to the build and installer?</li>
+    <li>How certain are you of your estimates?</li>
+    </ul>
+  </li>
+  <li>References to other A&amp;Es, URLs, pointers to prototypes in the repository, etc.</li>
+  <li>In practice, every A&amp;E is different, because every problem is different
+    <ul>
+    <li>Requiring team members to express their ideas in a fixed way just leads to fewer ideas</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>23) Reviews</h2>
+  <ul>
+  <li>The whole point of writing the A&amp;E is so that other team members can look for holes in your ideas
+    <ul>
+    <li>Just like reviewing scientific papers</li>
+    </ul>
+  </li>
+  <li>Most important thing to look for is people glossing over hard bits
+    <ul>
+    <li>&quot;We parse the XML configuration file, and then a miracle happens&quot; is <em>not</em> a good A&amp;E</li>
+    </ul>
+  </li>
+  <li>Assign specific A&amp;Es to specific people for review
+    <ul>
+    <li>Ensures that reviews actually get done...</li>
+    <li>...and that knowledge and decisions are communicated</li>
+    </ul>
+  </li>
+  <li>It's not just for coders
+    <ul>
+    <li>Make sure the people who have to test, document, deploy, maintain, and support all get their say</li>
+    </ul>
+  </li>
+  <li>Expect to revise the A&amp;E two or three times
+    <ul>
+    <li>Stop when everyone is confident the feature can be built in the time estimated</li>
+    </ul>
+  </li>
+  <li>End result is &quot;just enough&quot; design</li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>24) What Can Go Wrong with A&amp;Es</h2>
+  <ul>
+  <li>Too much formality
+    <ul>
+    <li>Make the format fit the particular design problem, instead of trying to squeeze everything into a standard template</li>
+    <li>You are (probably) not a lawyer: don't try to write like one
+      <ul>
+      <li>Read <a href="bib.html#bib:orwell-politics-english-language" target="bib:orwell-politics-english-language">[Orwell XXX]</a></li>
+      </ul>
+    </li>
+    </ul>
+  </li>
+  <li>Not enough formality
+    <ul>
+    <li>Everything you leave out because &quot;everyone knows it&quot; is something you might trip over later</li>
+    </ul>
+  </li>
+  <li>Analysis paralysis
+    <ul>
+    <li>You can second-guess yourself forever</li>
+    <li>Once you believe you know how to implement everything, stop writing and start coding</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>25) Step 4: Prioritization</h2>
+  <ul>
+  <li>There's never enough time to build everything
+    <ul>
+    <li>So which features are most cost-effective to develop?</li>
+    </ul>
+  </li>
+  <li>Decide using a 3x3 grid
+    <ul>
+    <li>Rank each feature low-medium-high on importance and effort</li>
+    <li>More honest than the false accuracy of a 1-10 scale</li>
+    </ul>
+  </li>
+  </ul>
+  <figure id="fig:lifecycle-ranking-features">
+    <img alt="Ranking Features" src="lifecycle/ranking-features.png"/>
+    <p>Figure 27.6: Ranking Features</p>
+  </figure>
+</div>
+
+<div class="topic">
+  <h2>26) Step 5: Scheduling</h2>
+  <ul>
+  <li>Can now draw up a schedule
+    <ul>
+    <li>Throw out everything below the diagonal of the priority matrix</li>
+    </ul>
+  </li>
+  <li>Only big choice remaining is whether to do big items first, or little ones</li>
+  <li>Best to start big ones early, in case they run over</li>
+  <li>But knocking off a few little ones will teach you useful things about the code
+    <ul>
+    <li>Remember to take dependencies into account</li>
+    </ul>
+  </li>
+  <li>End result is a list of who's doing what, when
+    <ul>
+    <li>Schedule people at 80% of capacity to allow for sick time, interruptions, etc.</li>
+    </ul>
+  </li>
+  <li>Yes, it contains a lot of guesswork...
+    <ul>
+    <li>...but it's better than nothing...</li>
+    <li>...and estimates improve with practice</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>27) Science Fiction Scheduling</h2>
+  <ul>
+  <li>Do <em>not</em> shave time estimates to make them fit
+    <ul>
+    <li>If you do this, developers will start padding their estimates...</li>
+    <li>...or supplying random numbers, secure in the knowledge that they won't be able make the deadline anyway</li>
+    </ul>
+  </li>
+  <li>Making up &quot;science fiction schedules&quot; is a very common mistake
+    <ul>
+    <li>Yes, people will complain if their feature doesn't make it onto the schedule</li>
+    <li>But putting it in the schedule <em>when you know that schedule is fiction</em> won't make them any happier</li>
+    <li>It's better to live up to small promises than break big ones</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>28) Step 6: Development</h2>
+  <ul>
+  <li>Now it's time to test and code
+    <ul>
+    <li>Remember to do them in this order</li>
+    </ul>
+  </li>
+  <li>Expect to refine design during early stages of construction
+    <ul>
+    <li>If you're still refining the design a week before you're due to ship, something has gone wrong</li>
+    </ul>
+  </li>
+  <li>Take time to refactor old code while adding new stuff
+    <ul>
+    <li>Your skills (and coding style) improve over time
+      <ul>
+      <li>Or the person working on the feature in Version 3.2 knows something the Version 3.1 author didn't</li>
+      </ul>
+    </li>
+    <li>The problem changes over time
+      <ul>
+      <li>A good solution to last year's requirements may not be a good solution to this year's</li>
+      </ul>
+    </li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>29) Tracking Progress</h2>
+  <ul>
+  <li>Make sure the schedule is <em>always</em> up to date
+    <ul>
+    <li>Every developer writes a few bullet points every week</li>
+    <li>Doing this at 9:00 a.m. Monday works better than asking for it at 4:45 on Friday</li>
+    </ul>
+  </li>
+  <li>Describe tasks in terms of <a href="{{page.root}}/book/glossary.html#verifiable-deliverable" target="glo:verifiable-deliverable">verifiable deliverables</a>
+    <ul>
+    <li>Things that other people can inspect or test</li>
+    </ul>
+  </li>
+  <li>Always mark tasks as &quot;done&quot; or &quot;not done&quot;, rather than &quot;X% complete&quot;
+    <ul>
+    <li>If you allow percentages, then many tasks will be 90% done for 90% of the lifetime of the project</li>
+    <li>Instead, break tasks down into subtasks that are at most a few days long, and either are or are not completed</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>30) Burn Rate</h2>
+  <ul>
+  <li>The real purpose of a schedule is to tell you when to start cutting corners</li>
+  <li>Keep track of how quickly items are actually being finished
+    <ul>
+    <li>The project's <a href="{{page.root}}/book/glossary.html#burn-rate" target="glo:burn-rate">burn rate</a></li>
+    </ul>
+  </li>
+  </ul>
+  <figure id="fig:lifecycle-burn-rate">
+    <img alt="Burn Rate" src="lifecycle/burn-rate.png"/>
+    <p>Figure 27.7: Burn Rate</p>
+  </figure>
+  <ul>
+  <li>If progress is 75% of what you predicted, you can:
+    <ul>
+    <li>Move the completion date back</li>
+    <li>Replace some tasks with smaller, lower-priority ones</li>
+    <li>Hope that you will miraculously become more productive</li>
+    </ul>
+  </li>
+  <li>The sooner you do this, the happier you (and your intended users) will be</li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>31) Step 7: Finishing</h2>
+  <ul>
+  <li>Stop adding new features three-quarters of the way through the project
+    <ul>
+    <li>No matter how much testing you do as you go along, you'll need time to fix things at the end</li>
+    </ul>
+  </li>
+  <li>Shift resources into <a href="{{page.root}}/book/glossary.html#integration-test" target="glo:integration-test">integration testing</a> and documentation</li>
+  <li>If you're only starting to build the installer now, you've left it too late
+    <ul>
+    <li>Installation and upgrade code can be as complex as the application itself</li>
+    <li>Do design, and budget time, when writing A&amp;E</li>
+    </ul>
+  </li>
+  <li>Do <em>not</em> ask for a &quot;big push&quot;
+    <ul>
+    <li>People can only be productive for 40 hours a week <a href="bib.html#bib:robinson-crunch-mode" target="bib:robinson-crunch-mode">[Robinson 2006]</a></li>
+    <li>Any more than that, and the mistakes they make will actually cost you time overall</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>32) After the Party's Over</h2>
+  <ul>
+  <li>Always do a <a href="{{page.root}}/book/glossary.html#post-mortem" target="glo:post-mortem">post mortem</a> after the project finishes
+    <ul>
+    <li>What went right (that you want to do again)?</li>
+    <li>What went wrong (that you want to avoid next time)?</li>
+    <li>Often helps to bring in an outsider to facilitate
+      <ul>
+      <li>Feedback is only as useful as it is honest</li>
+      </ul>
+    </li>
+    </ul>
+  </li>
+  <li>Update the A&amp;Es to reflect what was actually built
+    <ul>
+    <li>Forces team members to examine what they got wrong (so that they can improve)</li>
+    <li>Provides a starting point for the next round of development</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>33) Summary</h2>
+  <ul>
+  <li>There is no &quot;best process&quot;</li>
+  <li>Choose one based on:
+    <ul>
+    <li>How well you understand the problem and the technology</li>
+    <li>How stable the requirements are</li>
+    <li>How big (or distributed) the team is</li>
+    </ul>
+  </li>
+  <li>Most important thing is that everyone is playing by the same rules...</li>
+  <li>...and that you adjust the process to reflect reality, rather than trying to do the opposite</li>
+  </ul>
+</div>

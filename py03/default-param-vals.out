@@ -1,0 +1,4 @@
+numbers being added: [10, 20, 30]
+total(numbers, 0, 3): 60
+total(numbers, 2): 30
+total(numbers): 60

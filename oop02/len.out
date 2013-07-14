@@ -1,0 +1,5 @@
+1 ['Permian']
+2 ['Permian', 'Triassic']
+3 ['Permian', 'Triassic', 'Jurassic']
+3 ['Triassic', 'Jurassic', 'Cretaceous']
+3 ['Jurassic', 'Cretaceous', 'Tertiary']

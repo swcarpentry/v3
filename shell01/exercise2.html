@@ -1,0 +1,73 @@
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+
+<title>Software Carpentry Day 4: Shell Exercises</title>
+<!-- base href="http://www.software-carpentry.org/day-02.html" --></head><body>
+
+<h1 id="more_shell_exercises">More Shell exercises:</h1>
+
+<p>Remember that the goal of these exercises is to give you practice with various shell commands.  Try experimenting with all of the commands and approaches mentioned in the lecture.</p>
+
+<h2 id="wildcards">Wildcards</h2>
+
+<ol>
+<li>List all of the files in /usr/bin that start with &#8220;py&#8221;</li>
+<li>Use a pipe to print the number of files in /usr/bin that start with &#8220;py&#8221;</li>
+<li>How many new ways can you refer to your home directory now?</li>
+</ol>
+
+<h2 id="grep_and_pipes">Grep and pipes</h2>
+
+<p>The <code class="shell">wget</code> program downloads a web page.</p>
+
+<ol>
+<li>Use <code class="shell">wget</code> to download <code class="shell">http://friendfeed.com/softwarecarpentryjuly2009</code>.</li>
+<li>How many times does Tovey appear in the file?</li>
+<li>How many times does http appear in the file?</li>
+</ol>
+
+<h2 id="processes_and_i_o_redirection">Processes and I/O redirection</h2>
+
+<ol>
+<li>Save the output of <code class="shell">ps -ef</code> into a file called <code class="shell">snapshot.txt</code>.</li>
+<li>How many unique users are running bash? (Use sort, uniq, and cut.)</li>
+<li>Instead of using file redirection to save temporary results, use pipes.</li>
+</ol>
+
+<h2 id="permissions">Permissions</h2>
+
+<p>For this exercise you will be creating lots of files and directories.  You can create an empty file using the command <code class="shell">touch</code>.</p>
+
+<ol>
+<li>Create a directory called <code class="shell">testpermissions</code></li>
+<li>Change your working directory to <code class="shell">testpermissions</code></li>
+<li>Create a directory called <code class="shell">adir</code>.</li>
+<li>Use the command <code class="shell">which date</code> to find out where the <code class="shell">date</code> program is located.</li>
+<li>Copy the <code class="shell">date</code> program into <code class="shell">adir</code>.</li>
+<li>Change the permissions on date to remove the executable permissions.</li>
+<li>Try running it as <code class="shell">./date</code> or <code class="shell">adir/date</code> (depending on your current working directory)</li>
+<li>Change the permissions back so that the file is executable.</li>
+<li>Create a text file using an editor in adir, then change the permissions so you are not allowed to write to it.  Then change the permissions so you can&#8217;t <code class="shell">cat</code> it either.</li>
+<li>Change your working directory to <code class="shell">testpermissions</code>, and then try changing the permissions on <code class="shell">adir</code>.  What are the minimum permissions necessary for you to be able to execute <code class="shell">adir/date</code>?  What permissions need to be set so that you cannot remove the text file you created?</li>
+</ol>
+
+<h2 id="job_control">Job control</h2>
+
+<ol>
+<li>Start a long running process from the shell.  For example, <code class="shell">xterm</code> or <code="shell">firefox</code="shell">.</li>
+<li>Kill it.</li>
+<li>Start it again in the background.</li>
+<li>Bring it to the foreground.</li>
+<li>Suspend it and then resume it in the background.</li>
+<li>Start another process in the background.</li>
+<li>Run <code class="shell">jobs</code> to see that both processes are running.</li>
+<li>Use the commands you have learned to kill them.</li>
+<li>Start a new process in the background.</li>
+<li>Use <code class="shell">ps</code> to find out it&#8217;s process id</li>
+<li>Use <code class="shell">kill</code> to terminate the process.</li>
+</ol>
+
+<h2 id="experiment_on_your_own">Experiment on your own</h2>
+
+<p>The best way to learn the shell is to try things out and read the man pages.  Your TAs and instructors will be happy to show you their favourite tricks.</p>
+</body></html>

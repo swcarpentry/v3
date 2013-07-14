@@ -1,0 +1,850 @@
+---
+layout: v3_slideshow
+title: Databases
+prev: v3/unit.html
+uplink: v3/index.html
+next: v3/re.html
+---
+<div class="topic">
+  <h2>1) Introduction</h2>
+  <ul>
+  <li>Text and XML have their place, but most of the data people really care about is stored in <a href="{{page.root}}/book/glossary.html#relational-database" target="glo:relational-database">relational databases</a></li>
+  <li>The bad news: it's a huge topic
+    <ul>
+    <li>The documentation for most commercial databases would fill the entire room
+      <ul>
+      <li>No matter what room you're in</li>
+      </ul>
+    </li>
+    </ul>
+  </li>
+  <li>The good news: you only need to know a little to get most things done
+    <ul>
+    <li>A few key ideas</li>
+    <li>A little syntax</li>
+    <li><a href="bib.html#bib:fehily-sql" target="bib:fehily-sql">[Fehily 2003]</a> is a good tutorial and reference guide</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>2) You Can Skip This Lecture If...</h2>
+  <ul>
+  <li>You know what a table is</li>
+  <li>You know how to select data from a table</li>
+  <li>You know how to aggregate data</li>
+  <li>You know what a nested query is</li>
+  <li>You know what primary and foreign keys are</li>
+  <li>You know how to do inner and outer joins</li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>3) History</h2>
+  <ul>
+  <li>Originated with E. F. Codd's work in the late 1960s and early 1970s</li>
+  <li>By the 1980s, <a href="bib.html#bib:oracle" target="bib:oracle">[Oracle]</a> and IBM's <a href="bib.html#bib:db2" target="bib:db2">[DB2]</a> dominated the market</li>
+  <li>Open source alternatives like <a href="bib.html#bib:mysql" target="bib:mysql">[MySQL]</a> and <a href="bib.html#bib:postgresql" target="bib:postgresql">[PostgreSQL]</a> emerged in the 1990s
+    <ul>
+    <li>Now have commercial support and competitive performance</li>
+    </ul>
+  </li>
+  <li><a href="bib.html#bib:sqlite" target="bib:sqlite">[SQLite]</a> is a lightweight alternative for small jobs
+    <ul>
+    <li>Originally designed for use in small web sites</li>
+    <li>Stores entire database in a single file on disk (which simplifies backup and recovery)</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>4) When To Use A Database</h2>
+  <ul>
+  <li>When you have lots of data</li>
+  <li>When you need to ask complex questions
+    <ul>
+    <li>E.g., &quot;Find all experiments done with the Mark VII that had yields greater than 30%, that didn't use cadmium disulfide as a reagant&quot;</li>
+    <li>Relational database can answer these questions directly</li>
+    </ul>
+  </li>
+  <li>Many people try to use spreadsheets as simple databases
+    <ul>
+    <li>Works for small data sets like course grades</li>
+    <li>But they don't scale up, and search capabilities are primitive</li>
+    </ul>
+  </li>
+  <li>Increasingly common to store images, video clips, and other data
+    <ul>
+    <li>Almost always store information <em>about</em> this data as well to support search and retrieval</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>5) Getting Started</h2>
+  <ul>
+  <li>A database is a collection of zero or more <a href="{{page.root}}/book/glossary.html#database-table" target="glo:database-table">tables</a>, each of which:
+    <ul>
+    <li>Has a name</li>
+    <li>Stores a single <a href="{{page.root}}/book/glossary.html#relation" target="glo:relation">relation</a> (i.e., a set of information of a particular kind)</li>
+    </ul>
+  </li>
+  <li>Each table has a fixed set of named <a href="{{page.root}}/book/glossary.html#database-column" target="glo:database-column">columns</a>
+    <ul>
+    <li>All the values in a column have the same type</li>
+    </ul>
+  </li>
+  <li>Each table has zero or more <a href="{{page.root}}/book/glossary.html#database-row" target="glo:database-row">rows</a>
+    <ul>
+    <li>Also called <a href="{{page.root}}/book/glossary.html#record" target="glo:record">records</a></li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <figure id="fig:db-database-tables">
+    <img alt="Database Tables" src="db/database-tables.png"/>
+    <p>Figure 17.1: Database Tables</p>
+  </figure>
+</div>
+
+<div class="topic">
+  <h2>6) Using SQL</h2>
+  <ul>
+  <li>Interact with <a href="{{page.root}}/book/glossary.html#dbms" target="glo:dbms">database management system</a> (DBMS) using a specialized language called <a href="{{page.root}}/book/glossary.html#sql" target="glo:sql">SQL</a>
+    <ul>
+    <li>Every vendor implements its own extensions to the standard</li>
+    <li>Not case sensitive: <code>gravity</code>, <code>Gravity</code> and <code>GRAVITY</code> are considered the same</li>
+    </ul>
+  </li>
+  <li>Three approaches:
+    <ul>
+    <li>Use an interactive GUI</li>
+    <li>Put commands in a file, and give it to the DBMS
+      <ul>
+      <li>E.g., <code>sqlite experiments.db &lt; find_names.sql</code></li>
+      </ul>
+    </li>
+    <li>Have a program written in another language (such as Python or Java) send strings containing commands to the database manager</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <figure id="fig:db-dbms-interaction">
+    <img alt="Interacting with a DBMS" src="db/dbms-interaction.png"/>
+    <p>Figure 17.2: Interacting with a DBMS</p>
+  </figure>
+</div>
+
+<div class="topic">
+  <h2>7) Creating Tables</h2>
+  <ul>
+  <li>To create a table, specify its name, and the names and types of its columns</li>
+  </ul>
+  <pre file="db/make-db.sql" section="create">CREATE TABLE Person(
+        Login           TEXT,
+        LastName        TEXT,
+        FirstName       TEXT
+);
+</pre>
+  <ul>
+  <li>To erase a table, use <code>DROP TABLE <em>name</em></code>
+    <ul>
+    <li>Remember: back up early, back up often...</li>
+    </ul>
+  </li>
+  <li>To insert values into a table, specify the name of the tables, and the values to be inserted
+    <ul>
+    <li>Each <code>INSERT</code> creates a new row</li>
+    <li>Rows do <em>not</em> have to be unique</li>
+    </ul>
+  </li>
+  </ul>
+  <pre file="db/make-db.sql" section="insert">INSERT INTO Person VALUES(&quot;skol&quot;,   &quot;Kovalevskaya&quot;, &quot;Sofia&quot;);
+INSERT INTO Person VALUES(&quot;mlom&quot;,   &quot;Lomonosov&quot;,    &quot;Mikhail&quot;);
+INSERT INTO Person VALUES(&quot;dmitri&quot;, &quot;Mendeleev&quot;,    &quot;Dmitri&quot;);
+INSERT INTO Person VALUES(&quot;ivan&quot;,   &quot;Pavlov&quot;,       &quot;Ivan&quot;);
+</pre>
+</div>
+
+<div class="topic">
+  <h2>8) Simple Queries</h2>
+  <ul>
+  <li>Suppose we want to get everyone's name and login ID</li>
+  <li>Write a <a href="{{page.root}}/book/glossary.html#query" target="glo:query">query</a> that specifies what we want, and where to find it</li>
+  </ul>
+  <pre file="db/all-people.sql">SELECT Person.FirstName, Person.LastName, Person.Login FROM Person;
+</pre>
+  <pre class="out" file="db/all-people.out">Sofia|Kovalevskaya|skol
+Mikhail|Lomonosov|mlom
+Dmitri|Mendeleev|dmitri
+Ivan|Pavlov|ivan
+</pre>
+</div>
+
+<div class="topic">
+  <h2>9) Sorting</h2>
+  <ul>
+  <li>How about sorting rows by login ID?</li>
+  </ul>
+  <pre file="db/all-people-sorted.sql">SELECT Person.FirstName, Person.LastName, Person.Login
+FROM Person
+ORDER BY Person.Login;
+</pre>
+  <pre class="out" file="db/all-people-sorted.out">Dmitri|Mendeleev|dmitri
+Ivan|Pavlov|ivan
+Mikhail|Lomonosov|mlom
+Sofia|Kovalevskaya|skol
+</pre>
+  <ul>
+  <li>Note: some SQL commands are multi-word, such as <code>ORDER BY</code></li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>10) Selection</h2>
+  <ul>
+  <li>Frequently want only a subset of data</li>
+  </ul>
+  <pre file="db/negative-hours.sql">SELECT Experiment.ProjectId, Experiment.ExperimentId, Experiment.Hours
+FROM Experiment
+WHERE Experiment.Hours &lt; 0;
+</pre>
+  <pre class="out" file="db/negative-hours.out">1737|1|-1.0
+1737|2|-1.5
+</pre>
+  <ul>
+  <li>Use <code>WHERE</code> to specify conditions that rows must satisfy to be included in results
+    <ul>
+    <li>Works on each row independently: cannot be used to compare one row to another</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>11) Joins</h2>
+  <ul>
+  <li>Project IDs aren't particularly readable
+    <ul>
+    <li>Want to look up the corresponding names, and display those instead</li>
+    </ul>
+  </li>
+  <li>A <a href="{{page.root}}/book/glossary.html#join" target="glo:join">join</a> is a query that combines information from two or more tables</li>
+  <li>Most common kind is an <a href="{{page.root}}/book/glossary.html#inner-join" target="glo:inner-join">inner join</a>, which matches rows of the first with rows of the second based on common values
+    <ul>
+    <li>Other variants include cross join, outer join, and self join</li>
+    </ul>
+  </li>
+  <li>Conceptually, an inner join:
+    <ul>
+    <li>Constructs the <a href="{{page.root}}/book/glossary.html#cross-product" target="glo:cross-product">cross product</a> of the tables</li>
+    <li>Discards rows that don't meet the selection criteria</li>
+    <li>Selects columns from the surviving rows</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <figure id="fig:db-inner-join">
+    <img alt="Inner Joins" src="db/inner-join.png"/>
+    <p>Figure 17.3: Inner Joins</p>
+  </figure>
+</div>
+
+<div class="topic">
+  <h2>12) Example: Translating IDs</h2>
+  <ul>
+  <li>Rewrite the previous query to replace project IDs with names</li>
+  </ul>
+  <pre file="db/negative-hours-join.sql">SELECT Project.ProjectName, Experiment.ExperimentId, Experiment.Hours
+FROM Project INNER JOIN Experiment
+WHERE (Project.ProjectId = Experiment.ProjectId)
+  AND (Experiment.Hours &lt; 0);
+</pre>
+  <pre class="out" file="db/negative-hours-join.out">Time Travel|1|-1.0
+Time Travel|2|-1.5
+</pre>
+  <ul>
+  <li>What just happened:
+    <ul>
+    <li>Construct cross product of <code>Project</code> and <code>Experiment</code> (which has 3x6=18 rows)</li>
+    <li>Throw away rows for which the project IDs (reduces data to 6 rows)</li>
+    <li>And rows for which hours are not negative (reduces data to 2 rows)</li>
+    <li>Show project name, experiment ID, and experiment hours</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>13) Keys and Constraints</h2>
+  <ul>
+  <li>One or more values in each record form its <a href="{{page.root}}/book/glossary.html#primary-key" target="glo:primary-key">primary key</a></li>
+  <li>A table may also contain one or more <a href="{{page.root}}/book/glossary.html#foreign-key" target="glo:foreign-key">foreign keys</a>
+    <ul>
+    <li>A value (or set of values) in one table that identifies a record in another</li>
+    <li>For example, the values in the <code>Login</code> column in <code>Involved</code> identify records in the <code>Person</code> table</li>
+    </ul>
+  </li>
+  <li>Can (and should) specify such constraints explicitly, so that the DBMS can enforce them</li>
+  </ul>
+  <pre file="db/make-db-constraints.sql" section="create">CREATE TABLE Person(
+        Login           TEXT            NOT NULL,
+        LastName        TEXT            NOT NULL,
+        FirstName       TEXT            NOT NULL,
+        PRIMARY KEY (Login)
+);
+</pre>
+  <pre file="db/make-db-constraints.sql" section="experiment">CREATE TABLE Experiment(
+        ProjectId       INTEGER         NOT NULL,
+        ExperimentId    INTEGER         NOT NULL,
+        NumInvolved     INTEGER         NOT NULL,
+        ExperimentDate  DATE,
+        Hours           REAL            NOT NULL
+        CONSTRAINT Experiment_Key PRIMARY KEY (ProjectId, ExperimentId)
+);
+</pre>
+</div>
+
+<div class="topic">
+  <h2>14) Eliminating Duplicates</h2>
+  <ul>
+  <li>How to find out who has done experiments for each project?</li>
+  </ul>
+  <pre file="db/person-involved-duplicate.sql">SELECT Project.ProjectName, Involved.Login
+FROM   Project, Involved
+WHERE  Project.ProjectId = Involved.ProjectId;
+</pre>
+  <pre class="out" file="db/person-involved-duplicate.out">Antigravity|mlom
+Antigravity|mlom
+Teleportation|dmitri
+Teleportation|skol
+Teleportation|ivan
+Teleportation|mlom
+Time Travel|skol
+Time Travel|skol
+Time Travel|ivan
+</pre>
+  <ul>
+  <li>User <code>mlom</code> appears twice for the <code>Antigravity</code> project because he did two experiments for it</li>
+  <li>Use the <code>DISTINCT</code> keyword to eliminate duplicates</li>
+  </ul>
+  <pre file="db/person-involved-distinct.sql">SELECT DISTINCT Project.ProjectName, Involved.Login
+FROM            Project, Involved
+WHERE           Project.ProjectId = Involved.ProjectId;
+</pre>
+  <pre class="out" file="db/person-involved-distinct.out">Antigravity|mlom
+Teleportation|dmitri
+Teleportation|skol
+Teleportation|ivan
+Teleportation|mlom
+Time Travel|skol
+Time Travel|ivan
+</pre>
+</div>
+
+<div class="topic">
+  <h2>15) Aggregation</h2>
+  <ul>
+  <li>Often need to <a href="{{page.root}}/book/glossary.html#aggregate" target="glo:aggregate">aggregate</a> (combine) values from different rows
+    <ul>
+    <li>Sum, maximum, average, etc.</li>
+    </ul>
+  </li>
+  <li>Example: how much time has Mikhail spent on antigravity experiments?</li>
+  </ul>
+  <pre file="db/total-antigravity.sql">SELECT SUM(Experiment.Hours)
+FROM   Involved INNER JOIN Experiment
+WHERE  (Involved.Login = &quot;mlom&quot;)
+  AND  (Involved.ProjectId = 1214)
+  AND  (Involved.ProjectId = Experiment.ProjectId)
+  AND  (Involved.ExperimentId = Experiment.ExperimentId);
+</pre>
+  <pre class="out" file="db/total-antigravity.out">15.8
+</pre>
+</div>
+
+<div class="topic">
+  <h2>16) Grouping</h2>
+  <ul>
+  <li>It would be tedious to write a separate query to total each scientist's hours
+    <ul>
+    <li>SQL doesn't have loops
+      <ul>
+      <li>Although some vendors provide non-standardized equivalents</li>
+      </ul>
+    </li>
+    </ul>
+  </li>
+  <li>Use <code>GROUP BY</code> to apply aggregation function to specific subsets of rows</li>
+  </ul>
+  <pre file="db/total-by-login.sql">SELECT   Involved.Login, SUM(Experiment.Hours)
+FROM     Involved INNER JOIN Experiment
+WHERE    (Involved.ProjectId = Experiment.ProjectId)
+  AND    (Involved.ExperimentId = Experiment.ExperimentId)
+GROUP BY Involved.Login;
+</pre>
+  <pre class="out" file="db/total-by-login.out">dmitri|7
+ivan|5.5
+mlom|23.0
+skol|4.5
+</pre>
+  <ul>
+  <li>Note: negative hours on time travel experiments really mess up budgeting...</li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>17) Self Joins</h2>
+  <ul>
+  <li>How to find people who have done experiments for two (or more) projects?</li>
+  <li>First attempt: use <code>AND</code></li>
+  </ul>
+  <pre file="db/multi-involved-err-and.sql">SELECT DISTINCT Person.Login
+FROM            Person INNER JOIN Involved
+WHERE           (ProjectId = 1214) AND (ProjectId = 1709);
+</pre>
+  <pre class="out" file="db/multi-involved-err-and.out"></pre>
+  <ul>
+  <li>Doesn't work because <code>ProjectID</code> cannot simultaneously be 1214 and 1709</li>
+  <li>Second attempt: use <code>OR</code></li>
+  </ul>
+  <pre file="db/multi-involved-err-or.sql">SELECT DISTINCT Person.Login
+FROM            Person INNER JOIN Involved
+WHERE           (ProjectId = 1214) OR (ProjectId = 1709);
+</pre>
+  <pre class="out" file="db/multi-involved-err-or.out">skol
+mlom
+dmitri
+ivan
+</pre>
+  <ul>
+  <li>Doesn't work because it includes rows where information about different people has been joined</li>
+  </ul>
+  <pre class="out" file="db/multi-involved-err-or.out">skol
+mlom
+dmitri
+ivan
+</pre>
+</div>
+
+<div class="topic">
+  <h2>18) Using Self Joins</h2>
+  <ul>
+  <li>Right solution that works is to join the <code>Involved</code> table with itself, so that we have two project IDs in the same row
+    <ul>
+    <li>Then select rows where the person is the same, but the project IDs are different</li>
+    </ul>
+  </li>
+  <li>Have to create a temporary alias for the two versions of the tables</li>
+  </ul>
+  <pre file="db/multi-involved-self-join.sql">SELECT DISTINCT A.Login
+FROM            Involved A CROSS JOIN Involved B
+WHERE           (A.Login = B.Login)
+AND             (A.ProjectId != B.ProjectId);
+</pre>
+  <pre class="out" file="db/multi-involved-self-join.out">mlom
+skol
+ivan
+</pre>
+</div>
+
+<div class="topic">
+  <h2>19) Who Has Worked Together?</h2>
+  <ul>
+  <li>Which pairs of people have performed experiments together?</li>
+  </ul>
+  <pre file="db/experimenter-pairs.sql">SELECT DISTINCT A.Login, B.Login
+FROM            Involved A CROSS JOIN Involved B
+WHERE           (A.ProjectId = B.ProjectId)
+AND             (A.ExperimentId = B.ExperimentId)
+AND             (A.Login != B.Login);
+</pre>
+</div>
+
+<div class="topic">
+  <h2>20) Null</h2>
+  <ul>
+  <li>Real-world data always has holes in it
+    <ul>
+    <li>Some people don't have cell phone numbers, some authors' birth dates are unknown...</li>
+    </ul>
+  </li>
+  <li>Can represent this in a database using the special value <code>NULL</code>
+    <ul>
+    <li><code>NULL</code> is <em>not</em> the same as zero, empty string, False, etc.</li>
+    <li>Instead, it means &quot;nothing known at all&quot;</li>
+    </ul>
+  </li>
+  <li>Database designers argue about whether <code>NULL</code> is a good idea or not
+    <ul>
+    <li>Does it mean &quot;no value&quot;, &quot;value not known&quot;, or something else?</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>21) Operations on Nulls</h2>
+  <ul>
+  <li>Check to see if a value is null using <code>IS NULL</code></li>
+  <li>The result of any computation involving <code>NULL</code> is <code>NULL</code>
+    <ul>
+    <li><code>2 + NULL</code> is <code>NULL</code>, <code>NULL OR True</code> is <code>NULL</code>, etc.</li>
+    <li>Although in some databases, <code>False AND NULL</code> is <code>False</code>, and <code>True OR NULL</code> is <code>True</code></li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>22) Managing Nulls</h2>
+  <ul>
+  <li>By default, columns may contain <code>NULL</code>, but this can be prohibited when the table is created</li>
+  <li>Queries must take possibility of <code>NULL</code> into account
+    <ul>
+    <li><code>Experiment.ExperimentDate &lt;&gt; 1901-05-01</code> selects all experiments that weren't conducted on May 1, 1901, <em>and</em> all experiments whose date is <code>NULL</code> (since <code>NULL</code> isn't equal to anything except itself)</li>
+    <li>Have to use <code>(Experiment.ExperimentDate &lt;&gt; 1901-05-01) AND (Experiment.ExperimentDate IS NOT NULL)</code></li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>23) Database Design</h2>
+  <ul>
+  <li>Database design is a sizeable topic in its own right
+    <ul>
+    <li>Make sure the relationships are correct</li>
+    <li>Make sure the database performs well
+      <ul>
+      <li>Very dependent on exactly which vendor database is being used</li>
+      <li>But all commercial-grade DBMSes have powerful optimizers</li>
+      </ul>
+    </li>
+    </ul>
+  </li>
+  <li>Most important thing is to <a href="{{page.root}}/book/glossary.html#normalize" target="glo:normalize">normalize</a> the data
+    <ul>
+    <li>I.e., conform to a set of rules called <a href="{{page.root}}/book/glossary.html#normal-form" target="glo:normal-form">normal forms</a></li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>24) First Normal Form</h2>
+  <ul>
+  <li>First normal form: values do not have any internal structure
+    <ul>
+    <li>I.e., you shouldn't have to parse them in order to use them</li>
+    <li>This is why first names and last names are stored separately</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>25) Second Normal Form</h2>
+  <ul>
+  <li>Second normal form: tables don't contain redundant information
+    <ul>
+    <li>Natural to combine <code>Experiment</code> and <code>Involved</code> tables into one</li>
+      <figure id="fig:db-combined-table">
+        <img alt="A Combined Table" src="db/combined-table.png"/>
+        <p>Figure 17.4: A Combined Table</p>
+      </figure>
+    <li>But now some information appears in two or more places...</li>
+    <li>...which makes updates, consistency checks, and queries all harder to do</li>
+    <li>Make up attributes (like <code>InvolvedID</code>) to relate these tables</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>26) Nested Queries</h2>
+  <ul>
+  <li>How to find everyone who <em>hasn't</em> been experimenting with time travel?
+    <ul>
+    <li>Select rows of <code>Involved</code> where <code>ProjectID</code> is not 1737?</li>
+    <li>Wrong answer: Kovalevskaya and Pavlov have worked on time travel, but also on other projects</li>
+    </ul>
+  </li>
+  </ul>
+  <pre file="db/nested-err.sql">SELECT DISTINCT Involved.Login
+FROM            Involved
+WHERE           (Involved.ProjectId != 1737);
+</pre>
+  <pre class="out" file="db/nested-err.out">mlom
+dmitri
+skol
+ivan
+</pre>
+  <ul>
+  <li>Solution requires use of <a href="{{page.root}}/book/glossary.html#nested-query" target="glo:nested-query">nested queries</a>
+    <ul>
+    <li>Database manager runs the inner query first, then applies the outer query to the inner query's result</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>27) Nested Query Example</h2>
+  <ul>
+  <li>Strategy:
+    <ul>
+    <li>Nested query finds all the people we <em>don't</em> want</li>
+    <li>Outer query subtracts them from the set containing everyone</li>
+    </ul>
+  </li>
+  </ul>
+  <pre file="db/nested-in.sql">SELECT DISTINCT Login
+FROM            Involved
+WHERE Login NOT IN
+  (SELECT DISTINCT Login
+   FROM            Involved
+   WHERE           Involved.ProjectId = 1737);
+</pre>
+  <pre class="out" file="db/nested-in.out">mlom
+dmitri
+</pre>
+</div>
+
+<div class="topic">
+  <h2>28) More Uses for Nested Queries</h2>
+  <ul>
+  <li>This strategy is useful for many other things as well</li>
+  <li>Example: how many people have done experiments for exactly one project?
+    <ul>
+    <li>Solution: find the people who've done experiments for none, or for two or more, and subtract them from everyone</li>
+    </ul>
+  </li>
+  </ul>
+  <pre file="db/exactly-one.sql">SELECT DISTINCT Login
+FROM            Involved
+WHERE Login NOT IN
+  (SELECT DISTINCT A.Login
+   FROM Involved A INNER JOIN Involved B
+   WHERE (A.Login = B.Login)
+   AND   (A.ProjectId != B.ProjectId));
+</pre>
+  <pre class="out" file="db/exactly-one.out">dmitri
+</pre>
+</div>
+
+<div class="topic">
+  <h2>29) Using Other Languages</h2>
+  <ul>
+  <li>Usually don't write entire application in SQL, or run SQL in sub-shell</li>
+  <li>Instead, embed SQL in the programming language of your choice
+    <ul>
+    <li>Need the right <a href="{{page.root}}/book/glossary.html#driver" target="glo:driver">driver</a> to connect to the database</li>
+    </ul>
+  </li>
+  <li>Establish a <a href="{{page.root}}/book/glossary.html#connection" target="glo:connection">connection</a> between the program and the DBMS
+    <ul>
+    <li>Typically a socket, but other methods are used as well</li>
+    </ul>
+  </li>
+  <li>Create a pointer into the database called a <a href="{{page.root}}/book/glossary.html#cursor" target="glo:cursor">cursor</a></li>
+  <li>Send queries, and loop over results</li>
+  </ul>
+  <figure id="fig:db-using-dbms">
+    <img alt="Using Databases from Programs" src="db/using-dbms.png"/>
+    <p>Figure 17.5: Using Databases from Programs</p>
+  </figure>
+</div>
+
+<div class="topic">
+  <h2>30) Example: Database Access from Python</h2>
+  <ul>
+  <li>Example: get the names of all the scientists into a Python program</li>
+  </ul>
+  <pre file="db/all-names.py">from pysqlite2 import dbapi2 as sqlite
+
+connection = sqlite.connect(&quot;example.db&quot;)
+cursor = connection.cursor()
+cursor.execute(&quot;SELECT FirstName, LastName FROM Person ORDER BY LastName;&quot;)
+results = cursor.fetchall();
+for r in results:
+    print r
+cursor.close();
+connection.close();
+</pre>
+  <pre class="out" file="db/all-names.out">(&quot;Sofia&quot;, &quot;Kovalevskaya&quot;)
+(&quot;Mikhail&quot;, &quot;Lomonosov&quot;)
+(&quot;Dmitri&quot;, &quot;Mendeleev&quot;)
+(&quot;Ivan&quot;, &quot;Pavlov&quot;)
+</pre>
+</div>
+
+<div class="topic">
+  <h2>31) Concurrency</h2>
+  <ul>
+  <li>The biggest challenge in database programming isn't formulated queries---it's handling <a href="{{page.root}}/book/glossary.html#concurrency" target="glo:concurrency">concurrency</a>
+    <ul>
+    <li>Two or more things happening at once</li>
+    <li>In the database world, one user changing the database while another is making a query</li>
+    </ul>
+  </li>
+  <li>Need to prevent <a href="{{page.root}}/book/glossary.html#race-condition" target="glo:race-condition">race conditions</a>, in which the final state of the system depends on the random order of operations
+    <ul>
+    <li>First user: get current balance of grant #19823, add $100.00, save result</li>
+    <li>Second user: get current balance, add $200.00, save</li>
+    <li>If the operations are interleaved, final result could be $100, $200, or $300 added to account</li>
+      <figure id="fig:db-race-condition">
+        <img alt="Race Conditions" src="db/race-condition.png"/>
+        <p>Figure 17.6: Race Conditions</p>
+      </figure>
+    </ul>
+  </li>
+  <li>Also need to guard against failure
+    <ul>
+    <li>Step 1: remove $100.00 from grant #19823</li>
+    <li>Step 2: add $100.00 to grant #17928</li>
+    <li>Don't want money to disappear if computer goes down in between</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>32) Transactions</h2>
+  <ul>
+  <li>Solution to both problems is to use a <a href="{{page.root}}/book/glossary.html#transaction" target="glo:transaction">transaction</a>
+    <ul>
+    <li>A set of operations which either all take effect as if nothing else was going on, or do not change the database</li>
+    </ul>
+  </li>
+  <li>Transactions must be <a href="{{page.root}}/book/glossary.html#acid" target="glo:acid">ACID</a>:
+    <ul>
+    <li><a href="{{page.root}}/book/glossary.html#atomic" target="glo:atomic">Atomic</a>: either all are performed, or none</li>
+    <li>Consistent: database is in a legal state when the transaction ends</li>
+    <li>Isolated: no operation outside the transaction sees the database in any intermediate state</li>
+    <li>Durable: once the user is notified that the operation has completed, its effects are permanent</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>33) Example: Changing User ID</h2>
+  <ul>
+  <li>Change Kovalevskaya's login ID from <code>&quot;skol&quot;</code> to <code>&quot;kovalev&quot;</code></li>
+  </ul>
+  <pre file="db/update-transaction.sql">BEGIN TRANSACTION;
+
+  UPDATE Person
+  SET    Login = &quot;kovalev&quot;
+  WHERE  Login = &quot;skol&quot;;
+
+  UPDATE Involved
+  SET    Login = &quot;kovalev&quot;
+  WHERE  Login = &quot;skol&quot;;
+
+END TRANSACTION;
+
+SELECT *
+FROM   Person
+WHERE  (Login = &quot;kovalev&quot;) OR (Login = &quot;skol&quot;);
+
+SELECT *
+FROM   Involved
+WHERE  (Login = &quot;kovalev&quot;) OR (Login = &quot;skol&quot;);
+</pre>
+  <pre class="out" file="db/update-transaction.out">kovalev|Kovalevskaya|Sofia
+1709|1|2|kovalev
+1737|1|1|kovalev
+1737|2|1|kovalev
+</pre>
+  <ul>
+  <li>No query can run after <code>Person</code> changes, but before <code>Involved</code> changes</li>
+  <li>If database goes down in the middle, any changes made are discarded</li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>34) Using Transactions</h2>
+  <ul>
+  <li>Transactions can be used for queries, but should <em>always</em> be used for updates</li>
+  <li>Why not use transactions everywhere?
+    <ul>
+    <li>Because they require the database to <a href="{{page.root}}/book/glossary.html#serialization" target="glo:serialization">serialize</a> some operations</li>
+    <li>Which slows the system down</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>35) Testing</h2>
+  <ul>
+  <li>Unit testing programs that use databases is just like testing other programs...</li>
+  <li>...except slower
+    <ul>
+    <li>Creating a fresh fixture for each test means erasing and re-creating the entire database</li>
+    <li>If it takes two seconds to run each unit test, developers are not going to re-run 1000 tests after each small program change</li>
+    </ul>
+  </li>
+  <li>Solutions:
+    <ul>
+    <li>Create the fixture once, and clone it each time it's needed</li>
+    <li>Still kind of slow</li>
+    <li>Store the database in memory, rather than on disk
+      <ul>
+      <li>Not very useful in a production system (since all data is lost when the program ends)</li>
+      <li>But much, much faster</li>
+      </ul>
+    </li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>36) Advanced Topics</h2>
+  <ul>
+  <li>A <a href="{{page.root}}/book/glossary.html#stored-procedure" target="glo:stored-procedure">stored procedure</a> is a piece of compiled code stored in the database itself
+    <ul>
+    <li>Trades flexibility for efficiency</li>
+    </ul>
+  </li>
+  <li>A <a href="{{page.root}}/book/glossary.html#trigger" target="glo:trigger">trigger</a> is a procedure that automatically runs when a table is modified
+    <ul>
+    <li>E.g., send mail whenever a new dataset is entered</li>
+    </ul>
+  </li>
+  <li>And then there's the problem of ensuring <a href="{{page.root}}/book/glossary.html#referential-integrity" target="glo:referential-integrity">referential integrity</a>
+    <ul>
+    <li>I.e., that references within and between database entries are consistent</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>37) Summary</h2>
+  <ul>
+  <li>The world isn't made of tables any more than it's made of lists
+    <ul>
+    <li>But sooner or later, every home-grown spreadsheet or XML substitute needs the capabilities of a DBMS</li>
+    </ul>
+  </li>
+  <li>Even simple queries can get you into trouble if they miss important data
+    <ul>
+    <li>Or include data they shouldn't</li>
+    </ul>
+  </li>
+  <li>Treat queries written in SQL with the same respect you'd give any other program</li>
+  </ul>
+</div>

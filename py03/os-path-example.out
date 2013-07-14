@@ -1,0 +1,4 @@
+does /home/swc exist? True
+is it a directory? True
+what is its configuration directory? /home/swc/conf
+where is the configuration file? ('/home/swc/conf', 'current.conf')

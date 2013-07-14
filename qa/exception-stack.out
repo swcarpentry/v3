@@ -1,0 +1,4 @@
+values before: [-1, 0, 1]
+inner exception handler: float division
+outer exception handler: list index out of range
+values after: [-10.0, 0, 10.0]

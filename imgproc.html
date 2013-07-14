@@ -1,0 +1,184 @@
+---
+layout: v3_slideshow
+title: Image Processing
+prev: v3/py04.html
+uplink: v3/index.html
+next: v3/shell01.html
+---
+<div class="topic">
+  <h2>1) Introduction</h2>
+  <ul>
+  <li>A picture can be treated as a long list of pixels.</li>
+  <li>This lecture shows you how to
+    <ul>
+    <li>Create programs to manipulate digital images</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>2) You Can Skip This Lecture If...</h2>
+  <ul>
+    <li>You know what a pixel is</li>
+    <li>You understand what RGB stands for</li>
+    <li>You have worked with PIL or a similar image-processing library</li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>3) Pictures and Pixels</h2>
+  <figure id="fig:imgproc-cat-pixels">
+    <img alt="Pixels in a Picture" src="imgproc/cat-pixels.png"/>
+    <p>Figure 8.1: Pixels in a Picture</p>
+  </figure>
+  <ul>
+    <li>Digital images are made up of pixels, which are tiny dots.</li>
+    <li>That's what 1024 x 768 resolution refers to: 1024 pixels wide, 768 pixels high</li>
+    <li>Pixel (0, 0) is upper left</li>
+    <li>Pixel (1023, 0) is upper right</li>
+    <li>Pixel (0, 767) is lower left</li>
+    <li>Pixel (1023, 767) is lower right</li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>4) Color Representation</h2>
+  <figure id="fig:imgproc-color_combos">
+    <img alt="Color Combinations" src="imgproc/rgb-illumination.png"/>
+    <p>Figure 8.2: Color Combinations</p>
+  </figure>
+  <ul>
+    <li>Colors: combinations of red, green, and blue</li>
+    <li>Each part has intensity in range 0 - 255</li>
+    <li>Black: (0, 0, 0)</li>
+    <li>White: (255, 255, 255)</li>
+    <li style="color:red">Red: (255, 0, 0)</li>
+    <li style="color:green">Green: (0, 255, 0)</li>
+    <li style="color:blue">Blue: (0, 0, 255)</li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>5) PyMedia Introduction</h2>
+  <dl>
+  <dt><code>media.create_picture(width, height, color)</code></dt>
+  <dd>Create a width by height color picture</dd>
+  <dt><code>media.choose_file()</code></dt>
+  <dd>opens a file dialog and lets the user select a file</dd>
+  <dt><code>media.load_picture(filename)</code></dt>
+  <dd>tells Python to load the picture from file named filename</dd>
+  </dl>
+</div>
+
+<div class="topic">
+  <h2>6) PyMedia: Pictures</h2>
+  <dl>
+    <dt><code>media.show(pic)</code></dt>
+    <dd>makes the picture appear on the screen</dd>
+    <dt><code>media.get_width(pic)</code></dt>
+    <dd>Retrieve the width of the picture</dd>
+    <dt><code>media.get_height(pic)</code></dt>
+    <dd>Retrieve the height of the picture</dd>
+  </dl>
+</div>
+
+<div class="topic">
+  <h2>7) PyMedia: Pixels and Colors</h2>
+  <dl>
+    <dt><code>pixel = media.get_pixel(pic, x, y)</code></dt>
+    <dd>Retrieve pixel (x, y) from Picture pic.</dd>
+    <dt><code>c = media.get_color(pixel)</code></dt>
+    <dd>Retrieve the color of a pixel</dd>
+    <dt><code>media.set_color(pixel, c)</code></dt>
+    <dd>Set the color of a pixel to c</dd>
+    <dt><code>media.get_green(pixel)</code></dt>
+    <dd>Retrieve the green value (an int) of a pixel</dd>
+    <dt><code>media.set_green(pixel, g)</code></dt>
+    <dd>Set the green value of a pixel to int g</dd>
+    <dt><code>c = media.create_color(r, g, b)</code></dt>
+    <dd>Create color (r, g, b)</dd>
+  </dl>
+</div>
+
+<div class="topic">
+  <h2>8) PyMedia: Iterating over Pixels</h2>
+  <pre file="imgproc/pixel-iter.py">import media
+import color
+
+pic = media.create_picture(100, 200, media.black)
+
+for i in range(media.get_width(pic)):
+  for j in range(media.get_height(pic)):
+  pixel = media.get_pixel(pic, i, j)
+  media.set_color(pixel,
+    media.create_color(i % 255, j % 255, 0))
+
+pic.show()
+</pre>
+</div>
+
+<div class="topic">
+  <h2>9) Task: Cheesy Daytime to Sunset</h2>
+  <figure id="fig:imgproc-niagara-day">
+    <img alt="Niagara During the Day" src="imgproc/niagara-day.png"/>
+    <p>Figure 8.3: Niagara During the Day</p>
+  </figure>
+  <figure id="fig:imgproc-niagara-sunset">
+    <img alt="Niagara at Sunset" src="imgproc/niagara-sunset.png"/>
+    <p>Figure 8.4: Niagara at Sunset</p>
+  </figure>
+</div>
+
+<div class="topic">
+  <h2>10) A Sunset Algorithm</h2>
+  <pre file="imgproc/sunset-algorithm.py">For each pixel in pic:
+  get the blue component of the pixel
+  reduce that number by 30%
+  set the blue component of the pixel to the reduced number
+
+  get the green component of the pixel
+  reduce that number by 30%
+  set the green component of the pixel to the reduced number
+</pre>
+</div>
+
+<div class="topic">
+  <h2>11) Task: Send Greg Around the World</h2>
+  <figure id="fig:imgproc-greg-travel">
+    <img alt="Greg" src="imgproc/greg.png"/>
+    <p>Figure 8.5: Greg Before Travelling</p>
+  </figure>
+</div>
+
+<div class="topic">
+  <h2>12) Lake Elmore</h2>
+  <figure id="fig:imgproc-lake-elmore">
+    <img alt="Lake Elmore" src="imgproc/elmore-sunset.png"/>
+    <p>Figure 8.6: Lake Elmore, Vermont</p>
+  </figure>
+</div>
+
+<div class="topic">
+  <h2>13) India Tea Plantation</h2>
+  <figure id="fig:imgproc-india-tea">
+    <img alt="India Tea Plantation" src="imgproc/india-tea.png"/>
+    <p>Figure 8.7: India Tea Plantation, Kerala Province</p>
+  </figure>
+</div>
+
+<div class="topic">
+  <h2>14) Giraffes in Africa</h2>
+  <figure id="fig:imgproc-giraffes">
+    <img alt="Giraffes" src="imgproc/giraffe.png"/>
+    <p>Figure 8.8: Giraffes in Africa</p>
+  </figure>
+</div>
+
+<div class="topic">
+  <h2>15) Giant Mosquito</h2>
+  <figure id="fig:imgproc-mosquito">
+    <img alt="Giant Mosquito" src="imgproc/aedes-aegypti-biting-human-640x480.png"/>
+    <p>Figure 8.9: Giant Mosquito</p>
+  </figure>
+</div>

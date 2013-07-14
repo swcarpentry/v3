@@ -1,0 +1,3 @@
+#!/usr/bin/env python
+print 124/28
+print 124.0/28.0

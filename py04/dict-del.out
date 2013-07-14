@@ -1,0 +1,2 @@
+Before deleting Turing: {'Turing': 1912, 'Newton': 1642, 'Darwin': 1809}
+After deleting Turing: {'Newton': 1642, 'Darwin': 1809}

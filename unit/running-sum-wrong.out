@@ -1,0 +1,23 @@
+F.E.
+======================================================================
+ERROR: test_long (__main__.SumTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "running_sum_wrong.py", line 22, in test_long
+    self.assertEqual(running_sum([-3, 0, 3, -2, 5]), [-3, -3, 0, -2, 3])
+  File "running_sum_wrong.py", line 7, in running_sum
+    result.append(result[i-1] + seq[i])
+IndexError: list index out of range
+
+======================================================================
+FAIL: test_double (__main__.SumTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "running_sum_wrong.py", line 19, in test_double
+    self.assertEqual(running_sum([2, 9]), [2, 11])
+AssertionError: [2] != [2, 11]
+
+----------------------------------------------------------------------
+Ran 4 tests in 0.001s
+
+FAILED (failures=1, errors=1)

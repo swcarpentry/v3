@@ -1,0 +1,7 @@
+dat2csv hydroxyl_422.dat > hydroxyl_422.csv
+dat2csv hydroxyl_480.dat > hydroxyl_480.csv
+summarize hydroxyl_422.csv hydroxyl_480.csv > hydroxyl_all.csv
+dat2csv methyl_422.dat > methyl_422.csv
+dat2csv methyl_480.dat > methyl_480.csv
+summarize methyl_422.csv methyl_480.csv > methyl_all.csv
+rm hydroxyl_480.csv methyl_422.csv hydroxyl_422.csv methyl_480.csv

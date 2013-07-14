@@ -1,0 +1,127 @@
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+
+<title>Software Carpentry Day 4: Shell Exercises</title>
+<!-- base href="http://www.software-carpentry.org/day-02.html" --></head><body><h1 id="shell_exercises">Software Carpentry Day 4: Shell Exercises</h1>
+
+<h2>Morning Exercises</h2>
+<p>The goal of these exercises is to get you thinking about the kinds of things you can do with basic shell commands and to give some practice using them.  Ideally, you will use these simple exercises to help you understand the basic operation of the shell, and to ask more questions about how to do various kinds of operations.  Don&#8217;t be afraid to ask the TAs or instructors for pointers on what to try next.</p>
+
+<h2 id="which_shell">Which shell?</h2>
+
+<p>Are you running the bash shell?  You should be for these exercises, and since most versions of Linux come with bash as the default shell, it makes sense to learn that one.</p>
+
+<ul>
+<li><p>TASK: Find out which shell you are running.</p>
+
+<pre><code>echo $SHELL
+grep reid /etc/passwd
+</code></pre></li>
+<li><p>TASK: If it isn&#8217;t bash, then here is how to change it.</p>
+
+<ul>
+<li>Temporarily - a shell is just a program, so if you type &#8220;bash&#8221; you start a new shell program</li>
+<li>Permanently - chsh</li>
+</ul></li>
+</ul>
+
+<h2 id="your_environment">Your environment</h2>
+
+<p>When you run a shell (or any program really), there are a bunch of environment variables that the program can access.  These are similar to global variables in a programming language. You have already seen one example of an environment variable above (SHELL).</p>
+
+<ul>
+<li><p>TASK: Run the <code class="shell">env</code> command to see a list of all of the environment variables.  Three are interesting for us today: SHELL, PWD, and PATH.</p></li>
+<li><p>TASK: set a new environment variable</p>
+
+<pre><code>export MYVAR="some value"
+echo $MYVAR
+env
+</code></pre></li>
+</ul>
+
+<h2 id="exploring_the_file_system">Exploring the file system</h2>
+
+<ul>
+<li><p>TASK: Print your current working directory.  There are two ways to do it.</p>
+
+<pre><code>echo $PWD
+pwd
+</code></pre></li>
+</ul>
+
+<p>File system structure</p>
+
+<ul>
+<li>Executables stored in bin directories</li>
+<li><p>Libraries stored in lib directories</p></li>
+<li><p>TASK: Use ls and cd to explore.  Try the following sequence.  Think about absolute versus relative paths.</p>
+
+<pre><code>ls /
+cd /
+ls
+cd
+ls /bin
+ls /usr/bin
+</code></pre></li>
+<li><p>TASK: Get comfortable with the current and parent directories.</p>
+
+<pre><code>cd
+ls .
+
+
+ls
+ls ..
+
+
+cd ..
+ls
+</code></pre></li>
+<li><p>QUESTION: How many different ways can you list your home directory?  (Remember the environment variables.)</p></li>
+</ul>
+
+<h2 id="creating_directories">Creating directories</h2>
+
+<ul>
+<li><p>TASK: Create some directories and files</p>
+
+<ol>
+<li>Create a directory called <code class="shell">temp</code></li>
+<li>Inside <code class="shell">temp</code> create a directory called <code class="shell">adir</code></li>
+<li>Inside <code class="shell">temp</code> create a file called <code class="shell">file1</code>
+<ul>
+<li>Use the pico editor</li>
+</ul></li>
+<li>Return to your home directory</li>
+<li>Use cat to show the contents of file1 using a relative path</li>
+<li>Use cat to show the contents of file1 using an absolute path</li>
+<li>Change to adir using a single cd command. (I.e., not cd temp; cd adir)</li>
+</ol></li>
+</ul>
+
+<h2 id="other_things_you_can_do_with_ls">Other things you can do with ls</h2>
+
+<ul>
+<li><p>TASK: Try out some of the options to ls</p>
+
+<p>ls -F /usr/bin
+ls -l /usr/bin</p>
+
+<p>ls -F /usr/bin/python 
+What does the @ mean? Where is the actual executable?
+ls -l /usr/bin/python</p></li>
+</ul>
+
+<h2 id="try_out_some_of_the_basic_commands_from_the_notes">Try out some of the basic commands from the notes</h2>
+
+<ul>
+<li>TASK: Especially try out the following:
+<ul>
+<li><code class="shell">cat</code></li>
+<li><code class="shell">head</code></li>
+<li><code class="shell">tail</code></li>
+<li><code class="shell">mv</code></li>
+<li><code class="shell">wc</code></li>
+</ul></li>
+</ul>
+
+</body></html>

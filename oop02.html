@@ -1,0 +1,845 @@
+---
+layout: v3_slideshow
+title: Python Advanced Object-Oriented Programming
+prev: v3/oop01.html
+uplink: v3/index.html
+next: v3/qa.html
+---
+<div class="topic">
+  <h2>1) Introduction</h2>
+  <ul>
+  <li>The <a href="oop01.html" target="lec:oop01">Python Basic Object-Oriented Programming</a> introduced basics of <a href="{{page.root}}/book/glossary.html#object-oriented-programming" target="glo:object-oriented-programming">object oriented programming</a></li>
+  <li>This one goes a little further
+    <ul>
+    <li>As before, the ideas are (almost) universal, but the form varies from language to language</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>2) You Can Skip This Lecture If...</h2>
+  <ul>
+  <li>You know what an overloaded operator is</li>
+  <li>You know what a static member is</li>
+  <li>You know what a design pattern is</li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>3) Length</h2>
+  <ul>
+  <li>We've already met some special methods, like <code>__init__</code> and <code>__str__</code>
+    <ul>
+    <li>Usually not called directly</li>
+    <li>Instead, Python automatically invokes them at specific times (object creation and string creation)</li>
+    </ul>
+  </li>
+  <li>There are <em>lots</em> of other special methods
+    <ul>
+    <li>For example, if <code>obj</code> has a <code>__len__</code> method, Python calls it whenever it sees <code>len(obj)</code></li>
+    </ul>
+  </li>
+  </ul>
+  <pre file="oop02/len.py">class Recent(object):
+
+    def __init__(self, number=3):
+        self.number = number
+        self.items = []
+
+    def __str__(self):
+        return str(self.items)
+
+    def add(self, item):
+        self.items.append(item)
+        self.items = self.items[-self.number:]
+
+    def __len__(self):
+        return len(self.items)
+
+if __name__ == '__main__':
+    history = Recent()
+    for era in ['Permian', 'Triassic', 'Jurassic', 'Cretaceous', 'Tertiary']:
+        history.add(era)
+        print len(history), history
+</pre>
+  <pre class="out" file="oop02/len.out">1 ['Permian']
+2 ['Permian', 'Triassic']
+3 ['Permian', 'Triassic', 'Jurassic']
+3 ['Triassic', 'Jurassic', 'Cretaceous']
+3 ['Jurassic', 'Cretaceous', 'Tertiary']
+</pre>
+</div>
+
+<div class="topic">
+  <h2>4) Overloading Operators</h2>
+  <ul>
+  <li>The expression <code>&quot;a + b&quot;</code> is &quot;just&quot; a shorthand for <code>add(a, b)</code></li>
+  <li>Or, if <code>a</code> is an object, for <code>a.add(b)</code></li>
+  <li>But since people might actually want to use the name <code>add</code>, Python spells this method <code>__add__</code>
+    <ul>
+    <li>Defining it is an example of <a href="{{page.root}}/book/glossary.html#operator-overloading" target="glo:operator-overloading">operator overloading</a></li>
+    </ul>
+  </li>
+  <li>If a class defines a method <code>__add__</code>, it is called whenever something is +'d to the object
+    <ul>
+    <li>I.e., <code>x + y</code> calls <code>x.__add__(y)</code></li>
+    </ul>
+  </li>
+  </ul>
+  <pre file="oop02/add.py">class Recent(object):
+
+    def __add__(self, item):
+        self.items.append(item)
+        self.items = self.items[-self.number:]
+        return self
+
+    def __init__(self, number=3):
+        self.number = number
+        self.items = []
+
+    def __str__(self):
+        return str(self.items)
+
+    def __len__(self):
+        return len(self.items)
+
+if __name__ == '__main__':
+    history = Recent()
+    for era in ['Permian', 'Triassic', 'Jurassic', 'Cretaceous', 'Tertiary']:
+        history = history + era
+        print len(history), history
+</pre>
+  <pre class="out" file="oop02/add.out">1 ['Permian']
+2 ['Permian', 'Triassic']
+3 ['Permian', 'Triassic', 'Jurassic']
+3 ['Triassic', 'Jurassic', 'Cretaceous']
+3 ['Jurassic', 'Cretaceous', 'Tertiary']
+</pre>
+</div>
+
+<div class="topic">
+  <h2>5) Commutativity</h2>
+  <ul>
+  <li><code>2 + x</code> and <code>x + 2</code> don't always do the same thing
+    <ul>
+    <li>Matrix multiplication</li>
+    </ul>
+  </li>
+  <li>Classes can define right-hand versions of operators, e.g., <code>__radd__</code> instead of <code>__add__</code>
+    <ul>
+    <li>If the object on the left has an <code>__add__</code> method, call that</li>
+    <li>Otherwise, if the object on the right has an <code>__radd__</code> method, call that</li>
+    <li>Otherwise, try Python's built-ins</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>6) Other Special Methods</h2>
+  <ul>
+  <li>(Almost) every aspect of an object's behavior can be overridden by defining the right method(s)</li>
+    <div id="tbl:oop02-overload">
+      <table>
+        <tr>
+          <th>Method</th>
+          <th>Purpose</th>
+        </tr>
+        <tr>
+          <td><code>__lt__(self, other)</code></td>
+          <td>Less than comparison; <code>__le__</code>, <code>__ne__</code>, and others are used for less than or equal, not equal, etc.</td>
+        </tr>
+        <tr>
+          <td><code>__call__(self, ...args...)</code></td>
+          <td>Called for <code>obj(3, &quot;lithium&quot;)</code></td>
+        </tr>
+        <tr>
+          <td><code>__len__(self)</code></td>
+          <td>Object &quot;length&quot;</td>
+        </tr>
+        <tr>
+          <td><code>__getitem__(self, key)</code></td>
+          <td>Called for <code>obj[3.14]</code></td>
+        </tr>
+        <tr>
+          <td><code>__setitem__(self, key, value)</code></td>
+          <td>Called for <code>obj[3.14] = 2.17</code></td>
+        </tr>
+        <tr>
+          <td><code>__contains__</code></td>
+          <td>Called for <code>&quot;lithium&quot; in obj</code></td>
+        </tr>
+        <tr>
+          <td><code>__add__</code></td>
+          <td>Called for <code>obj + value</code>; use <code>__mul__</code> for <code>obj * value</code>, etc.</td>
+        </tr>
+        <tr>
+          <td><code>__int__</code></td>
+          <td>Called for <code>int(obj)</code>; use <code>__float__</code> and others to convert to other types</td>
+        </tr>
+      </table>
+      <p>Table 14.1: Special Methods</p>
+    </div>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>7) Example: Sparse Vector</h2>
+  <ul>
+  <li>A vector is <a href="{{page.root}}/book/glossary.html#sparse" target="glo:sparse">sparse</a> if most of its entries are zero
+    <ul>
+    <li>Use a dictionary to record non-zero values and their indices</li>
+    <li>No point padding eleven actual values with nine million zeroes</li>
+    </ul>
+  </li>
+  <li>Overload operators to make the object look like a &quot;real&quot; vector:
+    <ul>
+    <li>Addition: create a new vector with a non-zero value wherever either operand had a non-zero value</li>
+    <li>Dot product: add up products of matching non-zero values</li>
+    <li>Length: return one more than the index of the largest non-zero value
+      <ul>
+      <li>&quot;One more&quot; to be consistent with Python's lists</li>
+      </ul>
+    </li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>8) How Long is a Sparse Vector?</h2>
+  <ul>
+  <li>What is the length of <code>v</code> after the following operations?</li>
+  </ul>
+  <pre file="oop02/vector-length.py">v = SparseVector() # all values initialized to 0.0
+v[27] = 1.0        # length is now 28
+v[43] = 1.0        # length is now 44
+v[43] = 0.0        # is the length still 44, or 28?
+</pre>
+  <ul>
+  <li>This isn't really a programming question
+    <ul>
+    <li>&quot;Largest current index&quot; and &quot;largest index ever seen&quot; can both be implemented</li>
+    <li>The latter is easy, so we'll use that</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>9) Vector Behavior</h2>
+  <ul>
+  <li>Construction creates an empty sparse vector</li>
+  <li>Define <code>__len__</code>, <code>__getitem__</code>, and <code>__setitem__</code> to make it behave like a list
+    <ul>
+    <li>Exercise: implement <code>del sparse[index]</code></li>
+    </ul>
+  </li>
+  </ul>
+  <pre file="oop02/vec.py" section="main">class SparseVector(object):
+    '''Implement a sparse vector.  If a value has not been set
+    explicitly, its value is zero.'''
+
+    def __init__(self):
+        '''Construct a sparse vector with all zero entries.'''
+        self.data = {}
+
+    def __len__(self):
+        '''The length of a vector is one more than the largest index.'''
+        if self.data:
+            return 1 + max(self.data.keys())
+        return 0
+
+    def __getitem__(self, key):
+        '''Return an explicit value, or 0.0 if none has been set.'''
+        if key in self.data:
+            return self.data[key]
+        return 0.0
+
+    def __setitem__(self, key, value):
+        '''Assign a new value to a vector entry.'''
+        if type(key) is not int:
+            raise KeyError, 'non-integer index to sparse vector'
+        self.data[key] = value
+</pre>
+</div>
+
+<div class="topic">
+  <h2>10) Dot Product</h2>
+  <ul>
+  <li>The other object (on the right side of <code>&quot;*&quot;</code>) is usually called <code>other</code>
+    <ul>
+    <li>No reason to insist that it be a sparse vector</li>
+    <li>Could equally well be a list of values</li>
+    </ul>
+  </li>
+  <li>So loop over our indices, and multiply by corresponding values in other object
+    <ul>
+    <li>Any index not encountered in this loop doesn't matter, since it corresponds to something that's zero</li>
+    </ul>
+  </li>
+  <li>And make <code>__rmul__ = __mul__</code> do the same thing as <code>__rmul__</code></li>
+  </ul>
+  <pre file="oop02/vec.py" section="mul">    def __mul__(self, other):
+        '''Calculate dot product of a sparse vector with something else.'''
+
+        result = 0.0
+        for k in self.data:
+            result += self.data[k] * other[k]
+        return result
+
+    def __rmul__(self, other):
+        return self.__mul__(other)
+</pre>
+</div>
+
+<div class="topic">
+  <h2>11) Addition</h2>
+  <ul>
+  <li>Trickier than multiplication: result is non-zero wherever <em>either</em> argument is non-zero</li>
+  <li>Don't want to loop over all the zeroes of either argument</li>
+  <li>Solution: if the other object is a sparse vector, cheat
+    <ul>
+    <li>I.e., reach inside it, and rely on details of its implementation</li>
+    </ul>
+  </li>
+  </ul>
+  <pre file="oop02/vec.py" section="add">    def __add__(self, other):
+        '''Add something to a sparse vector.'''
+
+        # Initialize result with all non-zero values from this vector.
+        result = SparseVector()
+        result.data.update(self.data)
+
+        # If the other object is also a sparse vector, add non-zero values.
+        if isinstance(other, SparseVector):
+            for k in other.data:
+                result[k] = result[k] + other[k]
+
+        # Otherwise, use brute force.
+        else:
+            for i in range(len(other)):
+                result[i] = result[i] + other[i]
+
+        return result
+
+    # Right-hand add does the same thing as left-hand add.
+    __radd__ = __add__
+</pre>
+</div>
+
+<div class="topic">
+  <h2>12) Testing</h2>
+  <ul>
+  <li>The class isn't written until the tests are finished
+    <ul>
+    <li>Exercise: replace the <code>print</code> statements with assertions</li>
+    </ul>
+  </li>
+  </ul>
+  <pre file="oop02/vec.py" section="tests">if __name__ == '__main__':
+
+    x = SparseVector()
+    x[1] = 1.0
+    x[3] = 3.0
+    x[5] = 5.0
+    print 'len(x)', len(x)
+    for i in range(len(x)):
+        print '...', i, x[i]
+
+    y = SparseVector()
+    y[1] = 10.0
+    y[2] = 20.0
+    y[3] = 30.0
+
+    print 'x + y', x + y
+    print 'y + x', y + x
+
+    print 'x * y', x * y
+    print 'y * x', y * x
+
+    z = [0.0, 0.1, 0.2, 0.3, 0.4, 0.5]
+
+    print 'x + z', x + z
+    print 'x * z', x * z
+    print 'z + x', z + x
+</pre>
+  <pre class="out" file="oop02/vec.out">len(x) 6
+... 0 0.0
+... 1 1.0
+... 2 0.0
+... 3 3.0
+... 4 0.0
+... 5 5.0
+x + y [0.0, 11.0, 20.0, 33.0, 0.0, 5.0]
+y + x [0.0, 11.0, 20.0, 33.0, 0.0, 5.0]
+x * y 100.0
+y * x 100.0
+x + z [0.0, 1.1, 0.2, 3.3, 0.4, 5.5]
+x * z 3.5
+z + x [0.0, 1.1, 0.2, 3.3, 0.4, 5.5]
+</pre>
+</div>
+
+<div class="topic">
+  <h2>13) Static Data Members</h2>
+  <ul>
+  <li>Sometimes want to share data between all instances of a class
+    <ul>
+    <li>Constants, a count of the number of class instances created, etc.</li>
+    </ul>
+  </li>
+  <li>Any data members defined inside the <code>class</code> block belong to the class as a whole</li>
+  </ul>
+  <pre file="oop02/static-data.py">class Counter(object):
+
+    num = 0     # Number of Counter objects created.
+
+    def __init__(self, name):
+        Counter.num += 1
+        self.name = name
+
+if __name__ == '__main__':
+    print 'initial count', Counter.num
+    first = Counter('first')
+    print 'after creating first object', Counter.num
+    second = Counter('second')
+    print 'after creating second object', Counter.num
+</pre>
+  <pre class="out" file="oop02/static-data.out">initial count 0
+after creating first object 1
+after creating second object 2
+</pre>
+</div>
+
+<div class="topic">
+  <h2>14) Static Methods</h2>
+  <ul>
+  <li>Can also create static methods
+    <ul>
+    <li>Just like a function, but put inside the class definition for clarity</li>
+    </ul>
+  </li>
+  <li>Define the method <em>without</em> the <code>self</code> parameter
+    <ul>
+    <li>Since it isn't tied to any particular instance of the class</li>
+    </ul>
+  </li>
+  <li>Put <code>@staticmethod</code> in front of it
+    <ul>
+    <li>A <a href="{{page.root}}/book/glossary.html#decorator" target="glo:decorator">decorator</a></li>
+    <li>Powerful, but beyond the scope of this course</li>
+    </ul>
+  </li>
+  </ul>
+  <pre file="oop02/static-method.py">class Experiment(object):
+
+    already_done = {}
+
+    @staticmethod
+    def get_results(name, *params):
+        if name in Experiment.already_done:
+            return Experiment.already_done[name]
+        exp = Experiment(name, *params)
+        exp.run()
+        Experiment.already_done[name] = exp
+        return exp
+
+    def __init__(self, name, *params):
+        self.name = name
+        self.params = params
+
+    def run(self):
+        pass # would do something in a real program
+
+if __name__ == '__main__':
+    first = Experiment.get_results('anti-gravity')
+    second = Experiment.get_results('time travel')
+    third = Experiment.get_results('anti-gravity')
+    print 'first ', id(first)
+    print 'second', id(second)
+    print 'third ', id(third)
+</pre>
+  <pre class="out" file="oop02/static-method.out">first  5120204
+second 5120396
+third  5120204
+</pre>
+</div>
+
+<div class="topic">
+  <h2>15) Design Patterns</h2>
+  <ul>
+  <li><a href="{{page.root}}/book/glossary.html#design-pattern" target="glo:design-pattern">Design patterns</a> are how we describe larger patterns
+    <ul>
+    <li>A standard solution to a commonly-occurring problem</li>
+    <li>That isn't specific enough to be captured once and for all in a library routine or framework</li>
+    </ul>
+  </li>
+  <li>Idea developed from the 1960s on by the (building) architect Christopher Alexander
+    <ul>
+    <li>For example, it's hard to define what a porch is, but the basic idea comes up everywhere the climate is warm</li>
+    </ul>
+  </li>
+  <li>Introduced to programmers in <a href="bib.html#bib:gang-of-four-design-patterns" target="bib:gang-of-four-design-patterns">[Gamma et al 1995]</a>
+    <ul>
+    <li>Still a bestseller, but not particularly approachable</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>16) The Singleton Pattern</h2>
+  <ul>
+  <li>Problem: want to ensure that there's only ever one instance of a particular class
+    <ul>
+    <li>E.g., the controller for a radio telescope antenna</li>
+    </ul>
+  </li>
+  <li>Considerations:
+    <ul>
+    <li>There must be exactly one instance of the class</li>
+    <li>All objects that use the class must have access to that instance</li>
+    </ul>
+  </li>
+  <li>Solution:
+    <ul>
+    <li>Create objects by calling a function instead of the class's constructor</li>
+    <li>Have the function store a reference to the first object it creates</li>
+    <li>Have it return that same object on every subsequent call</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>17) Singleton Implementation</h2>
+  <pre file="oop02/singleton.py" section="class">class AntennaClass(object):
+    '''Singleton that controls a radio telescope.'''
+
+    # The unique instance of the class.
+    instance = None
+
+    # The constructor fails if an instance already exists.
+    def __init__(self, max_rotation):
+        assert AntennaClass.instance is None, 'Trying to create a second instance!'
+        self.max_rotation = max_rotation
+        AntennaClass.instance = self
+
+# Make the creation function look like a class constructor.
+def Antenna(max_rotation):
+    '''Create and store an AntennaClass instance, or return the one
+    that has already been created.'''
+    if AntennaClass.instance:
+        return AntennaClass.instance
+    return AntennaClass(max_rotation)
+</pre>
+</div>
+
+<div class="topic">
+  <h2>18) Demonstration</h2>
+  <pre file="oop02/singleton.py" section="test">first = Antenna(23.5)
+print 'first instance:', id(first)
+second = Antenna(47.25)
+print 'second instance:', id(second)
+</pre>
+  <pre class="out" file="oop02/singleton.out">first instance: 10685200
+second instance: 10685200
+</pre>
+</div>
+
+<div class="topic">
+  <h2>19) The Visitor Pattern</h2>
+  <ul>
+  <li>Problem: want an easy way to walk around a complex structure
+    <ul>
+    <li>E.g., visit each value in a list of lists of lists exactly once</li>
+    </ul>
+  </li>
+  <li>Considerations:
+    <ul>
+    <li>Many different operations may need to be performed</li>
+    <li>Structure is complex enough that visiting elements is error-prone</li>
+    <li>The types of objects in the structure, and the ways they are connected, are fixed</li>
+    </ul>
+  </li>
+  <li>Solution:
+    <ul>
+    <li>Create a class that knows how to get to each value in turn</li>
+    <li>Give it an empty method that is called once for each value</li>
+    <li>Users derive from this class and fill in the method</li>
+    <li>An all-in-one version of the framework shown earlier</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>20) Visitor Implementation</h2>
+  <pre file="oop02/visitor.py" section="class">class NestedListVisitor(object):
+    '''Visit each element in a list of nested lists.'''
+
+    def __init__(self, data):
+        '''Construct, but do not run.'''
+        assert type(data) is list, 'Only works on lists!'
+        self.data = data
+
+    def run(self):
+        '''Iterate over all values.'''
+        self.recurse(self.data)
+
+    def recurse(self, current):
+        '''Loop over a particular list or sub-list (not meant
+        to be called by users).'''
+        if type(current) is list:
+            for v in current:
+                self.recurse(v)
+        else:
+            self.visit(current)
+
+    def visit(self, value):
+        '''Users should fill this method in.'''
+        pass
+</pre>
+</div>
+
+<div class="topic">
+  <h2>21) Demonstration</h2>
+  <pre file="oop02/visitor.py" section="test">class MaxOfN(NestedListVisitor):
+
+    def __init__(self, data):
+        NestedListVisitor.__init__(self, data)
+        self.max = None
+        self.count = 0
+
+    def visit(self, value):
+        self.count += 1
+        if self.max is None:
+            self.max = value
+        else:
+            self.max = max(self.max, value)
+
+test_data = [['gold', 'lead'], 'zinc', [['silver', 'iron'], 'mercury']]
+test = MaxOfN(test_data)
+test.run()
+print 'max:', test.max
+print 'count:', test.count
+</pre>
+  <pre class="out" file="oop02/visitor.out">max: zinc
+count: 6
+</pre>
+</div>
+
+<div class="topic">
+  <h2>22) The Abstract Factory Pattern</h2>
+  <ul>
+  <li>Problem: application doesn't know the specific types of objects it wants to create until runtime
+    <ul>
+    <li>If the chromatograph is an RCT-100, create an RCT-100 controller and an RCT-100 configuration panel</li>
+    <li>If it's a Subalta 4C, create a Subalta 4C controller and configuration panel</li>
+    </ul>
+  </li>
+  <li>Considerations:
+    <ul>
+    <li>Objects can be grouped by category and family</li>
+      <figure id="fig:oop02-factory-type-family">
+        <img alt="Categories and Families in the Factory Pattern" src="oop02/factory-type-family.png"/>
+        <p>Figure 14.1: Categories and Families in the Factory Pattern</p>
+      </figure>
+    <li>New categories or families may appear later</li>
+    </ul>
+  </li>
+  <li>Solution:
+    <ul>
+    <li>Create a class that knows how to build an instance of each category for a particular family</li>
+    <li>Create another class that stores instances of these builder classes, and calls their methods when asked to
+      <ul>
+      <li>Adding a new family is easy, but adding a new category requires changes to every builder</li>
+      </ul>
+    </li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>23) Abstract Factory Builder</h2>
+  <pre file="oop02/factory.py" section="builder">class AbstractFamily(object):
+    '''Builders for particular families derive from this.'''
+
+    def __init__(self, family):
+        self.family = family
+
+    def get_name(self):
+        return self.name
+
+    def make_controller(self):
+        raise NotImplementedError('make_controller missing')
+
+    def make_configuration_panel(self):
+        raise NotImplementedError('make_configuration_panel missing')
+</pre>
+</div>
+
+<div class="topic">
+  <h2>24) Abstract Factory Manager</h2>
+  <pre file="oop02/factory.py" section="manager">class FactoryManager(object):
+    '''Manage builders by family.'''
+
+    def __init__(self, current_family=None):
+        self.builders = {}
+        self.family = current_family
+
+    def set_family(self, family):
+        assert family, 'Empty family'
+        self.family = family
+
+    def add(self, builder):
+        name = builder.get_name()
+        self.builders[name] = builder
+
+    def make_controller(self):
+        self._check_state()
+        return self.builders[self.family].make_controller()
+
+    def make_configuration_panel(self):
+        self._check_state()
+        return self.builders[self.family].make_configuration_panel()
+
+    def _check_state(self):
+        assert self.family, 'No family specified'
+        assert self.family in self.builders, 'Unknown family:', self.family
+</pre>
+</div>
+
+<div class="topic">
+  <h2>25) Demonstration</h2>
+  <pre file="oop02/factory.py" section="test">factory = FactoryManager()
+factory.add(RCT100Factory())
+factory.add(Subalta4CFactory())
+factory.set_family('Subalta4C')
+controller = factory.make_controller()
+configuration_panel = factory.make_configuration_panel()
+</pre>
+</div>
+
+<div class="topic">
+  <h2>26) The Command Pattern</h2>
+  <ul>
+  <li>Problem: want to be able to control the operation of a complex object
+    <ul>
+    <li>Turn on the robot arm, move it, lower it, move it again, etc.</li>
+    </ul>
+  </li>
+  <li>Considerations:
+    <ul>
+    <li>Do not want to have to write an entirely new program for each sequence of operations</li>
+    <li>Want to be able to add new operations</li>
+    <li>Would like to be able to undo operations</li>
+    </ul>
+  </li>
+  <li>Solution:
+    <ul>
+    <li>Create one class for each distinct operation
+      <ul>
+      <li>Give the class <code>do</code>, <code>undo</code>, and <code>redo</code> methods</li>
+      </ul>
+    </li>
+    <li>Create instances of these classes to represent particular commands</li>
+    <li>Create lists of these instances to control the robot arm</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>27) Base Command Class</h2>
+  <pre file="oop02/command.py" section="base">class AbstractCommand(object):
+    '''Base class for commands.'''
+    def is_undoable(self):
+        return False # by default, can't undo/redo operations
+    def do(self, robot):
+        raise NotImplementedError(&quot;Don't know how to do %s&quot; % self.name)
+    def undo(self, robot):
+        pass
+    def redo(self, robot):
+        pass
+</pre>
+</div>
+
+<div class="topic">
+  <h2>28) A Particular Command</h2>
+  <pre file="oop02/command.py" section="move">class MoveCommand(AbstractCommand):
+    '''Move the robot arm.'''
+
+    def __init__(self, x, y, z):
+        self.x = x
+        self.y = y
+        self.z = z
+
+    def is_undoable(self):
+        return True
+
+    def do(self, robot):
+        robot.translate(self.x, self.y, self.z)
+
+    def undo(self, robot):
+        robot.translate(-self.x, -self.y, -self.z)
+
+    def redo(self, robot):
+        self.do(robot)
+</pre>
+</div>
+
+<div class="topic">
+  <h2>29) Demonstration</h2>
+  <pre file="oop02/command.py" section="test">robot = Robot()
+commands = [MoveCommand(5.0, 2.0, 2.3),
+            RotateCommand(-90.0, 0.0, 0.0),
+            MoveCommand(1.0, 2.0, 2.0),
+            CloseHandCommand()]
+for c in commands:
+    c.do(robot)
+</pre>
+</div>
+
+<div class="topic">
+  <h2>30) A Few Others</h2>
+  <ul>
+  <li>Cache: store temporary copies of objects locally to improve performance</li>
+  <li>State: record state of program as object so that it can be re-started</li>
+  <li>Null Object: use an object that does nothing in place of <code>null</code>
+    <ul>
+    <li>Saves testing that object isn't null before doing operations</li>
+    </ul>
+  </li>
+  <li>Adapter: wrap one object in another to give the first a different interface
+    <ul>
+    <li>Usually used to give a new library an interface that's compatible with an old one</li>
+    </ul>
+  </li>
+  <li>Proxy: use one object as an interface to another
+    <ul>
+    <li>Typically, the proxy is local, and the real object is on another machine</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>31) Summary</h2>
+  <ul>
+  <li>Overloading, design patterns, and other advanced concepts serve two purposes:
+    <ul>
+    <li>Communication: a concise way for designers to communicate with each other</li>
+    <li>Education: gives them a way to communicate what they know to newcomers</li>
+    </ul>
+  </li>
+  <li>Don't expect to connect them all to your own experience the first time
+    <ul>
+    <li>But keep them in mind as you look at new problems</li>
+    </ul>
+  </li>
+  </ul>
+</div>

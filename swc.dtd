@@ -1,0 +1,31 @@
+<!-- $Id: swc.dtd 1119 2006-05-04 17:51:23Z gvwilson $ -->
+<!ENTITY NN     "&#x2115;">	<!-- natural numbers -->
+<!ENTITY Omega  "&#x03A9;">	<!-- capital omega -->
+<!ENTITY RR     "&#x211D;">	<!-- real numbers -->
+<!ENTITY Theta  "&#x0398;">	<!-- capital theta -->
+<!ENTITY bigo   "O">		<!-- big O symbol -->
+<!ENTITY copy   "&#x00A9;">	<!-- copyright -->
+<!ENTITY eacute "&#x00E9;">	<!-- lower-case e with acute accent -->
+<!ENTITY emdash "&#x2014;">	<!-- em dash -->
+<!ENTITY frac12 "&#x00BD;">	<!-- 1/2 -->
+<!ENTITY frac14 "&#x00BC;">	<!-- 1/4 -->
+<!ENTITY frac34 "&#x00BE;">	<!-- 3/4 -->
+<!ENTITY geq    "&#x2265;">	<!-- greater or equal -->
+<!ENTITY in     "&#x2208;">	<!-- element of -->
+<!ENTITY lceil  "&#x2308;">	<!-- left ceiling -->
+<!ENTITY ldots  "&#x2026;">	<!-- horizontal ellipsis -->
+<!ENTITY leq    "&#x2264;">	<!-- less than or equal -->
+<!ENTITY lfloor "&#x230A;">	<!-- left floor -->
+<!ENTITY lguill "&#x00AB;">	<!-- left guillemot -->
+<!ENTITY lquot  "&#x201C;">	<!-- left double quotes -->
+<!ENTITY nbsp   "&#x00A0;">	<!-- non-breaking space -->
+<!ENTITY notin  "&#x2209;">	<!-- not element of -->
+<!ENTITY plusmn "&#x00B1;">	<!-- plus or minus -->
+<!ENTITY rceil  "&#x2309;">	<!-- right ceiling -->
+<!ENTITY rfloor "&#x230B;">	<!-- right floor -->
+<!ENTITY rguill "&#x00BB;">	<!-- right guillemot -->
+<!ENTITY rquot  "&#x201D;">	<!-- right double quotes -->
+<!ENTITY smiley "&#x263A;">	<!-- smiley face -->
+<!ENTITY squot  "&#x0022;">	<!-- straight double quotes -->
+<!ENTITY times  "&#x00D7;">	<!-- multiplication sign -->
+<!ENTITY vdots  "&#x22EE;">	<!-- vertical ellipsis -->

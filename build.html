@@ -1,0 +1,672 @@
+---
+layout: v3_slideshow
+title: Automated Builds
+prev: v3/shell02.html
+uplink: v3/index.html
+next: v3/oop01.html
+---
+<div class="topic">
+  <h2>1) Introduction</h2>
+  <ul>
+  <li>Most languages require you to compile programs before running them
+    <ul>
+    <li>Typing <code>gcc -c -Wall -ansi -I/pkg/chempak/include dat2csv.c</code> once is bad enough</li>
+    <li>Typing it dozens of times as you edit and debug is tedious and error-prone</li>
+    </ul>
+  </li>
+  <li>Most large programs contain <a href="{{page.root}}/book/glossary.html#dependency" target="glo:dependency">dependencies</a>
+    <ul>
+    <li>Module A uses modules B and C, B uses D and E, C uses E and F, etc.</li>
+    <li>If E changes, ought to recompile B and C, then A</li>
+    </ul>
+  </li>
+  <li>Anything worth repeating is worth automating
+    <ul>
+    <li>A standard way and place to save project-related commands...</li>
+    <li>...that keeps track of what depends on what</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>2) You Can Skip This Lecture If...</h2>
+  <ul>
+  <li>You know what a Makefile is</li>
+  <li>You know how to write a rule</li>
+  <li>You know how dependencies affect the order of command execution</li>
+  <li>You know how to define macros</li>
+  <li>You know how to use automatic variables</li>
+  <li>You know how to write a generic rule</li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>3) Automate, Automate, Automate</h2>
+  <ul>
+  <li>Tools that manage repetitive tasks and their dependencies are usually called <a href="{{page.root}}/book/glossary.html#build-tool" target="glo:build-tool">build tools</a>
+    <ul>
+    <li>Originally developed to rebuild software packages</li>
+    <li>Can equally well be used to update web site content, run backups, etc.</li>
+    </ul>
+  </li>
+  <li>Such a tool must have:
+    <ul>
+    <li>A way to describe what things to do</li>
+    <li>A way to specify the dependencies between them</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>4) Make</h2>
+  <ul>
+  <li>Most widely used build tool is <a href="bib.html#bib:make" target="bib:make">[Make]</a>
+    <ul>
+    <li>Invented at Bell Labs in 1975 by Stuart Feldman <a href="bib.html#bib:feldman-make" target="bib:feldman-make">[Feldman 1979]</a></li>
+    <li>He went on to become a vice-president at IBM, which shows you how far a good tool can take you</li>
+    </ul>
+  </li>
+  <li>The good news: Make is freely available for every major platform, and very well documented</li>
+  <li>The bad news is Make's syntax
+    <ul>
+    <li>Over 30 years, it has grown into a little programming language</li>
+    <li>We will ignore advanced features for now</li>
+    <li>Look at a better way to solve these problems in the <a href="summary.html" target="lec:summary">Summary</a></li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>5) Our Example</h2>
+  <ul>
+  <li>Running example: Automated laboratory equipment runs experiments in batches to create files</li>
+  <li>Each experiment produces 20-30 files
+    <ul>
+    <li>Use <a href="{{page.root}}/book/glossary.html#comma-separated-values" target="glo:comma-separated-values">comma-separated values</a> (CSV) for the table</li>
+    <li>May eventually have several thousand of them</li>
+    </ul>
+  </li>
+  <li>Want to:
+    <ul>
+    <li>Generate tables showing the results for particular trials using a program called <code>dat2csv</code></li>
+    <li>Update a file showing the correlation between concentrations and yields based on those tables</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>6) Example Data File</h2>
+  <pre file="build/hydroxyl-422.dat">Time: 1.2271
+Concentration: 0.0050
+Yield: 11.41
+
+Time: 2.5094
+Concentration: 0.0055
+Yield: 11.20
+
+Time: 3.7440
+Concentration: 0.0060
+Yield: 10.90
+</pre>
+</div>
+
+<div class="topic">
+  <h2>7) Hello, Make</h2>
+  <ul>
+  <li>Put the following into a <a href="{{page.root}}/book/glossary.html#makefile" target="glo:makefile">Makefile</a> called <code>hello.mk</code>:</li>
+  </ul>
+  <pre file="build/hello.mk">hydroxyl_422.csv : hydroxyl_422.dat
+        dat2csv hydroxyl_422.dat &gt; hydroxyl_422.csv
+</pre>
+  <ul>
+  <li><em>Must</em> indent with a tab character: not eight spaces, or a mix of spaces and tabs
+    <ul>
+    <li>Yes, it's a wart, but we're stuck with it</li>
+    </ul>
+  </li>
+  <li>Run <code>make -f hello.mk</code>
+    <ul>
+    <li>Make sees that the CSV file depends on the data file</li>
+    <li>Since the CSV file doesn't exist, Make runs <code>dat2csv hydroxyl_422.dat &gt; hydroxyl_422.csv</code></li>
+    </ul>
+  </li>
+  <li>Run <code>make -f hello.mk</code> again
+    <ul>
+    <li><code>hydroxyl_422.csv</code> is newer than <code>hydroxyl_422.dat</code>, Make does <em>not</em> run the command again</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>8) Terminology</h2>
+  <figure id="fig:build-rule-structure">
+    <img alt="Structure of a Make Rule" src="build/rule-structure.png"/>
+    <p>Figure 11.1: Structure of a Make Rule</p>
+  </figure>
+  <ul>
+  <li><code>hydroxyl_422.csv</code> is the <a href="{{page.root}}/book/glossary.html#target" target="glo:target">target</a> of the <a href="{{page.root}}/book/glossary.html#rule" target="glo:rule">rule</a></li>
+  <li><code>hydroxyl_422.dat</code> is its <a href="{{page.root}}/book/glossary.html#prerequisite" target="glo:prerequisite">prerequisite</a></li>
+  <li>The compilation command is the rule's <a href="{{page.root}}/book/glossary.html#action" target="glo:action">action</a>
+    <ul>
+    <li>Make runs them on your behalf, just as the shell runs the command you type</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>9) Multiple Targets</h2>
+  <ul>
+  <li>Makefiles usually contain multiple rules</li>
+   </ul>
+  <pre file="build/double.mk">hydroxyl_422.csv : hydroxyl_422.dat
+        dat2csv hydroxyl_422.dat &gt; hydroxyl_422.csv
+
+methyl_422.csv : methyl_422.dat
+        dat2csv methyl_422.dat &gt; methyl_422.csv
+</pre>
+  <ul>
+  <li>When you run <code>make -f double.mk</code>, only <code>hydroxyl_422.csv</code> is compiled
+    <ul>
+    <li>The first rule in the Makefile specifies the <a href="{{page.root}}/book/glossary.html#default-target" target="glo:default-target">default target</a></li>
+    <li>Unless you tell it otherwise, that's all Make will update</li>
+    </ul>
+  </li>
+  <li>Have to run <code>make -f double.mk methyl_422.csv</code> to build <code>methyl_422.csv</code></li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>10) Phony Targets</h2>
+  <ul>
+  <li>Running Make separately for each target would hardly count as &quot;automation&quot;</li>
+  <li>Solution: define a <a href="{{page.root}}/book/glossary.html#phony-target" target="glo:phony-target">phony target</a> that:
+    <ul>
+    <li>Depends on all the things you want to recompile, but doesn't correspond to any files</li>
+    <li>It can never be up to date, so making it will always execute its actions</li>
+    </ul>
+  </li>
+  </ul>
+  <pre file="build/phony.mk">all : hydroxyl_422.csv methyl_422.csv
+
+hydroxyl_422.csv : hydroxyl_422.dat
+        dat2csv hydroxyl_422.dat &gt; hydroxyl_422.csv
+
+methyl_422.csv : methyl_422.dat
+        dat2csv methyl_422.dat &gt; methyl_422.csv
+</pre>
+  <ul>
+  <li><code>make -f phony.mk all</code> now creates both <code>.csv</code> files</li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>11) Dependencies</h2>
+  <ul>
+  <li>Note how one target can depend on others
+    <ul>
+    <li><code>all</code> depends on <code>hydroxyl_422.csv</code> and <code>methyl_422.csv</code></li>
+    <li>Each of these depends on (i.e., must be newer than) the corresponding <code>.dat</code> file</li>
+    </ul>
+  </li>
+  <li>Can visualize dependencies as a <a href="{{page.root}}/book/glossary.html#directed-graph" target="glo:directed-graph">directed</a> <a href="{{page.root}}/book/glossary.html#graph" target="glo:graph">graph</a>
+    <ul>
+    <li>Each file is represented by a <a href="{{page.root}}/book/glossary.html#node" target="glo:node">node</a></li>
+    <li>Dependencies are then the graph's <a href="{{page.root}}/book/glossary.html#arc" target="glo:arc">arcs</a></li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <figure id="fig:build-visualize-depend">
+    <img alt="Visualizing Dependencies" src="build/visualize-depend.png"/>
+    <p>Figure 11.2: Visualizing Dependencies</p>
+  </figure>
+</div>
+
+<div class="topic">
+  <h2>12) Updating Dependencies</h2>
+  <ul>
+  <li>Make's built-in processing cycle:
+    <ul>
+    <li>Follow links top-down to find direct and indirect dependencies</li>
+    <li>Execute actions bottom-up to update</li>
+    </ul>
+  </li>
+  <li>Make can execute actions in any order it wants to, as long as it doesn't violate dependency ordering
+    <ul>
+    <li>Could update either <code>hydroxyl_422.csv</code> or <code>methyl_422.csv</code> first</li>
+    <li>But has to update both before &quot;updating&quot; <code>all</code></li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>13) Conventions</h2>
+  <ul>
+  <li>If you run <code>make</code> with no arguments, it automatically looks for a file called <code>Makefile</code>
+    <ul>
+    <li>So most projects use that name for their Makefile</li>
+    <li>And remember, without an explicit target name, <code>make</code> only updates the first one it finds</li>
+    </ul>
+  </li>
+  <li>Typical phony targets in a typical Makefile include:
+    <ul>
+    <li><code>&quot;all&quot;</code>: recompile everything</li>
+    <li><code>&quot;clean&quot;</code>: delete all temporary files, and everything produced by compilation</li>
+    <li><code>&quot;install&quot;</code>: copy files to system directories</li>
+    </ul>
+  </li>
+  <li>Many open source packages can be installed by typing:
+    <ul>
+    <li><code>make configure</code></li>
+    <li><code>make</code></li>
+    <li><code>make test</code></li>
+    <li><code>make install</code></li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>14) Automatic Variables</h2>
+  <ul>
+  <li>Make defines <a href="{{page.root}}/book/glossary.html#automatic-variable" target="glo:automatic-variable">automatic variables</a> to represent parts of rules
+    <ul>
+    <li>Values re-set for each rule</li>
+    <li>Unfortunately, names are very cryptic</li>
+    </ul>
+  </li>
+    <div id="tbl:build-autovars">
+      <table>
+        <tr>
+          <th>Variable</th>
+          <th>Meaning</th>
+        </tr>
+        <tr>
+          <td><code>&quot;$@&quot;</code></td>
+          <td>The rule's target</td>
+        </tr>
+        <tr>
+          <td><code>&quot;$&lt;&quot;</code></td>
+          <td>The rule's first prerequisite</td>
+        </tr>
+        <tr>
+          <td><code>&quot;$?&quot;</code></td>
+          <td>All of the rule's out-of-date prerequisites</td>
+        </tr>
+        <tr>
+          <td><code>&quot;$^&quot;</code></td>
+          <td>All prerequisites</td>
+        </tr>
+      </table>
+      <p>Table 11.1: Automatic Variables in Make</p>
+    </div>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>15) Automatic Variables Example</h2>
+  <ul>
+  <li>Rewrite the Makefile using automatic variables</li>
+  </ul>
+  <pre file="build/auto.mk">all : hydroxyl_422.csv methyl_422.csv
+
+hydroxyl_422.csv : hydroxyl_422.dat
+        @dat2csv $&lt; &gt; $@
+
+methyl_422.csv : methyl_422.dat
+        @dat2csv $&lt; &gt; $@
+
+clean :
+        @rm -f *.csv
+</pre>
+  <ul>
+  <li>By default, Make echoes actions before executing them
+    <ul>
+    <li>Putting <code>&quot;@&quot;</code> at the start of the action line prevents this</li>
+    </ul>
+  </li>
+  <li>And add a phony target <code>clean</code> to tidy up generated files
+    <ul>
+    <li>Question: why <code>rm -f</code> instead of just <code>rm</code>?</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>16) Pattern Rules</h2>
+  <ul>
+  <li>Most files of similar type in a project are processed the same way
+    <ul>
+    <li>E.g., typically compile all C# or Java files with the same options</li>
+    </ul>
+  </li>
+  <li>Write a <a href="{{page.root}}/book/glossary.html#pattern-rule" target="glo:pattern-rule">pattern rule</a> to describe the general case</li>
+  </ul>
+  <pre file="build/rule.mk">all : hydroxyl_422.csv methyl_422.csv
+
+%.csv : %.dat
+        @dat2csv $&lt; &gt; $@
+
+clean :
+        @rm -f *.csv
+</pre>
+  <ul>
+  <li>The wildcard <code>&quot;%&quot;</code> represents the stem of the file's name in the target and prerequisites</li>
+  <li>Must use automatic variables in the actions
+    <ul>
+    <li>This is why they were invented</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>17) Adding More Dependencies</h2>
+  <ul>
+  <li>Now create a summary for each set of experiments
+    <ul>
+    <li>Use <code>summarize</code> to combine data from <code>hydroxyl_422.csv</code> and <code>hydroxyl_480.csv</code></li>
+    <li>Output is <code>hydroxyl_all.csv</code></li>
+    <li>Perform same calculation for methyl files</li>
+    </ul>
+  </li>
+  <li>Updated Makefile is a simple extension of what we've seen before:</li>
+  </ul>
+  <pre file="build/depend.mk">all : hydroxyl_all.csv methyl_all.csv
+
+%_all.csv : %_422.csv %_480.csv
+        summarize $^ &gt; $@
+
+%.csv : %.dat dat2csv
+        dat2csv $&lt; &gt; $@
+
+clean :
+        @rm -f *.csv
+</pre>
+  <pre class="out" file="build/depend.out">dat2csv hydroxyl_422.dat &gt; hydroxyl_422.csv
+dat2csv hydroxyl_480.dat &gt; hydroxyl_480.csv
+summarize hydroxyl_422.csv hydroxyl_480.csv &gt; hydroxyl_all.csv
+dat2csv methyl_422.dat &gt; methyl_422.csv
+dat2csv methyl_480.dat &gt; methyl_480.csv
+summarize methyl_422.csv methyl_480.csv &gt; methyl_all.csv
+rm hydroxyl_480.csv methyl_422.csv hydroxyl_422.csv methyl_480.csv
+</pre>
+  <ul>
+  <li>The rule for <code>%_all.csv</code> takes precedence over the rule for <code>%.csv</code>
+    <ul>
+    <li>Make uses the most specific rule available</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>18) Tidying Up</h2>
+  <ul>
+  <li>What happens when this file is executed for the first time?</li>
+  </ul>
+  <pre class="in" file="build/depend.cmd">$ make -f depend.mk
+</pre>
+  <ul>
+  <li>Make automatically removes intermediate files created by pattern rules when it's done
+    <ul>
+    <li>Question: how do you prevent this?</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>19) Defining Macros</h2>
+  <ul>
+  <li>Often want to define variables inside a Makefile
+    <ul>
+    <li>The output directory, the optimization flags for the compiler, etc.</li>
+    </ul>
+  </li>
+  <li>Anything repeated in two or more places will eventually be wrong in at least one</li>
+  <li>Solution: define variables (usually called <a href="{{page.root}}/book/glossary.html#macro" target="glo:macro">macros</a>)
+    <ul>
+    <li>Remember: Make is a little programming language</li>
+    <li>Change behavior by changing one value in one place</li>
+    </ul>
+  </li>
+  </ul>
+  <pre file="build/macro.mk">INPUT_DIR = /lab/gamma2100
+OUTPUT_DIR = /tmp
+
+all : ${OUTPUT_DIR}/hydroxyl_all.csv ${OUTPUT_DIR}/methyl_all.csv
+
+${OUTPUT_DIR}/%_all.csv : ${OUTPUT_DIR}/%_422.csv ${OUTPUT_DIR}/%_480.csv
+        @summarize $^ &gt; $@
+
+${OUTPUT_DIR}/%.csv : ${INPUT_DIR}/%.dat
+        @dat2csv $&lt; &gt; $@
+
+clean :
+        @rm -f *.csv
+</pre>
+  <ul>
+  <li>To get value, put a <code>&quot;$&quot;</code> in front of the name <em>and</em> parentheses or braces around it
+    <ul>
+    <li>Can use <code>$(XYZ)</code> or <code>${XYZ</code>}</li>
+    </ul>
+  </li>
+  <li>Without the parentheses, Make interprets <code>&quot;$XYZ&quot;</code> as the value of <code>&quot;X&quot;</code>, followed by the characters <code>&quot;YZ&quot;</code>
+    <ul>
+    <li>Yes, it's another wart</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>20) Passing Values to Make</h2>
+  <ul>
+  <li>Sometimes useful to pass values into Make when invoking it
+    <ul>
+    <li>E.g., change the input directory</li>
+    </ul>
+  </li>
+  <li>Instead of editing the Makefile, specify <code>name=value</code> pairs on the command line
+    <ul>
+    <li>Define a macro with the default value</li>
+    <li>Override it when you want to</li>
+    </ul>
+  </li>
+  <li>So:
+    <ul>
+    <li><code>make -f macro.mk</code> sets <code>INPUT_DIR</code> to <code>/lab/gamma2100</code></li>
+    <li>But <code>make INPUT_DIR=/newlab -f macro.mk</code> uses <code>/newlab</code></li>
+    </ul>
+  </li>
+  <li>Make also looks at environment variables
+    <ul>
+    <li>You can refer to <code>${HOME</code>} in a Makefile without having defined it</li>
+    </ul>
+  </li>
+  </ul>
+  <pre file="build/env.mk">VAL = original
+echo :
+        @echo &quot;VAL is&quot; ${VAL}
+</pre>
+  <pre class="in" file="build/env-1.cmd">$ make -f env.mk echo
+</pre>
+  <pre class="out" file="build/env-2.out">VAL is original
+</pre>
+  <pre class="in" file="build/env-3.cmd">$ make VAL=changed -f env.mk echo
+</pre>
+  <pre class="out" file="build/env-4.out">VAL is changed
+</pre>
+</div>
+
+<div class="topic">
+  <h2>21) Functions</h2>
+  <ul>
+  <li>GNU Make has many built-in functions
+    <ul>
+    <li>Not part of the standard, but GNU Make is the most widely used version around</li>
+    </ul>
+  </li>
+  <li>Example: use <code>addprefix</code> and <code>addsuffix</code> to build a list of filenames
+    <ul>
+    <li>Turn <code>hydroxyl</code> into <code>/tmp/hydroxyl_all.csv</code> and <code>methyl</code> into <code>/tmp/methyl_all.csv</code></li>
+    </ul>
+  </li>
+  </ul>
+  <pre file="build/functions.mk">INPUT_DIR = /lab/gamma2100
+OUTPUT_DIR = /tmp
+CHEMICALS = hydroxyl methyl
+SUMMARIES = $(addprefix ${OUTPUT_DIR}/,$(addsuffix _all.csv,${CHEMICALS}))
+
+all : ${SUMMARIES}
+
+${OUTPUT_DIR}/%_all.csv : ${OUTPUT_DIR}/%_422.csv ${OUTPUT_DIR}/%_480.csv
+        @summarize $^ &gt; $@
+
+${OUTPUT_DIR}/%.csv : ${INPUT_DIR}/%.dat
+        @dat2csv $&lt; &gt; $@
+
+clean :
+        @rm -f *.csv
+</pre>
+</div>
+
+<div class="topic">
+  <div id="tbl:build-funcs">
+    <table>
+      <tr>
+        <th>Function</th>
+        <th>Purpose</th>
+      </tr>
+      <tr>
+        <td><code>$(addprefix prefix,filenames)</code></td>
+        <td>Add a prefix to each filename in a list</td>
+      </tr>
+      <tr>
+        <td><code>$(addsuffix suffix,filenames)</code></td>
+        <td>Add a suffix to each filename in a list</td>
+      </tr>
+      <tr>
+        <td><code>$(dir filenames)</code></td>
+        <td>Extract the directory name portion of each filename in a list</td>
+      </tr>
+      <tr>
+        <td><code>$(filter pattern,text)</code></td>
+        <td>Keep words in <code>text</code> that match <code>pattern</code></td>
+      </tr>
+      <tr>
+        <td><code>$(filter-out pattern,text)</code></td>
+        <td>Keep words in <code>text</code> that <em>don't</em> match <code>pattern</code></td>
+      </tr>
+      <tr>
+        <td><code>$(patsubst pattern,replacement,text)</code></td>
+        <td>Replace everything that matches <code>pattern</code> in <code>text</code></td>
+      </tr>
+      <tr>
+        <td><code>$(sort text)</code></td>
+        <td>Sort the words in <code>text</code>, removing duplicates</td>
+      </tr>
+      <tr>
+        <td><code>$(strip text)</code></td>
+        <td>Remove leading and trailing whitespace from <code>text</code></td>
+      </tr>
+      <tr>
+        <td><code>$(subst from,to,text)</code></td>
+        <td>Replace <code>from</code> with <code>to</code> in <code>text</code></td>
+      </tr>
+      <tr>
+        <td><code>$(wildcard pattern)</code></td>
+        <td>Create a list of filenames that match a pattern</td>
+      </tr>
+    </table>
+    <p>Table 11.2: Commonly-Used Functions</p>
+  </div>
+</div>
+
+<div class="topic">
+  <h2>22) Pros and Cons</h2>
+  <ul>
+  <li>Pro
+    <ul>
+    <li>Simple things are simple to do...</li>
+    <li>...and not too difficult to read...</li>
+    <li>...especially compared to the alternatives</li>
+    </ul>
+  </li>
+  <li>Con
+    <ul>
+    <li>The syntax is unpleasant</li>
+    <li>Complex things are difficult to read...</li>
+    <li>...and even more difficult to debug
+      <ul>
+      <li>Best you can do is use <code>echo</code> to print things as Make executes</li>
+      </ul>
+    </li>
+    <li>Not really very portable
+      <ul>
+      <li>Hands commands to the shell for execution</li>
+      <li>But commands use different flags on different operating systems</li>
+      <li>Do you use <code>del</code> or <code>rm</code> to delete files?</li>
+      </ul>
+    </li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>23) Alternatives</h2>
+  <ul>
+  <li><a href="bib.html#bib:ant" target="bib:ant">[Ant]</a>: primary for Java, but equivalent tools now exist for .NET
+    <ul>
+    <li>Less platform-dependent, but just as hard to read and debug</li>
+    </ul>
+  </li>
+  <li><a href="{{page.root}}/book/glossary.html#integrated-development-environment" target="glo:integrated-development-environment">Integrated development environments</a>
+    <ul>
+    <li>Most hide the details in idiosyncratic configuration files</li>
+    <li>Even harder than Makefiles to customize if you're not using the GUI</li>
+    </ul>
+  </li>
+  <li><a href="bib.html#bib:scons" target="bib:scons">[SCons]</a>
+    <ul>
+    <li>Let users describe dependencies and actions in a real programming language</li>
+    <li>More powerful and debuggable, but steeper learning curve</li>
+    </ul>
+  </li>
+  <li>Once builds are automated, the next step is to run them continuously
+    <ul>
+    <li>Every time someone checks something into version control, rebuild the software (or site), and re-run tests</li>
+    <li>See <a href="bib.html#bib:cruisecontrol" target="bib:cruisecontrol">[CruiseControl]</a> and <a href="bib.html#bib:bitten" target="bib:bitten">[Bitten]</a></li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>24) Summary</h2>
+  <ul>
+  <li>Two rules for healthy software projects:
+    <ul>
+    <li>Every repetitive task is done through the build system</li>
+    <li>Never commit anything to version control repository that breaks the build</li>
+    </ul>
+  </li>
+  <li>Remember: a Makefile is a program
+    <ul>
+    <li>So give your build the same careful attention you'd give any other programming problem</li>
+    </ul>
+  </li>
+  </ul>
+</div>

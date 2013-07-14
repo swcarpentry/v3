@@ -1,0 +1,490 @@
+---
+layout: v3_slideshow
+title: Introduction
+prev: null
+uplink: v3/index.html
+next: v3/py01.html
+---
+<div class="topic">
+  <h2>1) Introduction</h2>
+  <ul>
+  <li>This course will teach you how to design, build, maintain, and share programs efficiently</li>
+  <li>Focus on the equivalent of good laboratory technique
+    <ul>
+    <li>The 20% of ideas that account for 80% of real world use</li>
+    <li>Software <em>carpentry</em>, rather than software <em>engineering</em>
+      <ul>
+      <li>About putting an extension on the house, rather than building the Channel Tunnel</li>
+      </ul>
+    </li>
+    </ul>
+  </li>
+  <li>Everything that will make you more productive will also improve the quality of what you build
+    <ul>
+    <li>Help computational science deserve the second half of its name</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>2) Bhargan Basepair</h2>
+
+Bhargan Basepair received a B.Sc. in biochemistry five years ago.  He
+has been working since then for Genes'R'Us, a biotech firm with labs
+in four countries.  He did a Java programming course as a freshman,
+and a bioinformatics course using Perl as a senior.
+
+Bhargan and his colleagues are developing fuzzy pattern-matching
+algorithms for finding similarities between DNA records in standard
+databases.  To help other Genes'R'Us researchers, and to test his
+group's heuristics, Bhargan runs an overnight sequence query service.
+Researchers email sequences in a variety of formats (in-line,
+attachments, URLs to pages behind the company firewall, etc.).
+Bhargan saves them in files called <code>search/a.in</code>,
+<code>search/b.in</code>, and so on, then edits them to add query
+directives.  He is very conscientious, and almost never accidentally
+overwrites one query with another.
+
+Before leaving at night, he runs a Perl script that processses these
+inputs to create output files with matching names like
+<code>search/a.out</code>.  When Bhargan comes in the next morning, he pages
+through his mail again, sending <code>.out</code> files to the appropriate
+people.  (He almost never sends the wrong file to the wrong person.)
+He then uses another Perl script to copy all the input and output
+files to a directory with a name corresponding to the date, such as
+<code>2009-07-23</code>.  He and his colleagues would like to do statistics
+on these saved queries and results to see how well their algorithms
+are doing, but have never found the time.
+
+This course will teach Bhargan how to automate his overnight service
+by writing simple scripts to retrieve, process, and reply to email
+queries.  Those scripts will automatically record queries, results,
+and other data, and produce a daily summary of the performance of the
+pattern-matching algorithms.
+
+</div>
+
+<div class="topic">
+  <h2>3) Helen Helmet</h2>
+
+Helen Helmet, a Ph.D. student in mechanical engineering, is currently
+doing a six-month internship at an engineering firm designing
+carbon-fiber helmets for firefighters and other emergency service
+personnel.  Her undergraduate courses included an introduction to
+scientific computing using MATLAB, a robotics course using C, and a
+numerical methods course that also used MATLAB.  She taught herself
+Fortran during a co-op placement between her junior and senior years,
+and used it again in a graduate course on finite elements.
+
+Helen's task is to model the non-combustive thermal degradation
+(otherwise known as &quot;melting&quot;) of candidate materials.  Her starting
+point is a 14,000-line program her supervisor wrote a decade ago.
+After deciding that there isn't time to re-write it in C++ (which she
+would like to learn), she comments out the calls to the mesh
+deformation routine in the main loop and begins to write a
+replacement.  She sometimes deletes what she has written and starts
+over three or four times before she is satisfied.
+
+Helen tests her program by writing the total heat content of the mesh
+at each time step to a file.  She then loads this data into MATLAB to
+graph the percentage differences between these values and the ones
+produced by the original program for six sample problems.  In one
+case, the difference grew as large as 30% by the end of the
+simulation.  Helen added <code>write</code> statements to her program to
+display values until she managed to convince herself that the
+difference was due to a bug in the original subroutines.
+
+Helen keeps a to-do list on her home page.  Every two or three days,
+she updates this list to show the progress she has made.  She keeps
+completed tasks on the page until the end of the month, when she
+writes a short status report for her supervisor.
+
+This course will teach Helen to design software before she starts
+typing, and that there are better ways to manage code evolution than
+commenting out one section, and replacing it with another.  She will
+also learn more effective testing and debugging procedures, and how to
+use a version control system to ensure that she can back down to an
+old version of code when she needs to.  Finally, she will be shown how
+to use an issue-tracking system to manage her to-do list, and how to
+write a small script to generate his monthly progress report
+automatically.
+
+</div>
+
+<div class="topic">
+  <h2>4) Stefan Synthesis</h2>
+
+Stefan Synthesis is a graduate student in chemistry who is working as
+a lab technician to help cover his costs.  His only programming
+experience is a general first-year introduction to computational
+science using Python.
+
+Stefan's supervisor is studying the production of fullerenes (also
+known as &quot;buckyballs&quot;).  Each set of experiments involves 100
+different reactant mixtures, 20 different temperature regimes, and 5
+different pressures.  Using a machine built by a collaborating lab,
+Stefan can run all the mixture and temperature combinations at once,
+so that the output of each experiment is five files containing 2000
+lines of data each.
+
+The controller for the experimental machine writes these files to
+Stefan's workstation approximately an hour after the experiment
+begins.  To analyze them, Stefan opens them with Excel, copies and
+pastes to merge the data into one spreadsheet, then creates a chart
+using the chart wizard.  He saves the chart as a PNG file on the
+group's web site, along with the original data file.
+
+Two or three times a week, Stefan receives results from his
+supervisor's collaborators.  He creates charts for each, which he
+uploads to the web site, then merges summary statistics into a master
+spreadsheet.
+
+This course will teach Stefan how to automate the process described
+above.  More importantly, it will teach him how to track the
+provenance of the data he is working with, so that scientists in his
+group and others can trace backward from the final charts to the raw
+data they represent.
+
+</div>
+
+<div class="topic">
+  <h2>5) Self Assessment</h2>
+  <ul>
+  <li>1 for &quot;yes&quot;, 0 for &quot;no&quot; or &quot;not relevant&quot;, and -1 if you don't understand the question
+    <ul>
+    <li>Do you use version control?</li>
+    <li>Can you rebuild everything with one command?</li>
+    <li>Do you build the software from scratch daily?</li>
+    <li>Do you have an automated test suite?</li>
+    <li>Do you run the suite before checking in changes?</li>
+    <li>Do you know how much code your tests cover?</li>
+    <li>Do you have a bug database?</li>
+    <li>Do you use a symbolic debugger?</li>
+    <li>Do you use assertions and other defensive programming techniques?</li>
+    <li>Can you trace <em>everything</em> you release (not just software) back to its origins?</li>
+    <li>Do you document as you program?</li>
+    <li>Do you keep your documentation in your source files?</li>
+    <li>Can you set up a development environment on a fresh machine without heroic effort?</li>
+    <li>Is there a searchable archive of discussions about the project?</li>
+    <li>Do you use a style checker to ensure that your software is written in a uniform, readable way?</li>
+    </ul>
+  </li>
+  <li>Your score:
+    <ul>
+    <li>Negative: you will find this course challenging, but rewarding</li>
+    <li>0-5: this course will fill in the gaps in what you already know</li>
+    <li>6-10: you will be able to apply the ideas in this course to your own projects immediately</li>
+    <li>11 and up: you should probably go straight to the primary material in the bibliography</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>6) The State of Play</h2>
+  <ul>
+  <li>Computers are as important to scientists as telescopes and test tubes
+    <ul>
+    <li>Simulate things that are too big, too small, too fast, too slow, or too dangerous to study in the lab</li>
+    <li>Analyze volumes of data that would overwhelm human &quot;computers&quot;</li>
+    </ul>
+  </li>
+  <li>Many scientists now spend much of their time writing and maintaining software</li>
+  <li>But most have never been taught how to do this efficiently
+    <ul>
+    <li>It's a long way from the loops and arrays of first year to simulating bone development in fetal marsupials</li>
+    <li>Like being shown how to differentiate polynomials, then expected to invent the rest of calculus</li>
+    </ul>
+  </li>
+  <li>As a result, scientists spend far more time programming than they ought to
+    <ul>
+    <li>And they still don't know how trustworthy their programs are</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>7) Meeting Standards</h2>
+  <ul>
+  <li>Experimental results are only publishable if they are believed to be <em>correct</em> and <em>reproducible</em>
+    <ul>
+    <li>Equipment calibrated, samples uncontaminated, relevant steps recorded, etc.</li>
+    </ul>
+  </li>
+  <li>In practice, rely on expectations and cultural norms
+    <ul>
+    <li>Drilled into people starting with their first high school chemistry class</li>
+    <li>Only actually check work that is already under suspicion</li>
+    </ul>
+  </li>
+  <li>How well do computational scientists meet these standards?
+    <ul>
+    <li>Correctness of code rarely questioned
+      <ul>
+      <li>We all know programs are buggy...</li>
+      <li>...but when was the last time you saw a paper rejected because of concerns over software quality?</li>
+      </ul>
+    </li>
+    <li>Reproducibility often nonexistent
+      <ul>
+      <li>How many people can reproduce, much less trace, each computational result in their thesis?</li>
+      </ul>
+    </li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>8) The Grass Isn't That Much Greener</h2>
+  <ul>
+  <li>The bad news is that things aren't that much better in industry
+    <ul>
+    <li>Commercial projects of all sizes routinely go over time and over budget</li>
+    <li>What they deliver is often incomplete, riddled with bugs, and not what the customer actually wanted</li>
+    </ul>
+  </li>
+  <li>How is this possible?
+    <ul>
+    <li>Low expectations
+      <ul>
+      <li>Like American cars in the 1970s</li>
+      </ul>
+    </li>
+    <li>Lack of accountability
+      <ul>
+      <li>Hard to sue software developers</li>
+      <li>Most shrink-wrap licenses effectively say, &quot;This CD could be blank, and we wouldn't have to give you back your money.&quot;</li>
+      </ul>
+    </li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>9) Hidden in Plain Sight</h2>
+  <ul>
+  <li>The good news is that we've had solutions for these problems for years
+    <ul>
+    <li>They just aren't evenly distributed</li>
+    <li>This is one of the reasons good programmers are up to 28 times better than bad ones <a href="bib.html#bib:glass-facts-fallacies" target="bib:glass-facts-fallacies">[Glass 2002]</a></li>
+    </ul>
+  </li>
+  <li><em>Improving quality improves productivity</em>
+    <ul>
+    <li>The more effort you put into making sure it's right the first time, the less total time it'll take to get it built</li>
+    </ul>
+  </li>
+  <li><em>The tools and techniques that help you write better code also help you write more code, faster</em>
+    <ul>
+    <li>Version control</li>
+    <li>Test-driven development</li>
+    <li>Task automation</li>
+    <li>Symbolic debuggers</li>
+    <li>And more that we'll meet later</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>10) The Times They Are A-Changing</h2>
+  <ul>
+  <li>The current situation is clearly unstable
+    <ul>
+    <li>The only direction standards and expectations can go is up</li>
+    <li>One high-profile lawsuit could set a precedent for the whole industry</li>
+    <li>Change can happen almost overnight
+      <ul>
+      <li>Like the American car market when German and Japanese imports appeared in the 1970s</li>
+      </ul>
+    </li>
+    </ul>
+  </li>
+  <li>Offshoring is currently the biggest pressure
+    <ul>
+    <li>Jobs that <em>can</em> move overseas <em>will</em></li>
+    <li>As in manufacturing, only work that adds significant value will remain</li>
+    <li>Which means that programmers in affluent societies either move up, or move out</li>
+    </ul>
+  </li>
+  <li>This course is just as relevant if you're in Mexico, India, China, or Hungary
+    <ul>
+    <li>&quot;Ship, then fix&quot; doesn't work if you're eleven time zones away from the customer</li>
+    <li>Your chances of getting a second project are much better if you deliver the first one on spec and on time</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>11) This Course</h2>
+  <ul>
+  <li>Introduce some basic tools
+    <ul>
+    <li>Instant gratification</li>
+    <li>Serve as a guide to good practice
+      <ul>
+      <li>Every software tool implicitly embodies someone's ideas about how a task should be done</li>
+      </ul>
+    </li>
+    </ul>
+  </li>
+  <li>Show how to build tools like these
+    <ul>
+    <li>What goes into the software</li>
+    <li>How to create it</li>
+    <li>Don't expect you to write your own version control system or bug tracker
+      <ul>
+      <li>But <em>do</em> expect you to automate common tasks, make your products extensible, etc.</li>
+      </ul>
+    </li>
+    </ul>
+  </li>
+  <li>Show how to apply these ideas to other tasks
+    <ul>
+    <li>Most modern well-engineered applications are implemented as specialized sets of tools</li>
+    <li>(Where &quot;well-engineered&quot; means flexible, reliable, and maintainable)</li>
+    </ul>
+  </li>
+  <li>Keep in mind that it's impossible to cram an undergraduate degree and several years of industry experience into one course
+    <ul>
+    <li>If you really want to improve, you have to treat this course as a starter's block, not a finishing line</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>12) Setting Up</h2>
+  <ul>
+  <li>Some previous programming experience
+    <ul>
+    <li><code>for</code> loops, <code>if</code>/<code>then</code>/<code>else</code>, ...</li>
+    <li>Function calls, arrays, file I/O, ...</li>
+    <li>If you haven't done at least this much, you probably won't understand the problems this course is trying to solve</li>
+    </ul>
+  </li>
+  <li>Some tools
+    <ul>
+    <li><a href="bib.html#bib:python" target="bib:python">[Python]</a> (version 2.3 or higher)
+      <ul>
+      <li>We'll look at why later</li>
+      </ul>
+    </li>
+    <li>A Unix shell
+      <ul>
+      <li>Use <a href="bib.html#bib:cygwin" target="bib:cygwin">[Cygwin]</a> if you're on Windows</li>
+      </ul>
+    </li>
+    <li>An editor (preferably one with syntax highlighting and macros)
+      <ul>
+      <li>We'll look at integrated development environments later in the course</li>
+      </ul>
+    </li>
+    <li><a href="bib.html#bib:subversion" target="bib:subversion">[Subversion]</a></li>
+    </ul>
+  </li>
+  <li>Some time
+    <ul>
+    <li>You can only learn by doing</li>
+    <li>So expect to spend 2-3 hours outside class for each lecture</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>13) A Note on Tool Choice</h2>
+  <ul>
+  <li>Most of the tools used in this course are freely available under various open source licenses
+    <ul>
+    <li>As are these notes</li>
+    </ul>
+  </li>
+  <li>That <em>doesn't</em> mean that free tools are always best
+    <ul>
+    <li><em>Linux is only free if your time has no value.</em> (Jamie Zawinski)</li>
+    <li>Commercial tools are often more complete than their free counterparts
+      <ul>
+      <li>Not least because there are some jobs people will only do if they're paid to</li>
+      </ul>
+    </li>
+    <li>If you're willing to spend $200 on a good chair, you should be willing to spend $200 on software, too</li>
+    </ul>
+  </li>
+  <li>If you want to use open source software:
+    <ul>
+    <li>Be aware that many companies provide for-pay technical support</li>
+    <li>Read <a href="bib.html#bib:fogel-producing-open-source" target="bib:fogel-producing-open-source">[Fogel 2005]</a> (and possibly <a href="bib.html#bib:rosen-open-source-licensing" target="bib:rosen-open-source-licensing">[Rosen 2005]</a>)</li>
+    <li>Think about contributing something yourself
+      <ul>
+      <li>Great way to make contacts and learn new skills</li>
+      <li>Best way to get exactly what you want</li>
+      </ul>
+    </li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>14) Contributing</h2>
+  <ul>
+  <li>This course is open source, too
+    <ul>
+    <li>See the <a href="license.html" target="lec:license">License</a> for the details</li>
+    </ul>
+  </li>
+  <li>Contributions are very welcome
+    <ul>
+    <li>So is feedback about your classroom experiences</li>
+    <li>See <a href="bib.html#bib:swcsite" target="bib:swcsite">[Software Carpentry]</a> for details</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>15) Recommended Reading</h2>
+  <ul>
+  <li><a href="bib.html#bib:glass-facts-fallacies" target="bib:glass-facts-fallacies">[Glass 2002]</a> summarizes what we actually know about programmers' productivity</li>
+  <li><a href="bib.html#bib:hunt-thomas-pragmatic-programmer" target="bib:hunt-thomas-pragmatic-programmer">[Hunt &amp; Thomas 1999]</a> and <a href="bib.html#bib:gunderloy-coder-developer" target="bib:gunderloy-coder-developer">[Gunderloy 2004]</a> are about the things that distinguish good programmers from bad ones</li>
+  <li>A book on the Unix shell
+    <ul>
+    <li><a href="bib.html#bib:ray-ray-unix" target="bib:ray-ray-unix">[Ray &amp; Ray 2003]</a> is gentle and well-illustrated</li>
+    <li>Despite its age, <a href="bib.html#bib:kernighan-pike-unix-environment" target="bib:kernighan-pike-unix-environment">[Kernighan &amp; Pike 1984]</a> is still useful</li>
+    </ul>
+  </li>
+  <li>Books on Python (<a href="bib.html#bib:python" target="bib:python">[Python]</a>)
+    <ul>
+    <li><a href="bib.html#bib:lutz-ascher-learning-python" target="bib:lutz-ascher-learning-python">[Lutz &amp; Ascher 2003]</a> is the standard introduction</li>
+    <li><a href="bib.html#bib:fehily-python" target="bib:fehily-python">[Fehily 2006]</a> is more approachable</li>
+    <li><a href="bib.html#bib:pilgrim-dive-into-python" target="bib:pilgrim-dive-into-python">[Pilgrim 2004]</a> is also good, and is available on-line for free</li>
+    <li><a href="bib.html#bib:langtangen-python-computational-science" target="bib:langtangen-python-computational-science">[Langtangen 2004]</a> is a comprehensive introducton for scientists and engineers
+      <ul>
+      <li>Goes into much more detail than this course will</li>
+      <li>But doesn't address broader issues, such as programming practices</li>
+      </ul>
+    </li>
+    </ul>
+  </li>
+  <li><a href="bib.html#bib:doar-practical-dev-env" target="bib:doar-practical-dev-env">[Doar 2005]</a> describes what a complete development environment ought to contain
+    <ul>
+    <li>By the time this course is over, you should understand what each tool he describes does, and why you want to use it</li>
+    </ul>
+  </li>
+  <li>See the bibliography for (many) others</li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>16) Summary</h2>
+  <ul>
+  <li>Twenty-five hours of instruction, and one hundred hours of practice, can change your life for the better</li>
+  <li>Let's get started</li>
+  </ul>
+</div>

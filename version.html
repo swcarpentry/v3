@@ -1,0 +1,667 @@
+---
+layout: v3_slideshow
+title: Version Control
+prev: v3/debugging.html
+uplink: v3/index.html
+next: v3/py04.html
+---
+<div class="topic">
+  <h2>1) Introduction</h2>
+  <ul>
+  <li>Four things distinguish professional programmers from amateurs:
+    <ul>
+    <li>Using a version control system</li>
+    <li>Automating repetitive tasks</li>
+    <li>Systematic testing</li>
+    <li>Using debugging aids rather than <code>print</code> statements</li>
+    </ul>
+  </li>
+  <li>This lecture introduces the first of these
+    <ul>
+    <li>Even if it's the only thing you take away from this course, you'll be more productive than you are now</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>2) You Can Skip This Lecture If...</h2>
+  <ul>
+  <li>You know what a repository is</li>
+  <li>You know how to commit changes</li>
+  <li>You know how to merge conflicts</li>
+  <li>You know how to roll back a set of changes</li>
+  <li>You know what a branch is</li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>3) Problem #1: Collaboration</h2>
+  <ul>
+  <li>What if two or more people want to edit the same file at the same time?</li>
+  <li>Option 1: make them take turns
+    <ul>
+    <li>But then only one person can be working at any time</li>
+    <li>And how do you enforce the rule?</li>
+    </ul>
+  </li>
+  <li>Option 2: patch up differences afterwards
+    <ul>
+    <li>Requires a lot of re-working</li>
+    <li>Stuff always gets lost</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>4) Solution: Version Control</h2>
+  <ul>
+  <li>The right solution is to use a <a href="{{page.root}}/book/glossary.html#version-control-system" target="glo:version-control-system">version control system</a></li>
+  <li>Keep the master copy of the file in a central <a href="{{page.root}}/book/glossary.html#repository" target="glo:repository">repository</a></li>
+  <li>Each author edits a <a href="{{page.root}}/book/glossary.html#working-copy" target="glo:working-copy">working copy</a></li>
+  <li>When they're ready to share their changes, they <a href="{{page.root}}/book/glossary.html#commit" target="glo:commit">commit</a> them to the repository</li>
+  <li>Other people can then do an <a href="{{page.root}}/book/glossary.html#update" target="glo:update">update</a> to get those changes</li>
+  <figure id="fig:version-multi-author-collab">
+    <img alt="Managing Multi-Author Collaboration" src="version/multi-author-collab.png"/>
+    <p>Figure 6.1: Managing Multi-Author Collaboration</p>
+  </figure>
+  <li>This is also a good way for one person to manage files on multiple machines
+    <ul>
+    <li>Keep one working copy on your personal laptop, the lab machine, and the departmental server</li>
+    <li>No more mailing yourself files, or carrying around a USB drive (and forgetting to copy things onto it)</li>
+    </ul>
+  </li>
+  <li>This by itself is reason enough to use version control even when you are the only author</li>
+</ul>
+</div>
+
+<div class="topic">
+  <h2>5) Problem #2: Undoing Changes</h2>
+  <ul>
+  <li>Often want to undo changes to a file
+    <ul>
+    <li>Start work, realize it's the wrong approach, want to get back to starting point</li>
+    <li>Like &quot;undo&quot; in an editor...</li>
+    <li>...but keep the whole history of every file, forever</li>
+    </ul>
+  </li>
+  <li>Also want to be able to see who changed what, when
+    <ul>
+    <li>The best way to find out how something works is often to ask the person who wrote it</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>6) Solution: Version Control (Again)</h2>
+  <ul>
+  <li>Have the version control system keep old <a href="{{page.root}}/book/glossary.html#revision" target="glo:revision">revisions</a> of files
+    <ul>
+    <li>And have it record who made the change, and when</li>
+    </ul>
+  </li>
+  <li>Authors can then <a href="{{page.root}}/book/glossary.html#roll-back" target="glo:roll-back">roll back</a> to a particular revision or time</li>
+  <figure id="fig:version-time-machine">
+    <img alt="Version Control as a Time Machine" src="version/time-machine.png"/>
+    <p>Figure 6.2: Version Control as a Time Machine</p>
+  </figure>
+  <li>(again) This by itself is reason enough to use version control even when you are the only author</li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>7) Which Version Control System?</h2>
+  <ul>
+  <li>Many systems are available commercially
+    <ul>
+    <li>If you have a large group, or a budget, <a href="bib.html#bib:perforce" target="bib:perforce">[Perforce]</a> is excellent</li>
+    </ul>
+  </li>
+  <li><a href="bib.html#bib:cvs" target="bib:cvs">[CVS]</a> and <a href="bib.html#bib:subversion" target="bib:subversion">[Subversion]</a> are:
+    <ul>
+    <li>Open source</li>
+    <li>Reliable</li>
+    <li>Well documented</li>
+    </ul>
+  </li>
+  <li><a href="bib.html#bib:cvs" target="bib:cvs">[CVS]</a> has been around since the 1980s
+    <ul>
+    <li>Very popular, but showing its age</li>
+    <li>Flaw #1: it keeps track of each file separately
+      <ul>
+      <li>So there's no reliable way to ask, &quot;Which files were changed together?&quot;</li>
+      </ul>
+    </li>
+    <li>Flaw #2: you can create new directories, but can't delete old ones</li>
+    <li>Flaw #3: Rolling back to points in time is not easy (possible, but not easy)</li>
+    </ul>
+  </li>
+  <li><a href="bib.html#bib:subversion" target="bib:subversion">[Subversion]</a> developed from 2000 onward as a workalike replacement
+    <ul>
+    <li>Feels the same, but eliminates major weaknesses of CVS</li>
+    <li>Many projects have already switched</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>8) Basic Use</h2>
+  <ul>
+  <li>Ron and Hermione each has a working copy of the <code>solarsystem</code> project repository
+    <ul>
+    <li>See below how they got it</li>
+    </ul>
+  </li>
+  <li>Ron wants to add some information about Jupiter's moons
+    <ul>
+    <li>Runs <code>svn update</code> to synchronize his working copy with the repository</li>
+    <li>Goes into the <code>jupiter</code> directory and creates <code>moons.txt</code></li>
+    </ul>
+  </li>
+  </ul>
+  <pre file="version/moons.original.txt">Name            Orbital Radius  Orbital Period  Mass            Radius
+Io              421.6           1.769138        893.2           1821.6
+Europa          670.9           3.551181        480.0           1560.8
+Ganymede        1070.4          7.154553        1481.9          2631.2
+Callisto        1882.7          16.689018       1075.9          2410.3
+</pre>
+  <ul>
+  <li>Ron then:
+    <ul>
+    <li>Runs <code>svn add moons.txt</code> to bring it to <a href="bib.html#bib:subversion" target="bib:subversion">[Subversion]</a>'s notice</li>
+    <li>Runs <code>svn commit</code> to save his changes in the repository
+      <ul>
+      <li>Repository is now at revision 121</li>
+      </ul>
+    </li>
+    </ul>
+  </li>
+  <li>That afternoon, Hermione runs <code>svn update</code> on her working copy
+    <ul>
+    <li><a href="bib.html#bib:subversion" target="bib:subversion">[Subversion]</a> sends her Ron's changes</li>
+    </ul>
+  </li>
+  </ul>
+  <figure id="fig:version-edit-update-cycle">
+    <img alt="The Basic Edit/Update Cycle" src="version/edit-update-cycle.png"/>
+    <p>Figure 6.3: The Basic Edit/Update Cycle</p>
+  </figure>
+</div>
+
+<div class="topic">
+  <h2>9) How To Do It</h2>
+  <ul>
+  <li>One way to use Subversion is to type commands in a shell
+    <ul>
+    <li>A lowest common denominator that will work almost everywhere</li>
+    </ul>
+  </li>
+  <li><a href="bib.html#bib:smartsvn" target="bib:smartsvn">[SmartSVN]</a> is a GUI that runs on Windows, Linux, and Mac (and anything that runs Java 1.4). It also provides Explorer/Finder integration
+    <ul>
+      <figure id="fig:version-smartsvn">
+        <img alt="SmartSVN" src="version/smartsvn.png"/>
+        <p>Figure 6.4: SmartSVN</p>
+      </figure>
+    </ul>
+  </li>
+  <li><a href="bib.html#bib:tortoisesvn" target="bib:tortoisesvn">[TortoiseSVN]</a> is a Windows shell extension
+    <ul>
+    <li>Integrates with the file browser, rather than running separately</li>
+      <figure id="fig:version-tortoisesvn">
+        <img alt="TortoiseSVN" src="version/tortoisesvn.png"/>
+        <p>Figure 6.5: TortoiseSVN</p>
+      </figure>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>10) Resolving Conflicts</h2>
+  <ul>
+  <li>Back to the problem of conflicting edits (or, more simply, <a href="{{page.root}}/book/glossary.html#conflict" target="glo:conflict">conflicts</a>)</li>
+  <li>Option 1: only allow one person to have a writeable copy at any time
+    <ul>
+    <li>This is called <a href="{{page.root}}/book/glossary.html#pessimistic-concurrency" target="glo:pessimistic-concurrency">pessimistic concurrency</a></li>
+    <li>Used in Microsoft Visual SourceSafe</li>
+    </ul>
+  </li>
+  <li>Option 2: let people edit, and <a href="{{page.root}}/book/glossary.html#resolve" target="glo:resolve">resolve</a> conflicts afterward by <a href="{{page.root}}/book/glossary.html#merge" target="glo:merge">merging</a> files
+    <ul>
+    <li>Called <a href="{{page.root}}/book/glossary.html#optimistic-concurrency" target="glo:optimistic-concurrency">optimistic concurrency</a></li>
+    <li>&quot;It's easier to get forgiveness than permission&quot;</li>
+    <li>Most modern systems (including <a href="bib.html#bib:subversion" target="bib:subversion">[Subversion]</a>) do this</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>11) Example of Resolving</h2>
+  <ul>
+  <li>Ron and Hermione are both synchronized with version 151 of the repository</li>
+  <li>Ron edits <code>moons.txt</code> and commits his changes to create version 152</li>
+  </ul>
+  <pre file="version/moons.ron.txt">Name            Orbital Radius  Orbital Period  Mass            Radius
+Io              421.6           1.769138        893.2           1821.6
+Europa          670.9           3.551181        480.0           1560.8
+Ganymede        1070.4          7.154553        1481.9          2631.2
+Callisto        1882.7          16.689018       1075.9          2410.3
+Amalthea        181.4           0.498179        0.075           131 x 73 x 67
+Himalia         11460           250.5662        0.095           85
+Elara           11740           259.6528        0.008           40
+</pre>
+  <ul>
+  <li>Simultaneously, Hermione edits her copy of <code>moons.txt</code> (remember she is working from version 151 as her base)</li>
+  </ul>
+  <pre file="version/moons.hermione.txt">Name            Orbital Radius  Orbital Period  Mass            Radius
+                (10**3 km)      (days)          (10**20 kg)     (km)
+Io              421.6           1.769138        893.2           1821.6
+Europa          670.9           3.551181        480.0           1560.8
+Ganymede        1070.4          7.154553        1481.9          2631.2
+Callisto        1882.7          16.689018       1075.9          2410.3
+Amalthea        181.4           0.498179        0.075           131
+Himalia         11460           250.5662        0.095           85
+Elara           11740           259.6528        0.008           40
+Pasiphae        23620           743.6           0.003           18
+Sinope          23940           758.9           0.0008          14
+Lysithea        11720           259.22          0.0008          12
+</pre>
+  <ul>
+  <li>When she tries to commit, <a href="bib.html#bib:subversion" target="bib:subversion">[Subversion]</a> tells her there's a conflict
+    <ul>
+    <li>A <a href="{{page.root}}/book/glossary.html#race-condition" target="glo:race-condition">race condition</a>: two or more would-be writers racing to get their changes in first</li>
+    </ul>
+  </li>
+  </ul>
+  <figure id="fig:version-conflict-merge">
+    <img alt="Merging Conflicts" src="version/conflict-merge.png"/>
+    <p>Figure 6.6: Merging Conflicts</p>
+  </figure>
+</div>
+
+<div class="topic">
+  <h2>12) Example of Resolving (continued)</h2>
+  <ul>
+  <li><a href="bib.html#bib:subversion" target="bib:subversion">[Subversion]</a> puts Hermione's changes and Ron's in <code>moons.txt</code> (Hermione's local copy)
+    <ul>
+    <li>Adds <a href="{{page.root}}/book/glossary.html#conflict-marker" target="glo:conflict-marker">conflict markers</a> to show where they overlapped</li>
+    </ul>
+  </li>
+  </ul>
+  <pre file="version/moons.conflict.txt">Name            Orbital Radius  Orbital Period  Mass            Radius
+                (10**3 km)      (days)          (10**20 kg)     (km)
+Io              421.6           1.769138        893.2           1821.6
+Europa          670.9           3.551181        480.0           1560.8
+Ganymede        1070.4          7.154553        1481.9          2631.2
+Callisto        1882.7          16.689018       1075.9          2410.3
+&lt;&lt;&lt;&lt;&lt;&lt;&lt; .mine
+Amalthea        181.4           0.498179        0.075           131
+Himalia         11460           250.5662        0.095           85
+Elara           11740           259.6528        0.008           40
+Pasiphae        23620           743.6           0.003           18
+Sinope          23940           758.9           0.0008          14
+Lysithea        11720           259.22          0.0008          12
+=======
+Amalthea        181.4           0.498179        0.075           131 x 73 x 67
+Himalia         11460           250.5662        0.095           85
+Elara           11740           259.6528        0.008           40
+&gt;&gt;&gt;&gt;&gt;&gt;&gt; .r152
+</pre>
+  <ul>
+  <li><code>&lt;&lt;&lt;&lt;&lt;&lt;&lt;</code> shows the start of the section from the first file</li>
+  <li><code>=======</code> divides sections</li>
+  <li><code>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;</code> shows the end of the section from the second file</li>
+  <li><a href="bib.html#bib:subversion" target="bib:subversion">[Subversion]</a> also creates:
+    <ul>
+    <li><code>moons.txt.mine</code>: contains Hermione's changes</li>
+    <li><code>moons.txt.151</code>: the file before either set of changes</li>
+    <li><code>moons.txt.152</code>: the most recent version of the file in the repository</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>13) Example of Resolving (continued)</h2>
+  <ul>
+  <li>At this point, Hermione can:
+    <ul>
+    <li>Run <code>svn revert moons.txt</code> to throw away her changes</li>
+    <li>Copy one of the three temporary files on top of <code>moons.txt</code></li>
+    <li>Edit <code>moons.txt</code> to remove the conflict markers</li>
+    </ul>
+  </li>
+  <li>Once she's done, she runs:
+    <ul>
+    <li><code>svn resolved moons.txt</code> to let <a href="bib.html#bib:subversion" target="bib:subversion">[Subversion]</a> know she's done</li>
+    <li><code>svn commit</code> to commit her changes (creating version 153 of the repository)</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>14) Starvation</h2>
+  <ul>
+  <li>But what happens if Ginny commits another set of changes while Hermione is resolving?
+    <ul>
+    <li>And then Harry commits yet another set?</li>
+    </ul>
+  </li>
+  <li><a href="{{page.root}}/book/glossary.html#starvation" target="glo:starvation">Starvation</a>: Hermione never gets a turn because someone else always gets there first</li>
+  <li>This is a management problem, not a technical one
+    <ul>
+    <li>Break the file(s) up into smaller pieces</li>
+    <li>Give people clearer responsibilities</li>
+    <li>The version control system is trying to tell you that people on your team are working at cross purposes</li>
+    <li>If you are doing things right, you will probably never (or rarely) encounter this</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>15) Binary Files</h2>
+  <ul>
+  <li>Subversion can only merge conflicts in text files
+    <ul>
+    <li>Source code, HTML---basically, anything you can edit with Notepad, Vi, or Emacs</li>
+    </ul>
+  </li>
+  <li>But images, video clips, Microsoft Word, and other formats aren't plain text
+    <ul>
+    <li>When there's a conflict, Subversion saves your copy and the master copy side by side in your working directory</li>
+    <li>Up to you to resolve the differences</li>
+    </ul>
+  </li>
+  <li>It's not Subversion's fault
+    <ul>
+    <li>Most creators of non-text formats don't provide a way to find or merge differences between files</li>
+    </ul>
+  </li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>16) Reverting</h2>
+  <ul>
+  <li>After doing some more work, Ron decides he's on the wrong path</li>
+  <li><code>svn diff</code> shows him which files he has changed, and what those changes are</li>
+  <li>He hasn't committed anything yet, so he uses <code>svn revert</code> to discard his work
+    <ul>
+    <li>I.e., throw away any differences between his working copy and the master as it was when he started</li>
+    <li>Synchronizes with where he was, <em>not</em> with any changes other people have made since then (the base revision, not latest revision in the repository)</li>
+    </ul>
+  </li>
+  <li>If you find yourself reverting repeatedly, you should probably go and do something else for a while...</li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>17) Rolling Back</h2>
+  <ul>
+  <li>Now Ron decides that he doesn't like the changes Harry just made to <code>moons.txt</code>
+    <ul>
+    <li>Wants to do the equivalent of &quot;undo&quot;</li>
+    </ul>
+  </li>
+  <li><code>svn log</code> shows recent history
+    <ul>
+    <li>Current revision is 157</li>
+    <li>He wants to revert to revision 156</li>
+    </ul>
+  </li>
+  <li><code>svn merge -r 157:156 moons.txt</code> will do the trick
+    <ul>
+    <li>The argument to the <code>-r</code> flag specifies the revisions involved</li>
+    <li>Merging allows him to keep some of Harry's changes if he wants to</li>
+    <li>Revision 157 is still in the repository</li>
+    <li>Remember, this affects <em>Ron's</em> local copy, he still needs to commit this undo if he wishes to commit these changes</li>
+    </ul>
+  </li>
+    <figure id="fig:version-rollback">
+      <img alt="Rolling Back" src="version/rollback.png"/>
+      <p>Figure 6.7: Rolling Back</p>
+    </figure>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>18) Creating and Checking Out</h2>
+  <ul>
+  <li>To create a repository:
+    <ul>
+    <li>Decide where to put it (e.g., <code>/svn/rotor</code>)</li>
+    <li>Go into the containing directory: <code>cd /svn</code></li>
+    <li><code>svnadmin create rotor</code></li>
+    </ul>
+  </li>
+  <li>Can then check out a working copy (in another location in your system)
+    <ul>
+    <li>Directly through the file system: <code>svn checkout file:///svn/rotor</code></li>
+    <li>Through a web server: <code>svn checkout http://www.hogwarts.edu/svn/rotor</code>
+      <ul>
+      <li>Note: requires your system administrator to configure the web server properly</li>
+      </ul>
+    </li>
+    </ul>
+  </li>
+  <li>Only use <code>svn checkout</code> once, to initialize your working copy
+    <ul>
+    <li>After that, use <code>svn update</code> in that directory</li>
+    </ul>
+  </li>
+  <li>If you only want part of the repository, use <code>svn co http://www.hogwarts.edu/svn/rotor/engine/dynamics</code></li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>19) Subversion Command Reference</h2>
+  <div id="tbl:version-svn-cmd">
+    <table>
+      <tr>
+        <th>Name</th>
+        <th>Purpose</th>
+        <th>Example</th>
+      </tr>
+      <tr>
+        <td><code>svn add</code></td>
+        <td>Add files and/or directories to version control.</td>
+        <td><code>svn add newfile.c newdir</code></td>
+      </tr>
+      <tr>
+        <td><code>svn checkout</code></td>
+        <td>Get a fresh working copy of a repository.</td>
+        <td><code>svn checkout https://your.host.name/rotor/repo rotorproject</code></td>
+      </tr>
+      <tr>
+        <td><code>svn commit</code></td>
+        <td>Send changes from working copy to repository (inverse of <code>update</code>).</td>
+        <td><code>svn commit -m &quot;Comment on the changes&quot;</code></td>
+      </tr>
+      <tr>
+        <td><code>svn delete</code></td>
+        <td>Delete files and/or directories from version control.</td>
+        <td><code>svn delete oldfile.c</code></td>
+      </tr>
+      <tr>
+        <td><code>svn diff</code></td>
+        <td>Shows changes for directories/files in a unified diff format.</td>
+        <td><code>svn diff somefile.c</code></td>
+      </tr>
+      <tr>
+        <td><code>svn help</code></td>
+        <td>Get help (in general, or for a particular command).</td>
+        <td><code>svn help update</code></td>
+      </tr>
+      <tr>
+        <td><code>svn log</code></td>
+        <td>Show history of recent changes.</td>
+        <td><code>svn log --verbose *.c</code></td>
+      </tr>
+      <tr>
+        <td><code>svn merge</code></td>
+        <td>Merge two different versions of a file into one.</td>
+        <td><code>svn merge -r 18:16 spin.c</code></td>
+      </tr>
+      <tr>
+        <td><code>svn mkdir</code></td>
+        <td>Create a new directory and put it under version control.</td>
+        <td><code>svn mkdir newmodule</code></td>
+      </tr>
+      <tr>
+        <td><code>svn rename</code></td>
+        <td>Rename a file or directory, keeping track of history.</td>
+        <td><code>svn rename temp.txt release_notes.txt</code></td>
+      </tr>
+      <tr>
+        <td><code>svn revert</code></td>
+        <td>Undo changes to working copy (i.e., resynchronize with repository).</td>
+        <td><code>svn revert spin.h</code></td>
+      </tr>
+      <tr>
+        <td><code>svn status</code></td>
+        <td>Show the status of files and directories in the working copy.</td>
+        <td><code>svn status</code></td>
+      </tr>
+      <tr>
+        <td><code>svn update</code></td>
+        <td>Bring changes from repository into working copy (inverse of <code>commit</code>).</td>
+        <td><code>svn update</code></td>
+      </tr>
+    </table>
+    <p>Table 6.1: Common Subversion Commands</p>
+  </div>
+</div>
+
+<div class="topic">
+  <h2>20) Reading Subversion Output</h2>
+  <ul>
+  <li><code>svn status</code> compares your working copy with the repository
+    <ul>
+    <li>Prints one line for each file that's worth talking about</li>
+    </ul>
+  </li>
+  </ul>
+  <pre class="in" file="version/svn-status.cmd">$ svn status
+- M jupiter/moons.txt
+- C readme.txt
+</pre>
+  <ul>
+  <li>Shows that:
+    <ul>
+    <li><code>jupiter/moons.txt</code> has been modified</li>
+    <li><code>readme.txt</code> has conflicts</li>
+    </ul>
+  </li>
+  <li><code>svn update</code> prints one line for each file or directory it does something to</li>
+  </ul>
+  <pre class="in" file="version/svn-update.cmd">$ svn update
+- A saturn/moons.txt
+- U mars/mars.txt
+</pre>
+  <ul>
+  <li><code>saturn/moons.txt</code> has been added</li>
+  <li><code>mars/mars.txt</code> has been updated (i.e., someone else modified it)</li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>21) Summary</h2>
+  <ul>
+  <li>Version control is one of the things that distinguishes professionals from amateurs
+    <ul>
+    <li>And successful projects from failures</li>
+    </ul>
+  </li>
+  <li>Everything that a human being had to create should be under version control</li>
+  <li>You'll see the benefits almost immediately</li>
+  <li>You will want to put all your work (even solo work) under version control once you experience the benefits</li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>22) SmartSVN: Setup</h2>
+  <ul>
+  <li>Create a directory on your local filesystem that you would like to put under version control.</li>
+  <li>My choice here is /Users/kenbauer/stuff</li>
+  <li>But you use what you want. At least put a single README.txt for now</li>
+  <li>Start your SmartSVN</li>
+  </ul>
+</div>
+
+<div class="topic">
+  <h2>23) SmartSVN: Import into the Repository</h2>
+  <ul>
+    <li>So we startup SmartSVN</li>
+    <li>Note: choose Import project into repository</li>
+    <figure id="fig:smartsvn-whatdoyouwanttodo">
+      <img alt="SmartSVN Startup" src="version/smartsvn-whatdoyouwanttodo.png"/>
+      <p>Figure 6.8: SmartSVN Startup</p>
+    </figure>
+    <li>Set the directory to point to the local directory you want to put under revision control</li>
+    <figure id="fig:smartsvn-import-localdirectory">
+      <img alt="SmartSVN Import - Local Directory" src="version/smartsvn-import-localdirectory.png"/>
+      <p>Figure 6.9: SmartSVN Import - Local Directory</p>
+    </figure>
+    <li>Now we get to choose the repository, but we'll choose to create a new one with the &quot;Manage&quot; button.</li>
+    <li>Start of side story.</li>
+    <figure id="fig:smartsvn-import-repository">
+      <img alt="SmartSVN Import - Repository" src="version/smartsvn-import-repository.png"/>
+      <p>Figure 6.10: SmartSVN Import - Repository</p>
+    </figure>
+    <li>So you hit &quot;Manage&quot; and you now get the list of repository profiles, we choose &quot;Add&quot;.</li>
+    <figure id="fig:smartsvn-repository-profiles">
+      <img alt="SmartSVN Repository Profiles" src="version/smartsvn-repository-profiles.png"/>
+      <p>Figure 6.11: SmartSVN Repository Profiles</p>
+    </figure>
+    <li>Now we set the location, these settings are specific to your repository setup. Ask your admins. Note we are using svn+ssh</li>
+    <figure id="fig:smartsvn-repository-newprofile-location">
+      <img alt="SmartSVN New Profile - Location" src="version/smartsvn-repository-newprofile-location.png"/>
+      <p>Figure 6.12: SmartSVN New Profile - Location</p>
+    </figure>
+    <li>Now for the details about our login</li>
+    <figure id="fig:smartsvn-repository-newprofile-details">
+    <img alt="SmartSVN New Profile - Details" src="version/smartsvn-repository-newprofile-details.png"/>
+    <p>Figure 6.13: SmartSVN New Profile - Details</p>
+    </figure>
+    <li>Set the Name for this repository which you will use within SmartSVN</li>
+    <figure id="fig:smartsvn-repository-newprofile-name">
+    <img alt="SmartSVN New Profile - Name" src="version/smartsvn-repository-newprofile-name.png"/>
+    <p>Figure 6.14: SmartSVN New Profile - Name</p>
+    </figure>
+    <li>Notice that now we can choose this new repository to import into. Back to the main story.</li>
+    <figure id="fig:smartsvn-import-repository-2">
+    <img alt="SmartSVN Import - Repository (Redux)" src="version/smartsvn-import-repository-2.png"/>
+    <p>Figure 6.15: SmartSVN Import - Repository (Redux)</p>
+    </figure>
+    <li>Okay, let's set the location within the repository to put OUR project.</li>
+    <li>We want our own space within the repository which may contain many projects.</li>
+    <li>You can have many repositories and a repository can contain many projects. Many ways of setting this up.</li>
+    <figure id="fig:smartsvn-import-location">
+    <img alt="SmartSVN Import - Location" src="version/smartsvn-import-location.png"/>
+    <p>Figure 6.16: SmartSVN Import - Location</p>
+    </figure>
+    <li>Now you give a name for this &quot;project&quot; within SmartSVN.</li>
+    <figure id="fig:smartsvn-import-project">
+    <img alt="SmartSVN Import - Project" src="version/smartsvn-import-project.png"/>
+    <p>Figure 6.17: SmartSVN Import - Project</p>
+    </figure>
+    <li>And now we get a summary before actually doing the import. Here we check everything looks good.</li>
+    <figure id="fig:smartsvn-import-summary">
+    <img alt="SmartSVN Import - Summary" src="version/smartsvn-import-summary.png"/>
+    <p>Figure 6.18: SmartSVN Import - Summary</p>
+    </figure>
+    <li>Now we should have our project open and you will see the files not being in the repository. Time to add them.</li>
+    <figure id="fig:smartsvn-projectwindow">
+    <img alt="SmartSVN Project Window" src="version/smartsvn-projectwindow.png"/>
+    <p>Figure 6.19: SmartSVN Project Window</p>
+    </figure>
+    <li>Right click your README.txt and choose &quot;Show Changes&quot;.</li>
+    <li>Now commit the code.</li>
+  </ul>
+</div>

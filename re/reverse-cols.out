@@ -1,0 +1,4 @@
+easy case: "10 20" => "20 10"
+padding: " 30  40 " => "40 30"
+too many columns: "60 70 80" => "60 70 80"
+non-numeric: "90 end" => "90 end"

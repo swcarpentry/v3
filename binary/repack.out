@@ -1,0 +1,4 @@
+packed string: 'abcd'
+as two 16-bit integers: 25185 25699
+as a single 32-bit integer 1684234849
+as a 32-bit float 1.67779994081e+22

@@ -1,0 +1,2 @@
+original: ['H', 'C', 'O', 'N']
+after deleting the middle: ['H', 'N']

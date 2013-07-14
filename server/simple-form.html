@@ -1,0 +1,29 @@
+<html>
+<body>
+<form action="http://www.third-bit.com/cgi-bin/simple_form.py" method="POST">
+  <p>Sequence: <input name="sequence" type="text" value="GATTACA"/>
+     Search type:
+     <select name="search_type">
+       <option>Exact match</option>
+       <option selected="selected">Similarity match</option>
+       <option>Sub-match</option>
+     </select>
+  </p>
+  <p>Programs:
+    <input checked="checked" name="program" type="checkbox" value="FROG-11">
+      FROG (version 1.1)
+    </input>
+    <input name="program" type="checkbox" value="FROG-beta">
+      FROG (2.0 beta)
+    </input>
+    <input checked="checked" name="program" type="checkbox" value="Bayes-Hart">
+      Bayes-Hart
+    </input>
+  </p>
+  <p>
+    <input type="submit"/>
+    <input type="reset"/>
+  </p>
+</form>
+</body>
+</html>
